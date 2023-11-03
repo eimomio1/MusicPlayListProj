@@ -13,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -39,104 +38,48 @@ public class Album {
 		super();
 	}
 
-	
-
-	
-	public Album(int id, String name, LocalDate releaseDate, List<Artist> artist, List<Song> songs) {
+	public Album(int id, String name, LocalDate releaseDate, List<Artist> artist, byte[] images) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.releaseDate = releaseDate;
 		this.artist = artist;
-		this.songs = songs;
 	}
-
-
-
 
 	public int getId() {
 		return id;
 	}
 
-
-
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
-
-
 
 	public String getName() {
 		return name;
 	}
 
-
-
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
-
 
 	public LocalDate getReleaseDate() {
 		return releaseDate;
 	}
 
-
-
-
 	public void setReleaseDate(LocalDate releaseDate) {
 		this.releaseDate = releaseDate;
 	}
-
-
-
 
 	public List<Artist> getArtist() {
 		return artist;
 	}
 
-
-
-
 	public void setArtist(List<Artist> artist) {
 		this.artist = artist;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Album [id=" + id + ", name=" + name + ", releaseDate=" + releaseDate + ", artist=" + artist + "]";
-
-
-
-	public List<Song> getSongs() {
-		return songs;
 	}
-
-
-
-
-	public void setSongs(List<Song> songs) {
-		this.songs = songs;
-	}
-
-
-
-
-	@Override
-	public String toString() {
-		return "Album [id=" + id + ", name=" + name + ", releaseDate=" + releaseDate + ", artist=" + artist + ", songs="
-				+ songs + "]";
-
-	}
-
-	
-	
-
-	
 }
