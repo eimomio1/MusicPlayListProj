@@ -6,9 +6,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"username"}),
+        @UniqueConstraint(columnNames = {"email"})})
 public class User {
 
 	@Id
@@ -16,13 +19,10 @@ public class User {
 	@Column(name = "user_id")
 	private long id;
 
-	@Column(name = "first_name")
-	private String firstName;
+	@Column(name = "full_name", nullable = false)
+	private String fullName;
 
-	@Column(name = "last_name")
-	private String lastName;
-
-	@Column(name = "username")
+	@Column(name = "username", unique = true, nullable = false)
 	private String userName;
 
 	@Column(name = "password")
@@ -35,11 +35,10 @@ public class User {
 		super();
 	}
 
-	public User(long id, String firstName, String lastName, String userName, String password, String email) {
+	public User(long id, String fullName, String lastName, String userName, String password, String email) {
 		super();
 		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.fullName = fullName;
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
@@ -53,20 +52,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getFullName() {
+		return fullName;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 	public String getUserName() {
@@ -95,7 +86,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", userName=" + userName
+		return "User [id=" + id + ", fullName=" + fullName + ", userName=" + userName
 				+ ", password=" + password + ", email=" + email + "]";
 	}
 }
