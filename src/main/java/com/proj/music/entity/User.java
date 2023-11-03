@@ -1,12 +1,17 @@
 package com.proj.music.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -30,7 +35,15 @@ public class User {
 
 	@Column(name = "email")
 	private String email;
-
+	
+	@ManyToMany
+    @JoinTable(
+        name = "user_playlist",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "playlist_id")
+    )
+    private List<Playlist> playlists; // A user can have many playlists
+  
 	public User() {
 		super();
 	}
