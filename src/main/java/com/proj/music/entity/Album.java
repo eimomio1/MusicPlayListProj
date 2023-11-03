@@ -1,17 +1,17 @@
 package com.proj.music.entity;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -31,19 +31,9 @@ public class Album {
 	@Column(name = "release_date")
 	private LocalDate releaseDate;
 
-	// Album Entity
-	@ManyToMany(mappedBy = "albums")
-	private List<Artist> artist; // An album can be associated with multiple artists.
-	
-	  @OneToMany
-	    @JoinColumn(name = "album_id") // Map the "album_id" in the Song table to create the relationship
-	    private List<Song> songs; // An album can contain multiple songs
-
-	
-	
-	
-
-
+	@ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinTable(name = "ArtistsAlbum", joinColumns = @JoinColumn(name = "album_id"), inverseJoinColumns = @JoinColumn(name = "artist_id"))
+	private List<Artist> artist;
 
 	public Album() {
 		super();
@@ -59,7 +49,6 @@ public class Album {
 		this.releaseDate = releaseDate;
 		this.artist = artist;
 		this.songs = songs;
-		
 	}
 
 
@@ -119,6 +108,10 @@ public class Album {
 	}
 
 
+	@Override
+	public String toString() {
+		return "Album [id=" + id + ", name=" + name + ", releaseDate=" + releaseDate + ", artist=" + artist + "]";
+
 
 
 	public List<Song> getSongs() {
@@ -139,6 +132,7 @@ public class Album {
 	public String toString() {
 		return "Album [id=" + id + ", name=" + name + ", releaseDate=" + releaseDate + ", artist=" + artist + ", songs="
 				+ songs + "]";
+
 	}
 
 	
