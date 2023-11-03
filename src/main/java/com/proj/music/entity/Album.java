@@ -24,7 +24,7 @@ public class Album {
 	@Column(name = "album_id")
 	private int id;
 
-	@Column(name = "name")
+	@Column(name = "album_name")
 	private String name;
 
 	@Column(name = "release_date")
