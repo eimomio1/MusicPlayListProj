@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.proj.music.dto.LoginDto;
 import com.proj.music.dto.SignUpDto;
 import com.proj.music.entity.User;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.UserRepository;
+import com.proj.music.response.LoginResponse;
 import com.proj.music.service.UserService;
 
 @Service
@@ -32,10 +34,38 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 		return "User has been saved"; 
 	}
-
+	
 	@Override
-	public User getUserById(long id) {
-		
+	public LoginResponse loginUser(LoginDto loginDto)
+	{
+		Optional<User> user = userRepository.findByEmail(loginDto.getUsernameOrEmail());
+		if(user.isPresent())
+		{
+			String password = loginDto.getPassword();
+			String encodedPassword = user.get().getPassword();
+			Boolean isPasswordRight = passwordEncoder.matches(password, encodedPassword);
+			if(isPasswordRight)
+			{
+				Optional<User> user1 = userRepository.findByUsernameOrEmailAndPass(loginDto.getUsernameOrEmail(), password, encodedPassword);
+				if(user1.isPresent())
+				{
+					return new LoginResponse("Login Success", true);
+				}
+				else {
+					return new LoginResponse("Login Failed", false);
+				}
+			}
+			else {
+				return new LoginResponse("password Not Match", false);
+			}
+		}
+		else {
+			return new LoginResponse("Email doesnt exist", false);
+		}
+	}
+	
+	@Override
+	public User getUserById(long id) {	
 		return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User Not Found"));
 	}
 
