@@ -34,24 +34,15 @@ public class Album {
 	// Album Entity
 	@ManyToMany(mappedBy = "albums")
 	private List<Artist> artist; // An album can be associated with multiple artists.
-	
-	  @OneToMany
-	    @JoinColumn(name = "album_id") // Map the "album_id" in the Song table to create the relationship
-	    private List<Song> songs; // An album can contain multiple songs
 
-	
-	
-	
-
-
+	@OneToMany
+	@JoinColumn(name = "album_id") // Map the "album_id" in the Song table to create the relationship
+	private List<Song> songs; // An album can contain multiple songs
 
 	public Album() {
 		super();
 	}
 
-	
-
-	
 	public Album(int id, String name, LocalDate releaseDate, List<Artist> artist, List<Song> songs) {
 		super();
 		this.id = id;
@@ -59,81 +50,48 @@ public class Album {
 		this.releaseDate = releaseDate;
 		this.artist = artist;
 		this.songs = songs;
-		
+
 	}
-
-
-
 
 	public int getId() {
 		return id;
 	}
 
-
-
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
-
-
 
 	public String getName() {
 		return name;
 	}
 
-
-
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
-
 
 	public LocalDate getReleaseDate() {
 		return releaseDate;
 	}
 
-
-
-
 	public void setReleaseDate(LocalDate releaseDate) {
 		this.releaseDate = releaseDate;
 	}
-
-
-
 
 	public List<Artist> getArtist() {
 		return artist;
 	}
 
-
-
-
 	public void setArtist(List<Artist> artist) {
 		this.artist = artist;
 	}
-
-
-
 
 	public List<Song> getSongs() {
 		return songs;
 	}
 
-
-
-
 	public void setSongs(List<Song> songs) {
 		this.songs = songs;
 	}
-
-
-
 
 	@Override
 	public String toString() {
@@ -141,8 +99,4 @@ public class Album {
 				+ songs + "]";
 	}
 
-	
-	
-
-	
 }

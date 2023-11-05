@@ -31,27 +31,22 @@ public class Song {
 
 	@Column(name = "release_date")
 	private LocalDate releaseDate;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "album_id") // Map the "album_id" in the Album table to create the relationship
-    private Album album; // A song belongs to one album
-	
+	@JoinColumn(name = "album_id") // Map the "album_id" in the Album table to create the relationship
+	private Album album; // A song belongs to one album
+
 	@ManyToMany
-	    @JoinTable(name = "SongGenres")
-	    private List<Genre> genres; // A song can be associated with multiple genres
+	@JoinTable(name = "SongGenres")
+	private List<Genre> genres; // A song can be associated with multiple genres
 
-	  @ManyToMany
-	    @JoinTable(
-	        name = "PlaylistSongs",
-	        joinColumns = @JoinColumn(name = "song_id"),
-	        inverseJoinColumns = @JoinColumn(name = "playlist_id")
-	    )
-	    private List<Playlist> playlists; // A song can belong to multiple playlists
+	@ManyToMany
+	@JoinTable(name = "PlaylistSongs", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
+	private List<Playlist> playlists; // A song can belong to multiple playlists
 
-	 
-	  @ManyToMany(mappedBy = "songs")
-	    private List<Artist> artists;  // List of artists associated with this song
-	
+	@ManyToMany(mappedBy = "songs")
+	private List<Artist> artists; // List of artists associated with this song
+
 	public Song() {
 		super();
 	}

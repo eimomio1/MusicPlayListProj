@@ -38,28 +38,14 @@ public class Playlist {
 
 	@Column(name = "updatedAt")
 	private LocalDate updatedAt;
-	
-	 @ManyToMany(mappedBy = "playlists")
-	    private List<User> users; // A playlist can be associated with multiple users
-	 
-	 
-	 
-	
-	    
-	    
-	    
-	    
 
-	 public Playlist() {
-		 
-		 super();
-	 }
-	 
-	 
+	@ManyToMany(mappedBy = "playlists")
+	private List<User> users; // A playlist can be associated with multiple users
 
-	
+	public Playlist() {
 
-
+		super();
+	}
 
 	public Playlist(long id, String name, String description, List<Song> songs, LocalDate createdAt,
 			LocalDate updatedAt, List<User> users) {
@@ -73,151 +59,61 @@ public class Playlist {
 		this.users = users;
 	}
 
-
-
-
-
-
-
 	public long getId() {
 		return id;
 	}
-
-
-
-
-
-
 
 	public void setId(long id) {
 		this.id = id;
 	}
 
-
-
-
-
-
-
 	public String getName() {
 		return name;
 	}
-
-
-
-
-
-
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-
-
-
-
-
-
 	public String getDescription() {
 		return description;
 	}
-
-
-
-
-
-
 
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-
-
-
-
-
-
 	public List<Song> getSongs() {
 		return songs;
 	}
-
-
-
-
-
-
 
 	public void setSongs(List<Song> songs) {
 		this.songs = songs;
 	}
 
-
-
-
-
-
-
 	public LocalDate getCreatedAt() {
 		return createdAt;
 	}
-
-
-
-
-
-
 
 	public void setCreatedAt(LocalDate createdAt) {
 		this.createdAt = createdAt;
 	}
 
-
-
-
-
-
-
 	public LocalDate getUpdatedAt() {
 		return updatedAt;
 	}
-
-
-
-
-
-
 
 	public void setUpdatedAt(LocalDate updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
-
-
-
-
-
-
 	public List<User> getUsers() {
 		return users;
 	}
 
-
-
-
-
-
-
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}
-
-
-
-
-
-
 
 	@Override
 	public String toString() {

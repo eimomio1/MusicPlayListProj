@@ -16,7 +16,7 @@ import jakarta.persistence.JoinColumn;
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
-	
+
 	private static final long serialVersionUID = 3937414011943770889L;
 
 	@Id
@@ -43,8 +43,6 @@ public class User implements Serializable {
 		this.refreshToken = refreshToken;
 	}
 
-	
-
 	@Column(name = "email")
 	private String email;
 
@@ -62,12 +60,12 @@ public class User implements Serializable {
 		super();
 	}
 
-	public User(long id, String fullName, String userName,  String email, List<Playlist> playlists) {
+	public User(long id, String fullName, String userName, String email, List<Playlist> playlists) {
 		super();
 		this.id = id;
 
 		this.userName = userName;
-	
+
 		this.email = email;
 		this.playlists = playlists;
 	}
