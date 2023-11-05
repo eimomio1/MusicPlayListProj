@@ -1,0 +1,61 @@
+package com.proj.music.service.impl;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.proj.music.entity.Genre;
+import com.proj.music.exceptions.ResourceNotFoundException;
+import com.proj.music.repository.GenreRepository;
+import com.proj.music.service.GenreService;
+
+public class GenreServiceImpl implements GenreService {
+
+	@Autowired
+	private GenreRepository genreRepository;
+	
+	@Override
+	public String updateGenreById(long id, Genre genre) {
+		Optional<Genre> genre1 = genreRepository.findById(id);
+		
+		if(genre1.isPresent())
+		{
+			genre1.get().setId(genre.getId());
+			genre1.get().setName(genre.getName());
+			genre1.get().setDescription(genre.getDescription());
+		}
+		
+		return "Genre has been updated";
+	}
+
+	@Override
+	public String deleteGenreById(long id) {
+		Optional<Genre> genre1 = genreRepository.findById(id);
+		
+		if(genre1.isPresent())
+		{
+			genreRepository.deleteById(id);
+		}
+		
+		return "Genre has been deleted";
+	}
+
+	@Override
+	public Genre getGenreById(long id) {
+		return genreRepository.findById(id)
+				.orElseThrow(()-> new ResourceNotFoundException("Genre Object has not been found."));
+	}
+
+	@Override
+	public String addGenre(Genre genre) {
+		genreRepository.save(genre);
+		return "Genre has been added";
+	}
+
+	@Override
+	public List<Genre> getGenres() {
+		return genreRepository.findAll();
+	}
+
+}

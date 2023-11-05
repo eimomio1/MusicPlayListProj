@@ -72,6 +72,18 @@ public class UserServiceImpl implements UserService {
 		return "User has been deleted";
 	}
 
+	@Override
+	public se.michaelthelin.spotify.model_objects.specification.User getUserById(long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String updateUserById(se.michaelthelin.spotify.model_objects.specification.User user, long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/*
 	 * @Override public User findUserByUsername(String userName) { return
 	 * userRepository.findUserByUsername(userName); }
