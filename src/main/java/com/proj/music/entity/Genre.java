@@ -25,8 +25,6 @@ public class Genre {
 	public Genre() {
 		super();
 	}
-	
-	
 
 	public Genre(long id, String name, String description) {
 		super();
@@ -34,8 +32,6 @@ public class Genre {
 		this.name = name;
 		this.description = description;
 	}
-
-
 
 	public long getId() {
 		return id;
@@ -65,7 +61,5 @@ public class Genre {
 	public String toString() {
 		return "Genre [id=" + id + ", name=" + name + ", description=" + description + "]";
 	}
-
-	
 
 }

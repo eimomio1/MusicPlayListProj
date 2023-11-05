@@ -10,18 +10,13 @@ import se.michaelthelin.spotify.SpotifyHttpManager;
 
 @Service
 public class SpotifyConfiguration {
-	
+
 	@Value("${redirect.server.ip}")
 	private String customIp;
-	
+
 	public SpotifyApi getSpotifyObject() {
-		 URI redirectedURL =  SpotifyHttpManager.makeUri(customIp + "/api/get-user-code/");
-		 
-		 return new SpotifyApi
-				 .Builder()
-				 .setClientId("")
-				 .setClientSecret("")
-				 .setRedirectUri(redirectedURL)
-				 .build();
+		URI redirectedURL = SpotifyHttpManager.makeUri(customIp + "/api/get-user-code/");
+
+		return new SpotifyApi.Builder().setClientId("0e0599852beb49b182ccf08ce7b81277").setClientSecret("a82782ff30334cef92132010eec53315").setRedirectUri(redirectedURL).build();
 	}
 }

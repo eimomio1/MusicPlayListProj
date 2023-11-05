@@ -1,4 +1,5 @@
 package com.proj.music.controller;
+
 import java.io.IOException;
 import java.net.URI;
 
@@ -29,57 +30,55 @@ import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfi
 
 public class SpotifyController {
 
-	
-
 	@Value("${custom.server.ip}")
 	private String customIp;
-	
+
 	@Autowired
 	private UserService userProfileService;
 
 	@Autowired
 	private SpotifyConfiguration spotifyConfiguration;
-	
-	
-	 @CrossOrigin
+
+	@CrossOrigin
 	@GetMapping("login")
 	public String spotifyLogin() {
 		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
-		
+
 		AuthorizationCodeUriRequest authorizationCodeUriRequest = object.authorizationCodeUri()
-				.scope("user-library-read")
-				.show_dialog(true)
-				.build();
-		
+				.scope("user-library-read").show_dialog(true).build();
+
 		final URI uri = authorizationCodeUriRequest.execute();
 		return uri.toString();
 	}
 
-	 @CrossOrigin
+	@CrossOrigin
 	@GetMapping(value = "get-user-code")
-	public void getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response)	throws IOException {
+	public void getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response)
+			throws IOException {
 		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
-		
+
 		AuthorizationCodeRequest authorizationCodeRequest = object.authorizationCode(userCode).build();
 		User user = null;
-		
+
 		try {
 			final AuthorizationCodeCredentials authorizationCode = authorizationCodeRequest.execute();
 
 			object.setAccessToken(authorizationCode.getAccessToken());
 			object.setRefreshToken(authorizationCode.getRefreshToken());
-			
+
 			final GetCurrentUsersProfileRequest getCurrentUsersProfile = object.getCurrentUsersProfile().build();
 			user = getCurrentUsersProfile.execute();
 
-			userProfileService.createUser(user, authorizationCode.getAccessToken(), authorizationCode.getRefreshToken());
+			userProfileService.createUser(user, authorizationCode.getAccessToken(),
+					authorizationCode.getRefreshToken());
 		} catch (Exception e) {
 			System.out.println("Exception occured while getting user code: " + e);
 		}
 
-		response.sendRedirect(customIp + "/home?id="+user.getId());
+		response.sendRedirect(customIp + "/home?id=" + user.getId());
 	}
-	 @CrossOrigin
+
+	@CrossOrigin
 	@GetMapping(value = "home")
 	public String home(@RequestParam String userId) {
 		try {
@@ -91,7 +90,5 @@ public class SpotifyController {
 
 		return null;
 	}
-	
-	
-	
+
 }
