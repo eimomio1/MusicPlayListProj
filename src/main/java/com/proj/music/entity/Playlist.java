@@ -31,13 +31,33 @@ public class Playlist {
 	@Column(name = "songs")
 	@ManyToMany
 	@JoinTable(name = "PlaylistSongs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
-	private List<Song> songs;
+	private List<Song> songs; // A playlist can contain multiple songs
 
 	@Column(name = "createdAt")
 	private LocalDate createdAt;
 
 	@Column(name = "updatedAt")
 	private LocalDate updatedAt;
+
+	@ManyToMany(mappedBy = "playlists")
+	private List<User> users; // A playlist can be associated with multiple users
+
+	public Playlist() {
+
+		super();
+	}
+
+	public Playlist(long id, String name, String description, List<Song> songs, LocalDate createdAt,
+			LocalDate updatedAt, List<User> users) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.songs = songs;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.users = users;
+	}
 
 	public long getId() {
 		return id;
@@ -87,9 +107,17 @@ public class Playlist {
 		this.updatedAt = updatedAt;
 	}
 
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
 	@Override
 	public String toString() {
 		return "Playlist [id=" + id + ", name=" + name + ", description=" + description + ", songs=" + songs
-				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users + "]";
 	}
 }

@@ -23,10 +23,8 @@ public class ReviewServiceImpl implements ReviewService {
 			review1.get().setId(review.getId());
 			review1.get().setName(review.getName());
 			review1.get().setComment(review.getComment());
-			review1.get().setAlbums(review.getAlbums());
 			review1.get().setDatePosted(review.getDatePosted());
 			review1.get().setRating(review.getRating());
-			review1.get().setSongs(review.getSongs());
 		}
 		return "Review has been updated";
 	}

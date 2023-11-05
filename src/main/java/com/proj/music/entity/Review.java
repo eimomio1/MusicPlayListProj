@@ -1,60 +1,71 @@
 package com.proj.music.entity;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "reviews")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "review_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("Review") // Default type is "Review"
 public class Review {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "review_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_id")
 	private long id;
 
-	@Column(name = "name")
-	private String name;
+    @Column(name = "name")
+    private String name;
 
-	@Column(name = "comment")
-	private String comment;
+    @Column(name = "comment")
+    private String comment;
 
-	@Column(name = "date_posted")
-	private LocalDate datePosted;
+    @Column(name = "date_posted")
+    private LocalDate datePosted;
 
-	@ManyToOne
-	@JoinTable(name = "SongReviews", joinColumns = @JoinColumn(name = "review_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
-	private List<Song> songs;
+    @ManyToOne
+    @JoinColumn(name = "song_id")
+    private Song song;
 
-	@ManyToOne
-	@JoinTable(name = "AlbumReviews", joinColumns = @JoinColumn(name = "review_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
-	private List<Album> albums;
+    @ManyToOne
+    @JoinColumn(name = "album_id")
+    private Album album;
 
-	@Column(name = "rating")
-	private double rating;
+    @ManyToOne
+    @JoinColumn(name = "playlist_id")
+    private Playlist playlist;
 
-	public Review() {
-		super();
-	}
+    @Column(name = "rating")
+    private double rating;
 
-	public Review(long id, String name, String comment, LocalDate datePosted, List<Song> songs, List<Album> albums,
+    public Review() {
+        super();
+    }
+
+	public Review(long id, String name, String comment, LocalDate datePosted, Song song, Album album, Playlist playlist,
 			double rating) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.comment = comment;
 		this.datePosted = datePosted;
-		this.songs = songs;
-		this.albums = albums;
+		this.song = song;
+		this.album = album;
+		this.playlist = playlist;
 		this.rating = rating;
 	}
 
@@ -90,20 +101,28 @@ public class Review {
 		this.datePosted = datePosted;
 	}
 
-	public List<Song> getSongs() {
-		return songs;
+	public Song getSong() {
+		return song;
 	}
 
-	public void setSongs(List<Song> songs) {
-		this.songs = songs;
+	public void setSong(Song song) {
+		this.song = song;
 	}
 
-	public List<Album> getAlbums() {
-		return albums;
+	public Album getAlbum() {
+		return album;
 	}
 
-	public void setAlbums(List<Album> albums) {
-		this.albums = albums;
+	public void setAlbum(Album album) {
+		this.album = album;
+	}
+
+	public Playlist getPlaylist() {
+		return playlist;
+	}
+
+	public void setPlaylist(Playlist playlist) {
+		this.playlist = playlist;
 	}
 
 	public double getRating() {
@@ -116,7 +135,7 @@ public class Review {
 
 	@Override
 	public String toString() {
-		return "Review [id=" + id + ", name=" + name + ", comment=" + comment + ", datePosted=" + datePosted
-				+ ", songs=" + songs + ", albums=" + albums + ", rating=" + rating + "]";
+		return "Review [id=" + id + ", name=" + name + ", comment=" + comment + ", datePosted=" + datePosted + ", song="
+				+ song + ", album=" + album + ", playlist=" + playlist + ", rating=" + rating + "]";
 	}
 }

@@ -2,23 +2,19 @@ package com.proj.music.service;
 
 import java.util.List;
 
-import com.proj.music.dto.LoginDto;
-import com.proj.music.dto.SignUpDto;
-import com.proj.music.entity.User;
-import com.proj.music.response.LoginResponse;
+import se.michaelthelin.spotify.model_objects.specification.User;
 
 public interface UserService {
-	public String createUser(SignUpDto userDto);
+
+	public String createUser(User spotifyUser, String accessToken, String refreshToken);
 
 	public User getUserById(long id);
 
 	public List<User> getUsers();
 
-	public String updateUserById(SignUpDto userDto, long id);
+//	public String updateUserById(SignUpDto userDto, long id);
 
 	public String deleteUserById(long id);
 
-	public User findUserByUsername(String username);
-
-	public LoginResponse loginUser(LoginDto loginDto);
+	public String updateUserById(User user, long id);
 }
