@@ -1,5 +1,6 @@
 package com.proj.music.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -14,27 +15,44 @@ import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
+	
+	private static final long serialVersionUID = 3937414011943770889L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private long id;
 
-	@Column(name = "first_name")
-	private String firstName;
-
-	@Column(name = "last_name")
-	private String lastName;
-
-	@Column(name = "username")
+	@Column(name = "userName")
 	private String userName;
 
-	@Column(name = "password")
-	private String password;
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	
 
 	@Column(name = "email")
 	private String email;
+
+	@Column(name = "ACCESS_TOKEN")
+	private String accessToken;
+
+	@Column(name = "REFRESH_TOKEN")
+	private String refreshToken;
 
 	@ManyToMany
 	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
@@ -44,14 +62,14 @@ public class User {
 		super();
 	}
 
-	public User(long id, String firstName, String lastName, String userName, String password, String email) {
+	public User(long id, String fullName, String userName,  String email, List<Playlist> playlists) {
 		super();
 		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
+
 		this.userName = userName;
-		this.password = password;
+	
 		this.email = email;
+		this.playlists = playlists;
 	}
 
 	public long getId() {
@@ -62,36 +80,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
 	public String getUserName() {
 		return userName;
 	}
 
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getEmail() {
@@ -102,9 +96,12 @@ public class User {
 		this.email = email;
 	}
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", userName=" + userName
-				+ ", password=" + password + ", email=" + email + "]";
+	public List<Playlist> getPlaylists() {
+		return playlists;
 	}
+
+	public void setPlaylists(List<Playlist> playlists) {
+		this.playlists = playlists;
+	}
+
 }

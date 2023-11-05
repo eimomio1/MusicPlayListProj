@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proj.music.dto.LoginDto;
+
 import com.proj.music.entity.User;
 import com.proj.music.response.LoginResponse;
 import com.proj.music.service.UserService;
@@ -15,20 +15,15 @@ import com.proj.music.service.UserService;
 @RestController
 @RequestMapping("/soundvibe")
 public class UserController {
+
 	
-	@Autowired
-	private UserService userService;
 	
-//	@PostMapping("/register")
-//	public ResponseEntity<?> registerUser(@RequestBody User user)
-//	{ 
-//		
-//	}
 	
-	@PostMapping("/login")
-	public ResponseEntity<?> loginUser(@RequestBody LoginDto loginDto)
-	{
-		LoginResponse loginResponse = userService.loginUser(loginDto);
-		return ResponseEntity.ok(loginResponse);
-	}
+	
+	
+	
+	
+	
+	
+	
 }
