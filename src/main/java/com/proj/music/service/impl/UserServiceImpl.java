@@ -38,39 +38,51 @@ public class UserServiceImpl implements UserService {
 		return "User has been saved";
 
 	}
+//
+//	@Override
+//	public User getUserById(long id) {
+//		return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+//	}
+//
+//	@Override
+//	public List<User> getUsers() {
+//		return userRepository.findAll();
+//	}
+//
+//	@Override
+//	public String updateUserById(User user, long id) {
+//		Optional<User> findUser = userRepository.findById(id);
+//
+//		if (findUser.isPresent()) {
+//			findUser.get().setId(user.getId());
+//			findUser.get().setUserName(user.getUserName());
+//		} else {
+//			throw new ResourceNotFoundException("User +" + id + "+Not Found");
+//		}
+//
+//		return "User has been updated";
+//	}
+//
+//	@Override
+//	public String deleteUserById(long id) {
+//		Optional<User> findUser = userRepository.findById(id);
+//		if (findUser.isPresent()) {
+//			userRepository.deleteById(id);
+//		}
+//		return "User has been deleted";
+//	}
 
-	@Override
-	public User getUserById(long id) {
-		return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
-	}
-
-	@Override
-	public List<User> getUsers() {
-		return userRepository.findAll();
-	}
-
-	@Override
-	public String updateUserById(User user, long id) {
-		Optional<User> findUser = userRepository.findById(id);
-
-		if (findUser.isPresent()) {
-			findUser.get().setId(user.getId());
-			findUser.get().setUserName(user.getUserName());
-		} else {
-			throw new ResourceNotFoundException("User +" + id + "+Not Found");
-		}
-
-		return "User has been updated";
-	}
-
-	@Override
-	public String deleteUserById(long id) {
-		Optional<User> findUser = userRepository.findById(id);
-		if (findUser.isPresent()) {
-			userRepository.deleteById(id);
-		}
-		return "User has been deleted";
-	}
+//	@Override
+//	public se.michaelthelin.spotify.model_objects.specification.User getUserById(long id) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public String updateUserById(se.michaelthelin.spotify.model_objects.specification.User user, long id) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	/*
 	 * @Override public User findUserByUsername(String userName) { return

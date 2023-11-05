@@ -28,6 +28,10 @@ import se.michaelthelin.spotify.requests.data.library.GetCurrentUsersSavedAlbums
 import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 
+
+@CrossOrigin(origins = "http://localhost:3000") // Allow requests from your React app
+@RestController
+@RequestMapping() 
 public class SpotifyController {
 
 	@Value("${custom.server.ip}")
@@ -39,7 +43,7 @@ public class SpotifyController {
 	@Autowired
 	private SpotifyConfiguration spotifyConfiguration;
 
-	@CrossOrigin
+	
 	@GetMapping("login")
 	public String spotifyLogin() {
 		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
@@ -51,7 +55,7 @@ public class SpotifyController {
 		return uri.toString();
 	}
 
-	@CrossOrigin
+	
 	@GetMapping(value = "get-user-code")
 	public void getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response)
 			throws IOException {
@@ -78,7 +82,7 @@ public class SpotifyController {
 		response.sendRedirect(customIp + "/home?id=" + user.getId());
 	}
 
-	@CrossOrigin
+	
 	@GetMapping(value = "home")
 	public String home(@RequestParam String userId) {
 		try {
