@@ -23,38 +23,38 @@ import jakarta.persistence.Table;
 @DiscriminatorValue("Review") // Default type is "Review"
 public class Review {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "review_id")
 	private long id;
 
-    @Column(name = "name")
-    private String name;
+	@Column(name = "name")
+	private String name;
 
-    @Column(name = "comment")
-    private String comment;
+	@Column(name = "comment")
+	private String comment;
 
-    @Column(name = "date_posted")
-    private LocalDate datePosted;
+	@Column(name = "date_posted")
+	private LocalDate datePosted;
 
-    @ManyToOne
-    @JoinColumn(name = "song_id")
-    private Song song;
+	@ManyToOne
+	@JoinColumn(name = "song_id")
+	private Song song;
 
-    @ManyToOne
-    @JoinColumn(name = "album_id")
-    private Album album;
+	@ManyToOne
+	@JoinColumn(name = "album_id")
+	private Album album;
 
-    @ManyToOne
-    @JoinColumn(name = "playlist_id")
-    private Playlist playlist;
+	@ManyToOne
+	@JoinColumn(name = "playlist_id")
+	private Playlist playlist;
 
-    @Column(name = "rating")
-    private double rating;
+	@Column(name = "rating")
+	private double rating;
 
-    public Review() {
-        super();
-    }
+	public Review() {
+		super();
+	}
 
 	public Review(long id, String name, String comment, LocalDate datePosted, Song song, Album album, Playlist playlist,
 			double rating) {

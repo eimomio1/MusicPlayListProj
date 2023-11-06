@@ -1,23 +1,19 @@
 package com.proj.music.service;
 
-import java.util.List;
+import com.proj.music.entity.Users;
 
+import se.michaelthelin.spotify.model_objects.specification.User;
 
-import com.proj.music.entity.User;
-import com.proj.music.response.LoginResponse;
+public interface UserService {
 
-public interface UserService 
-{
-
-	public String createUser(se.michaelthelin.spotify.model_objects.specification.User spotifyUser, String accessToken, String refreshToken);
+	public String createUser(User spotifyUser, String accessToken, String refreshToken);
 
 //
 //	public User getUserById(long id);
 //
 //	public List<User> getUsers();
 
-
+	public Users insertOrUpdateUserDetails(User user, String accessToken, String refreshToken);
 	
-
+	public Users findRefById(String refId);
 }
-

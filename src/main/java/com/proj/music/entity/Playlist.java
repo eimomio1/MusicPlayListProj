@@ -40,7 +40,7 @@ public class Playlist {
 	private LocalDate updatedAt;
 
 	@ManyToMany(mappedBy = "playlists")
-	private List<User> users; // A playlist can be associated with multiple users
+	private List<Users> users; // A playlist can be associated with multiple users
 
 	public Playlist() {
 
@@ -48,7 +48,7 @@ public class Playlist {
 	}
 
 	public Playlist(long id, String name, String description, List<Song> songs, LocalDate createdAt,
-			LocalDate updatedAt, List<User> users) {
+			LocalDate updatedAt, List<Users> users) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -107,11 +107,11 @@ public class Playlist {
 		this.updatedAt = updatedAt;
 	}
 
-	public List<User> getUsers() {
+	public List<Users> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
+	public void setUsers(List<Users> users) {
 		this.users = users;
 	}
 

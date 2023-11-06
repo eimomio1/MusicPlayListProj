@@ -14,38 +14,36 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Autowired
 	private AlbumRepository albumRepository;
-	
+
 	@Override
 	public String updateAlbumById(long id, Album album) {
 		Optional<Album> album1 = albumRepository.findById(id);
 
-		if(album1.isPresent())
-		{
+		if (album1.isPresent()) {
 			album1.get().setId(album.getId());
 			album1.get().setName(album.getName());
 			album1.get().setReleaseDate(album.getReleaseDate());
 			album1.get().setArtist(album.getArtist());
 		}
-		
+
 		return "Song has been updated";
 	}
 
 	@Override
 	public String deleteAlbumById(long id) {
 		Optional<Album> album1 = albumRepository.findById(id);
-		
-		if(album1.isPresent())
-		{
+
+		if (album1.isPresent()) {
 			albumRepository.deleteById(id);
 		}
-		
+
 		return "Album has been deleted";
 	}
 
 	@Override
 	public Album getAlbumById(long id) {
 		return albumRepository.findById(id)
-				.orElseThrow(()-> new ResourceNotFoundException("Album Object has not been found."));
+				.orElseThrow(() -> new ResourceNotFoundException("Album Object has not been found."));
 	}
 
 	@Override
@@ -58,5 +56,5 @@ public class AlbumServiceImpl implements AlbumService {
 	public List<Album> getAlbums() {
 		return albumRepository.findAll();
 	}
-	
+
 }

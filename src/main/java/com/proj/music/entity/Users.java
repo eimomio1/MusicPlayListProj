@@ -15,7 +15,7 @@ import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class Users implements Serializable {
 
 	private static final long serialVersionUID = 3937414011943770889L;
 
@@ -26,6 +26,42 @@ public class User implements Serializable {
 
 	@Column(name = "userName")
 	private String userName;
+
+	@Column(name = "email")
+	private String email;
+
+	@Column(name = "REF_ID")
+	private String refId;
+
+	@Column(name = "ACCESS_TOKEN")
+	private String accessToken;
+
+	@Column(name = "REFRESH_TOKEN")
+	private String refreshToken;
+
+	@ManyToMany
+	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
+	private List<Playlist> playlists; // A user can have many playlists
+
+	public Users() {
+		super();
+	}
+
+	public Users(long id, String fullName, String userName, String email, List<Playlist> playlists) {
+		super();
+		this.id = id;
+		this.userName = userName;
+		this.email = email;
+		this.playlists = playlists;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getAccessToken() {
 		return accessToken;
@@ -41,41 +77,6 @@ public class User implements Serializable {
 
 	public void setRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
-	}
-
-	@Column(name = "email")
-	private String email;
-
-	@Column(name = "ACCESS_TOKEN")
-	private String accessToken;
-
-	@Column(name = "REFRESH_TOKEN")
-	private String refreshToken;
-
-	@ManyToMany
-	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
-	private List<Playlist> playlists; // A user can have many playlists
-
-	public User() {
-		super();
-	}
-
-	public User(long id, String fullName, String userName, String email, List<Playlist> playlists) {
-		super();
-		this.id = id;
-
-		this.userName = userName;
-
-		this.email = email;
-		this.playlists = playlists;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public String getUserName() {
@@ -100,6 +101,14 @@ public class User implements Serializable {
 
 	public void setPlaylists(List<Playlist> playlists) {
 		this.playlists = playlists;
+	}
+
+	public String getRefid() {
+		return refId;
+	}
+
+	public void setRefid(String refId) {
+		this.refId = refId;
 	}
 
 }
