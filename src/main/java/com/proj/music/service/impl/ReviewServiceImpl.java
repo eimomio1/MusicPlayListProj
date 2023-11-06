@@ -14,12 +14,11 @@ import com.proj.music.service.ReviewService;
 public class ReviewServiceImpl implements ReviewService {
 
 	private ReviewRepository reviewRepository;
-	
+
 	@Override
 	public String updateReviewById(long id, Review review) {
-		Optional<Review> review1 = reviewRepository.findById(id);	
-		if(review1.isPresent())
-		{
+		Optional<Review> review1 = reviewRepository.findById(id);
+		if (review1.isPresent()) {
 			review1.get().setId(review.getId());
 			review1.get().setName(review.getName());
 			review1.get().setComment(review.getComment());
@@ -32,8 +31,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public String deleteReviewById(long id) {
 		Optional<Review> review1 = reviewRepository.findById(id);
-		if(review1.isPresent())
-		{
+		if (review1.isPresent()) {
 			reviewRepository.deleteById(id);
 		}
 		return "Review has been deleted";
@@ -42,7 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public Review getReviewById(long id) {
 		return reviewRepository.findById(id)
-				.orElseThrow(()-> new ResourceNotFoundException("Review Object has not been found."));
+				.orElseThrow(() -> new ResourceNotFoundException("Review Object has not been found."));
 	}
 
 	@Override

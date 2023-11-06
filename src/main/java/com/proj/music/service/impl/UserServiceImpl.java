@@ -1,17 +1,16 @@
 package com.proj.music.service.impl;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
-import com.proj.music.entity.User;
-import com.proj.music.exceptions.ResourceNotFoundException;
+import com.proj.music.entity.Users;
 import com.proj.music.repository.UserRepository;
-import com.proj.music.response.LoginResponse;
 import com.proj.music.service.UserService;
+
+import se.michaelthelin.spotify.model_objects.specification.User;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,11 +19,11 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 
 	@Override
-	public String createUser(se.michaelthelin.spotify.model_objects.specification.User spotifyUser, String accessToken,
+	public String createUser(User spotifyUser, String accessToken,
 			String refreshToken) {
 
 		// Create a new User object
-		User user = new User();
+		Users user = new Users();
 
 		// Set the properties of the User object
 		user.setEmail(spotifyUser.getEmail()); // Use the email from the Spotify user
@@ -37,6 +36,28 @@ public class UserServiceImpl implements UserService {
 
 		return "User has been saved";
 
+	}
+
+	@Override
+	public Users insertOrUpdateUserDetails(User user, String accessToken, String refreshToken) {
+		Users userDetails = userRepository.findByRefId(user.getId());
+		
+		if(Objects.isNull(userDetails))
+		{
+			userDetails = new Users();
+		}
+		
+		userDetails.setUserName(user.getDisplayName());
+		userDetails.setRefreshToken(refreshToken);
+		userDetails.setAccessToken(accessToken);
+		userDetails.setRefid(user.getId());
+		userDetails.setEmail(user.getEmail());
+		return userRepository.save(userDetails);
+	}
+	
+	public Users findRefById(String refid)
+	{
+		return userRepository.findByRefId(refid);
 	}
 //
 //	@Override

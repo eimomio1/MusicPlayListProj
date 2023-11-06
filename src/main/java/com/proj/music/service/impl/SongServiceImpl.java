@@ -13,15 +13,14 @@ import com.proj.music.service.SongService;
 
 @Service
 public class SongServiceImpl implements SongService {
-	
+
 	@Autowired
 	private SongRepository songRepository;
 
 	@Override
 	public String updateSongById(long id, Song song) {
-		Optional<Song> song1 = songRepository.findById(id);	
-		if(song1.isPresent())
-		{
+		Optional<Song> song1 = songRepository.findById(id);
+		if (song1.isPresent()) {
 			song1.get().setId(song.getId());
 			song1.get().setName(song.getName());
 			song1.get().setReleaseDate(song.getReleaseDate());
@@ -33,8 +32,7 @@ public class SongServiceImpl implements SongService {
 	@Override
 	public String deleteSongById(long id) {
 		Optional<Song> song1 = songRepository.findById(id);
-		if(song1.isPresent())
-		{
+		if (song1.isPresent()) {
 			songRepository.deleteById(id);
 		}
 		return "Song has been deleted";
@@ -43,7 +41,7 @@ public class SongServiceImpl implements SongService {
 	@Override
 	public Song getSongById(long id) {
 		return songRepository.findById(id)
-				.orElseThrow(()-> new ResourceNotFoundException("Song Object has not been found."));
+				.orElseThrow(() -> new ResourceNotFoundException("Song Object has not been found."));
 	}
 
 	@Override
