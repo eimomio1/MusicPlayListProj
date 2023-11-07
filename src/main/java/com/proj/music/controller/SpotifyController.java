@@ -5,6 +5,8 @@ import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import com.proj.music.spotify.config.SpotifyConfiguration;
 
 import jakarta.servlet.http.HttpServletResponse;
 import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
@@ -49,6 +52,8 @@ public class SpotifyController {
 
 	@Autowired
 	private SpotifyConfiguration spotifyConfiguration;
+	
+	private String code = "";
 
 	@GetMapping(value = "/login")
 	@ResponseBody
@@ -62,57 +67,73 @@ public class SpotifyController {
 		return uri.toString();
 	}
 
-	@GetMapping(value = "/get-user-code/")
-    public String getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response) throws IOException {
-        SpotifyApi object = spotifyConfiguration.getSpotifyObject();
-        AuthorizationCodeRequest authorizationCodeRequest = object.authorizationCode(userCode).build();
-//        User user = null;
+	@GetMapping("/get-user-code/")
+	public void getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response) {
+	    SpotifyApi object = spotifyConfiguration.getSpotifyObject();
+	    AuthorizationCodeRequest authorizationCodeRequest = object.authorizationCode(userCode).build();
+	    User user = null;
 
-        try {
-            final AuthorizationCodeCredentials authorizationCode = authorizationCodeRequest.execute();
-            object.setAccessToken(authorizationCode.getAccessToken());
-            object.setRefreshToken(authorizationCode.getRefreshToken());
+	    try {
+	        final AuthorizationCodeCredentials authorizationCode = authorizationCodeRequest.execute();
 
-//            final GetCurrentUsersProfileRequest getCurrentUsersProfile = object.getCurrentUsersProfile().build();
-//            user = getCurrentUsersProfile.execute();
+	        object.setAccessToken(authorizationCode.getAccessToken());
+	        object.setRefreshToken(authorizationCode.getRefreshToken());
 
-//            if (user != null) {
-//                userProfileService.createUser(user, authorizationCode.getAccessToken(), authorizationCode.getRefreshToken());
-// 
-//            } else {
-//                // If the user object is null, log an error message or handle it appropriately.
-//                System.out.println("User object is null. The response may not contain a valid user.");
-//                // You can also log more details about the response if needed.
-//            }
-        System.out.println("Expries in: " + authorizationCode.getExpiresIn());
-        } catch (Exception e) {
-            // Handle exceptions that may occur during the request.
-            System.out.println("Exception occurred while getting user profile: " + e.getMessage());
-            e.printStackTrace(); // Print the exception details for debugging.
-        }
-        response.sendRedirect("http://localhost:3000/top-artists");
-        return object.getAccessToken();
-    }
+	        // Check if the access token has expired
+	        if (System.currentTimeMillis() > authorizationCode.getExpiresIn()) {
+	            // Refresh the access token
+	            AuthorizationCodeCredentials refreshedToken = object.authorizationCodeRefresh().build().execute();
+	            object.setAccessToken(refreshedToken.getAccessToken());
+	        }
+
+	        final GetCurrentUsersProfileRequest getCurrentUsersProfile = object.getCurrentUsersProfile().build();
+	        user = getCurrentUsersProfile.execute();
+
+	        if (user != null) {
+	            userProfileService.createUser(user, authorizationCode.getAccessToken(), authorizationCode.getRefreshToken());
+	            System.out.println("Expires in: " + authorizationCode.getExpiresIn());
+	            // Construct the redirect URL with query parameters
+	            response.sendRedirect(customIp + "/home?id="+user.getId() + "&accessToken=" + authorizationCode.getAccessToken());
+	        } else {
+	            // If the user object is null, log an error message or handle it appropriately.
+	            throw new RuntimeException("User object is null. The response may not contain a valid user.");
+	        }
+	    } catch (BadRequestException e) {
+	        // Handle the exception and log an error message
+	        System.out.println("Invalid authorization code: " + userCode);
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        // Handle other exceptions
+	        e.printStackTrace();
+	    }
+	}
 
 	@GetMapping(value = "/home")
 	public String home(@RequestParam String userId) {
 		try {
-
 			return userId;
-		} catch (Exception e) {
+		}
+		catch(Exception e)
+		{
 			System.out.println("Exception occured while landing to home page: " + e);
 		}
-
 		return null;
 	}
 	
 	@GetMapping(value = "/user-top-artists")
 	public Artist[] getUserTopArtists() {
+		Users userDetails = userProfileService.findUserById(1);
+		
 		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
+		
+		object.setAccessToken(userDetails.getAccessToken());
+		
+		object.setRefreshToken(userDetails.getRefreshToken());
+
 		final GetUsersTopArtistsRequest getUsersTopArtistsRequest = object.getUsersTopArtists()
 				.time_range("medium_term")
 				.limit(10)
-				.offset(5)
+				.offset(0)
 				.build();
 		try {
 			final Paging<Artist> artistPaging = getUsersTopArtistsRequest.execute();
@@ -136,7 +157,6 @@ public class SpotifyController {
 
 		try {
 			final Paging<Track> trackPaging = getUsersTopTracksRequest.execute();
-
 			return trackPaging.getItems();
 		} catch (Exception e) {
 			System.out.println("Exception occured while fetching top songs: " + e);

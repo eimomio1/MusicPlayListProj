@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proj.music.entity.Users;
+import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.UserRepository;
 import com.proj.music.service.UserService;
 
@@ -92,6 +93,11 @@ public class UserServiceImpl implements UserService {
 //		}
 //		return "User has been deleted";
 //	}
+
+	@Override
+	public Users findUserById(long id) {	
+		return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Cant Find User"));
+	}
 
 //	@Override
 //	public se.michaelthelin.spotify.model_objects.specification.User getUserById(long id) {
