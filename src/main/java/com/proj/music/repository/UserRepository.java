@@ -7,12 +7,5 @@ import com.proj.music.entity.Users;
 
 @Repository
 public interface UserRepository extends JpaRepository<Users, Long> {
-	// User findUserByUsername(String userName);
-
-//	Optional<User> findByEmail(String email);
-
-	// Boolean existsByUsername(String userName);
-
-	// Boolean existsByEmail(String email);
 	Users findByRefId(String refId);
 }
