@@ -3,6 +3,8 @@ package com.proj.music.controller;
 import java.io.Console;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +43,11 @@ import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUser
 import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 
+<<<<<<< HEAD:MusicPlaylistBackEnd/src/main/java/com/proj/music/controller/SpotifyController.java
 @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST})
+=======
+@CrossOrigin(origins = "http://localhost:4200") // Allow requests from your React app
+>>>>>>> 7d9e945e66cb5393df1f4139fe0e260d55a4859f:src/main/java/com/proj/music/controller/SpotifyController.java
 @RestController
 @RequestMapping("/api")
 public class SpotifyController {
@@ -59,36 +65,30 @@ public class SpotifyController {
 
 	@GetMapping(value = "/login")
 	@ResponseBody
-	public String spotifyLogin() {
-		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
-
-		AuthorizationCodeUriRequest authorizationCodeUriRequest = object.authorizationCodeUri()
-				.scope("user-library-read, user-read-private, user-read-email, user-top-read").show_dialog(true).build();
-
-		final URI uri = authorizationCodeUriRequest.execute();
-		return uri.toString();
-	}
-
-	@GetMapping("/get-user-code/")
-	public void getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response) {
+	public ResponseEntity<Map<String, String>> spotifyLogin() {
 	    SpotifyApi object = spotifyConfiguration.getSpotifyObject();
+<<<<<<< HEAD:MusicPlaylistBackEnd/src/main/java/com/proj/music/controller/SpotifyController.java
 	    System.out.println("Hey my function ran");
 	    AuthorizationCodeRequest authorizationCodeRequest = object.authorizationCode(userCode).build();
 	    User user = null;
+=======
+>>>>>>> 7d9e945e66cb5393df1f4139fe0e260d55a4859f:src/main/java/com/proj/music/controller/SpotifyController.java
 
-	    try {
-	        final AuthorizationCodeCredentials authorizationCode = authorizationCodeRequest.execute();
+	    AuthorizationCodeUriRequest authorizationCodeUriRequest = object.authorizationCodeUri()
+	            .scope("user-library-read, user-read-private, user-read-email, user-top-read")
+	            .show_dialog(true)
+	            .build();
 
-	        object.setAccessToken(authorizationCode.getAccessToken());
-	        object.setRefreshToken(authorizationCode.getRefreshToken());
+	    final URI uri = authorizationCodeUriRequest.execute();
+	    
+	    Map<String, String> responseMap = new HashMap<>();
+	    responseMap.put("url", uri.toString());
+	    
+	    return new ResponseEntity<>(responseMap, HttpStatus.OK);
+	}
 
-	        // Check if the access token has expired
-	        if (System.currentTimeMillis() > authorizationCode.getExpiresIn()) {
-	            // Refresh the access token
-	            AuthorizationCodeCredentials refreshedToken = object.authorizationCodeRefresh().build().execute();
-	            object.setAccessToken(refreshedToken.getAccessToken());
-	        }
 
+<<<<<<< HEAD:MusicPlaylistBackEnd/src/main/java/com/proj/music/controller/SpotifyController.java
 	        final GetCurrentUsersProfileRequest getCurrentUsersProfile = object.getCurrentUsersProfile().build();
 	        user = getCurrentUsersProfile.execute();
 
@@ -101,16 +101,57 @@ public class SpotifyController {
 	        } else {
 	            // If the user object is null, log an error message or handle it appropriately.
 	            throw new RuntimeException("User object is null. The response may not contain a valid user.");
+=======
+	 @GetMapping("/get-user-code/")
+	    public void getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response) {
+	        SpotifyApi object = spotifyConfiguration.getSpotifyObject();
+	        AuthorizationCodeRequest authorizationCodeRequest = object.authorizationCode(userCode).build();
+	        User user = null;
+
+	        try {
+	            final AuthorizationCodeCredentials authorizationCode = authorizationCodeRequest.execute();
+
+	            object.setAccessToken(authorizationCode.getAccessToken());
+	            object.setRefreshToken(authorizationCode.getRefreshToken());
+
+	            // Log authorization code and access token
+	            System.out.println("Authorization Code: " + userCode);
+	            System.out.println("Access Token: " + authorizationCode.getAccessToken());
+
+	            // Check if the access token has expired
+	            if (System.currentTimeMillis() > authorizationCode.getExpiresIn()) {
+	                // Refresh the access token
+	                AuthorizationCodeCredentials refreshedToken = object.authorizationCodeRefresh().build().execute();
+	                object.setAccessToken(refreshedToken.getAccessToken());
+
+	                // Log refreshed access token
+	                System.out.println("Refreshed Access Token: " + refreshedToken.getAccessToken());
+	            }
+
+	            final GetCurrentUsersProfileRequest getCurrentUsersProfile = object.getCurrentUsersProfile().build();
+	            user = getCurrentUsersProfile.execute();
+
+	            if (user != null) {
+	                userProfileService.createUser(user, authorizationCode.getAccessToken(), authorizationCode.getRefreshToken());
+	                System.out.println("Expires in: " + authorizationCode.getExpiresIn());
+
+	                // Construct the redirect URL with query parameters
+	                response.sendRedirect(customIp + "/home?id=" + user.getId() + "&accessToken=" + authorizationCode.getAccessToken());
+	            } else {
+	                // If the user object is null, log an error message or handle it appropriately.
+	                throw new RuntimeException("User object is null. The response may not contain a valid user.");
+	            }
+	        } catch (BadRequestException e) {
+	            // Handle the exception and log an error message
+	            System.out.println("Invalid authorization code: " + userCode);
+	            e.printStackTrace();
+	        } catch (Exception e) {
+	            // Handle other exceptions
+	            System.out.println("Exception occurred during Spotify authentication: " + e.getMessage());
+	            e.printStackTrace();
+>>>>>>> 7d9e945e66cb5393df1f4139fe0e260d55a4859f:src/main/java/com/proj/music/controller/SpotifyController.java
 	        }
-	    } catch (BadRequestException e) {
-	        // Handle the exception and log an error message
-	        System.out.println("Invalid authorization code: " + userCode);
-	        e.printStackTrace();
-	    } catch (Exception e) {
-	        // Handle other exceptions
-	        e.printStackTrace();
 	    }
-	}
 
 	@GetMapping(value = "/home")
 	public String home(@RequestParam String userId) {
