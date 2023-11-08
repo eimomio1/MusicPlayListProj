@@ -12,7 +12,7 @@ public class WebConfig {
 		CorsConfiguration config = new CorsConfiguration();
 
 		// Allow requests from your React app
-		config.addAllowedOrigin("http://localhost:3000");
+		config.addAllowedOrigin("http://localhost:4200");
 
 		// You can add more configuration options as needed
 
