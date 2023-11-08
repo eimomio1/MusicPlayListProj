@@ -1,5 +1,6 @@
 package com.proj.music.controller;
 
+import java.io.Console;
 import java.io.IOException;
 import java.net.URI;
 
@@ -35,11 +36,12 @@ import se.michaelthelin.spotify.requests.authorization.authorization_code.Author
 import se.michaelthelin.spotify.requests.data.albums.GetAlbumRequest;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistsAlbumsRequest;
 import se.michaelthelin.spotify.requests.data.library.GetCurrentUsersSavedAlbumsRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
 import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopArtistsRequest;
 import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 
-@CrossOrigin(origins = "http://localhost:3000") // Allow requests from your React app
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST})
 @RestController
 @RequestMapping("/api")
 public class SpotifyController {
@@ -70,6 +72,7 @@ public class SpotifyController {
 	@GetMapping("/get-user-code/")
 	public void getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response) {
 	    SpotifyApi object = spotifyConfiguration.getSpotifyObject();
+	    System.out.println("Hey my function ran");
 	    AuthorizationCodeRequest authorizationCodeRequest = object.authorizationCode(userCode).build();
 	    User user = null;
 
@@ -93,6 +96,7 @@ public class SpotifyController {
 	            userProfileService.createUser(user, authorizationCode.getAccessToken(), authorizationCode.getRefreshToken());
 	            System.out.println("Expires in: " + authorizationCode.getExpiresIn());
 	            // Construct the redirect URL with query parameters
+	         // Construct the redirect URL with query parameters
 	            response.sendRedirect(customIp + "/home?id="+user.getId() + "&accessToken=" + authorizationCode.getAccessToken());
 	        } else {
 	            // If the user object is null, log an error message or handle it appropriately.
