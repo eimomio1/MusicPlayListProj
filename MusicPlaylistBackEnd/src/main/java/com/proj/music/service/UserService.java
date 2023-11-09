@@ -18,4 +18,6 @@ public interface UserService {
 	public Users findRefById(String refId);
 	
 	public Users findUserById(long id);
+
+	public Users findByUsername(String username);
 }

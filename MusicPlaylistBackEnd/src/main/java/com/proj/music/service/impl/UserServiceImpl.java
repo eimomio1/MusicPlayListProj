@@ -99,6 +99,12 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Cant Find User"));
 	}
 
+	@Override
+	public Users findByUsername(String username) {
+		// TODO Auto-generated method stub
+		return userRepository.findByUserName(username);
+	}
+
 //	@Override
 //	public se.michaelthelin.spotify.model_objects.specification.User getUserById(long id) {
 //		// TODO Auto-generated method stub

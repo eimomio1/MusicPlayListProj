@@ -3,11 +3,14 @@ package com.proj.music.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import com.proj.music.entity.Playlist;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.PlaylistRepository;
 import com.proj.music.service.PlaylistService;
 
+@Service
 public class PlaylistServiceImpl implements PlaylistService {
 
 	private PlaylistRepository playlistRepository;
