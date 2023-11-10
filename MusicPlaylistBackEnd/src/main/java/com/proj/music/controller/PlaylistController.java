@@ -16,7 +16,10 @@ import com.proj.music.spotify.config.SpotifyConfiguration;
 
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
+import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.requests.data.playlists.CreatePlaylistRequest;
+import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,12 +38,6 @@ public class PlaylistController {
 	
 	@Autowired
 	private SpotifyConfiguration spotifyConfiguration;
-	
-	 
-  
-	
-	
-	// ... (imports and annotations)
 
 	@PostMapping("/create-playlist/users/{username}/playlists")
 	public ResponseEntity<String> createPlaylist(@RequestBody String nameOfPlaylist, @PathVariable String username) {
@@ -65,15 +62,13 @@ public class PlaylistController {
 	            logger.info("Playlist Request Payload: {}", playlistBuilder.build().getBody());
 
 	            final CreatePlaylistRequest playlistRequest = playlistBuilder.build();
-	            System.out.println(playlistRequest);
-    System.out.println("Iam here ");
-	            // Execute the request to create a playlist
-	            playlistRequest.execute();
+	            
+	            Playlist newPlaylist = playlistRequest.execute();
+	            // Saves playlist to database table
+	            playlistService.addPlaylist(newPlaylist);
 
-	            logger.info("Playlist has been created");
 	            return new ResponseEntity<>("Playlist has been created", HttpStatus.CREATED);
 	        } else {
-	            logger.warn("User not found");
 	            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 	        }
 	    } catch (BadRequestException e) {

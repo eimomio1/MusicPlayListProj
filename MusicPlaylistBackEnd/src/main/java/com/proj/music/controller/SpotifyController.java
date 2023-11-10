@@ -1,7 +1,5 @@
 package com.proj.music.controller;
 
-import java.io.Console;
-import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.proj.music.entity.Users;
-import com.proj.music.repository.UserRepository;
 import com.proj.music.service.UserService;
 import com.proj.music.spotify.config.SpotifyConfiguration;
 
@@ -30,15 +27,11 @@ import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCrede
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
-import se.michaelthelin.spotify.model_objects.specification.SavedAlbum;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.User;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
-import se.michaelthelin.spotify.requests.data.albums.GetAlbumRequest;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistsAlbumsRequest;
-import se.michaelthelin.spotify.requests.data.library.GetCurrentUsersSavedAlbumsRequest;
-import org.springframework.web.bind.annotation.RequestMethod;
 import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopArtistsRequest;
 import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
@@ -89,8 +82,6 @@ public class SpotifyController {
 
 	            object.setAccessToken(authorizationCode.getAccessToken());
 	            object.setRefreshToken(authorizationCode.getRefreshToken());
-
-	           
 
 	            // Check if the access token has expired
 	            if (System.currentTimeMillis() > authorizationCode.getExpiresIn()) {

@@ -42,7 +42,7 @@ public class Song {
 
 	@ManyToMany
 	@JoinTable(name = "PlaylistSongs", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
-	private List<Playlist> playlists; // A song can belong to multiple playlists
+	private List<Playlists> playlists; // A song can belong to multiple playlists
 
 	@ManyToMany(mappedBy = "songs")
 	private List<Artist> artists; // List of artists associated with this song
@@ -52,7 +52,7 @@ public class Song {
 	}
 
 	public Song(long id, String name, double duration, LocalDate releaseDate, Album album, List<Genre> genres,
-			List<Playlist> playlists, List<Artist> artists) {
+			List<Playlists> playlists, List<Artist> artists) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -112,11 +112,11 @@ public class Song {
 		this.genres = genres;
 	}
 
-	public List<Playlist> getPlaylists() {
+	public List<Playlists> getPlaylists() {
 		return playlists;
 	}
 
-	public void setPlaylists(List<Playlist> playlists) {
+	public void setPlaylists(List<Playlists> playlists) {
 		this.playlists = playlists;
 	}
 
