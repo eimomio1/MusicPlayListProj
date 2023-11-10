@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 		user.setUserName(spotifyUser.getDisplayName()); // Use the username from the Spotify user
 		user.setAccessToken(accessToken);
 		user.setRefreshToken(refreshToken);
-
+		user.setRefid(spotifyUser.getId());
 		// Save the user to the database
 		userRepository.save(user);
 
@@ -99,11 +99,7 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Cant Find User"));
 	}
 
-	@Override
-	public Users findByUsername(String username) {
-		// TODO Auto-generated method stub
-		return userRepository.findByUserName(username);
-	}
+	
 
 //	@Override
 //	public se.michaelthelin.spotify.model_objects.specification.User getUserById(long id) {

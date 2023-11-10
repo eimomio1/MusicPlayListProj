@@ -7,6 +7,6 @@ import com.proj.music.entity.Users;
 
 @Repository
 public interface UserRepository extends JpaRepository<Users, Long> {
-	Users findByRefId(String refId);
-	Users findByUserName(String username);
+	 Users findByRefId(String refId);
+	
 }

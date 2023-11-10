@@ -15,9 +15,9 @@ public interface UserService {
 
 	public Users insertOrUpdateUserDetails(User user, String accessToken, String refreshToken);
 	
-	public Users findRefById(String refId);
+	public  Users findRefById(String refId);
 	
 	public Users findUserById(long id);
 
-	public Users findByUsername(String username);
+	
 }

@@ -66,7 +66,7 @@ public class SpotifyController {
 	    SpotifyApi object = spotifyConfiguration.getSpotifyObject();
 	    
 	    AuthorizationCodeUriRequest authorizationCodeUriRequest = object.authorizationCodeUri()
-	            .scope("user-library-read, user-read-private, user-read-email, user-top-read")
+	            .scope("user-library-read, user-read-private, user-read-email, user-top-read, playlist-modify-public")
 	            .show_dialog(true)
 	            .build();
 
@@ -90,9 +90,7 @@ public class SpotifyController {
 	            object.setAccessToken(authorizationCode.getAccessToken());
 	            object.setRefreshToken(authorizationCode.getRefreshToken());
 
-	            // Log authorization code and access token
-	            System.out.println("Authorization Code: " + userCode);
-	            System.out.println("Access Token: " + authorizationCode.getAccessToken());
+	           
 
 	            // Check if the access token has expired
 	            if (System.currentTimeMillis() > authorizationCode.getExpiresIn()) {
@@ -112,7 +110,10 @@ public class SpotifyController {
 	                System.out.println("Expires in: " + authorizationCode.getExpiresIn());
 
 	                // Construct the redirect URL with query parameters
+	                
 	                response.sendRedirect(customIp + "/home?id=" + user.getId() + "&accessToken=" + authorizationCode.getAccessToken());
+	              
+	               
 	            } else {
 	                // If the user object is null, log an error message or handle it appropriately.
 	                throw new RuntimeException("User object is null. The response may not contain a valid user.");

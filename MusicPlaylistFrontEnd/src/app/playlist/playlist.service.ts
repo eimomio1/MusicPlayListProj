@@ -10,9 +10,9 @@ export class PlaylistService {
 
   constructor(private http: HttpClient) {}
 
-  createPlaylist(username: string, playlistData: any): Observable<any> {
+  createPlaylist(username: string, playlistData: string): Observable<any> {
     const url = `${this.baseUrl}/playlist/create-playlist/users/${username}/playlists`;
 
-    return this.http.post(url, { nameOfPlaylist: playlistData.nameOfPlaylist }, { responseType: 'text' });
+    return this.http.post(url, playlistData, { responseType: 'text' });
   }
 }

@@ -25,11 +25,8 @@ export class PlaylistComponent implements OnInit {
 
   createPlaylist(): void {
     if (this.nameOfPlaylist && this.userId) {
-      const playlistData = {
-        nameOfPlaylist: this.nameOfPlaylist
-      };
-  
-      this.playlistService.createPlaylist(this.userId, playlistData).subscribe(
+      // Send the playlist name as a string
+      this.playlistService.createPlaylist(this.userId, this.nameOfPlaylist).subscribe(
         response => {
           console.log('Playlist created successfully:', response);
           // Handle success, e.g., show a success message to the user
