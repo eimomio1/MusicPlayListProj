@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { LoginsComponent } from './logins/logins.component';
 import { HomeComponent } from './home/home.component';
 import { PlaylistComponent } from './playlist/playlist.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,7 @@ import { PlaylistComponent } from './playlist/playlist.component';
   imports: [
     BrowserModule,
     FormsModule, // Add this line
-    AppRoutingModule
+    AppRoutingModule, NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

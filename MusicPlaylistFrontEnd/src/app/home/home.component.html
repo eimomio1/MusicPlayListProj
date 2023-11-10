@@ -1,7 +1,22 @@
 
-
-<h1> Hello this is the home page</h1>
-<p>home works!</p>
-<a [routerLink]="['/playlist']" [queryParams]="{ id: userId, accessToken: accessToken }">Go to Playlist Page</a>
-
+<div class="container">
+    <div class="row">
+      <div class="col-sm">
+        <a [routerLink]="['/playlist']" [queryParams]="{ id: userId, accessToken: accessToken }"role="button"
+           class="btn btn-outline-primary btn-lg btn-block text-center">
+           Go To Playlist Page
+          <span><i class="fa fa-users"></i></span>
+        </a>
+      </div>
+      <div class="col-sm">
+        Button 2
+      </div>
+      <div class="col-sm">
+        Button 3
+      </div>
+      <div class="col-sm">
+        Button 4
+      </div>
+    </div>
+  </div>
 
