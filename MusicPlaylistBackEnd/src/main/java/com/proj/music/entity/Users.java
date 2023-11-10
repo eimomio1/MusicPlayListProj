@@ -33,21 +33,21 @@ public class Users implements Serializable {
 	@Column(name = "REF_ID")
 	private String refId;
 
-	@Column(name = "ACCESS_TOKEN")
+	@Column(name = "ACCESS_TOKEN", length = 3000)
 	private String accessToken;
 
-	@Column(name = "REFRESH_TOKEN")
+	@Column(name = "REFRESH_TOKEN", length = 3000)
 	private String refreshToken;
 
 	@ManyToMany
 	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
-	private List<Playlist> playlists; // A user can have many playlists
+	private List<Playlists> playlists; // A user can have many playlists
 
 	public Users() {
 		super();
 	}
 
-	public Users(long id, String fullName, String userName, String email, List<Playlist> playlists) {
+	public Users(long id, String fullName, String userName, String email, List<Playlists> playlists) {
 		super();
 		this.id = id;
 		this.userName = userName;
@@ -95,11 +95,11 @@ public class Users implements Serializable {
 		this.email = email;
 	}
 
-	public List<Playlist> getPlaylists() {
+	public List<Playlists> getPlaylists() {
 		return playlists;
 	}
 
-	public void setPlaylists(List<Playlist> playlists) {
+	public void setPlaylists(List<Playlists> playlists) {
 		this.playlists = playlists;
 	}
 

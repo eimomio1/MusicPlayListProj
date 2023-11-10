@@ -47,7 +47,7 @@ public class Review {
 
 	@ManyToOne
 	@JoinColumn(name = "playlist_id")
-	private Playlist playlist;
+	private Playlists playlist;
 
 	@Column(name = "rating")
 	private double rating;
@@ -56,7 +56,7 @@ public class Review {
 		super();
 	}
 
-	public Review(long id, String name, String comment, LocalDate datePosted, Song song, Album album, Playlist playlist,
+	public Review(long id, String name, String comment, LocalDate datePosted, Song song, Album album, Playlists playlist,
 			double rating) {
 		super();
 		this.id = id;
@@ -117,11 +117,11 @@ public class Review {
 		this.album = album;
 	}
 
-	public Playlist getPlaylist() {
+	public Playlists getPlaylist() {
 		return playlist;
 	}
 
-	public void setPlaylist(Playlist playlist) {
+	public void setPlaylist(Playlists playlist) {
 		this.playlist = playlist;
 	}
 

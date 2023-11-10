@@ -3,6 +3,8 @@ package com.proj.music.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.proj.music.entity.Artist;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.ArtistRepository;
@@ -10,6 +12,7 @@ import com.proj.music.service.ArtistService;
 
 public class ArtistServiceImpl implements ArtistService {
 
+	@Autowired
 	private ArtistRepository artistRepository;
 
 	@Override

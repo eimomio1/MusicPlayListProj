@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.proj.music.entity.Album;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.AlbumRepository;
 import com.proj.music.service.AlbumService;
 
+@Service
 public class AlbumServiceImpl implements AlbumService {
 
 	@Autowired

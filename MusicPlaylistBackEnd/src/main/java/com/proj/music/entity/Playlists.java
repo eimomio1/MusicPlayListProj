@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "playlist")
-public class Playlist {
+public class Playlists {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,12 +42,12 @@ public class Playlist {
 	@ManyToMany(mappedBy = "playlists")
 	private List<Users> users; // A playlist can be associated with multiple users
 
-	public Playlist() {
+	public Playlists() {
 
 		super();
 	}
 
-	public Playlist(long id, String name, String description, List<Song> songs, LocalDate createdAt,
+	public Playlists(long id, String name, String description, List<Song> songs, LocalDate createdAt,
 			LocalDate updatedAt, List<Users> users) {
 		super();
 		this.id = id;

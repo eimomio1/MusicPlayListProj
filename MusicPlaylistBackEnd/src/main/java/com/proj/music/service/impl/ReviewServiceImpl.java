@@ -3,6 +3,7 @@ package com.proj.music.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proj.music.entity.Review;
@@ -13,6 +14,7 @@ import com.proj.music.service.ReviewService;
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
+	@Autowired
 	private ReviewRepository reviewRepository;
 
 	@Override
