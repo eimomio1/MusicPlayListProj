@@ -33,10 +33,10 @@ public class Users implements Serializable {
 	@Column(name = "REF_ID")
 	private String refId;
 
-	@Column(name = "ACCESS_TOKEN")
+	@Column(name = "ACCESS_TOKEN", length = 2600)
 	private String accessToken;
 
-	@Column(name = "REFRESH_TOKEN")
+	@Column(name = "REFRESH_TOKEN", length = 2600)
 	private String refreshToken;
 
 	@ManyToMany
