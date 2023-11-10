@@ -43,7 +43,6 @@ public class Playlists {
 	private List<Users> users; // A playlist can be associated with multiple users
 
 	public Playlists() {
-
 		super();
 	}
 

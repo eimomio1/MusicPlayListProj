@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.proj.music.entity.Genre;
+import com.proj.music.entity.Genres;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.GenreRepository;
 import com.proj.music.service.GenreService;
@@ -16,8 +16,8 @@ public class GenreServiceImpl implements GenreService {
 	private GenreRepository genreRepository;
 	
 	@Override
-	public String updateGenreById(long id, Genre genre) {
-		Optional<Genre> genre1 = genreRepository.findById(id);
+	public String updateGenreById(long id, Genres genre) {
+		Optional<Genres> genre1 = genreRepository.findById(id);
 		
 		if(genre1.isPresent())
 		{
@@ -31,7 +31,7 @@ public class GenreServiceImpl implements GenreService {
 
 	@Override
 	public String deleteGenreById(long id) {
-		Optional<Genre> genre1 = genreRepository.findById(id);
+		Optional<Genres> genre1 = genreRepository.findById(id);
 		
 		if(genre1.isPresent())
 		{
@@ -42,19 +42,19 @@ public class GenreServiceImpl implements GenreService {
 	}
 
 	@Override
-	public Genre getGenreById(long id) {
+	public Genres getGenreById(long id) {
 		return genreRepository.findById(id)
 				.orElseThrow(()-> new ResourceNotFoundException("Genre Object has not been found."));
 	}
 
 	@Override
-	public String addGenre(Genre genre) {
+	public String addGenre(Genres genre) {
 		genreRepository.save(genre);
 		return "Genre has been added";
 	}
 
 	@Override
-	public List<Genre> getGenres() {
+	public List<Genres> getGenres() {
 		return genreRepository.findAll();
 	}
 

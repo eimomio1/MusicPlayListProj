@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proj.music.entity.Album;
+import com.proj.music.entity.Albums;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.AlbumRepository;
 import com.proj.music.service.AlbumService;
@@ -18,8 +18,8 @@ public class AlbumServiceImpl implements AlbumService {
 	private AlbumRepository albumRepository;
 
 	@Override
-	public String updateAlbumById(long id, Album album) {
-		Optional<Album> album1 = albumRepository.findById(id);
+	public String updateAlbumById(long id, Albums album) {
+		Optional<Albums> album1 = albumRepository.findById(id);
 
 		if (album1.isPresent()) {
 			album1.get().setId(album.getId());
@@ -33,7 +33,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public String deleteAlbumById(long id) {
-		Optional<Album> album1 = albumRepository.findById(id);
+		Optional<Albums> album1 = albumRepository.findById(id);
 
 		if (album1.isPresent()) {
 			albumRepository.deleteById(id);
@@ -43,19 +43,19 @@ public class AlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public Album getAlbumById(long id) {
+	public Albums getAlbumById(long id) {
 		return albumRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Album Object has not been found."));
 	}
 
 	@Override
-	public String addAlbum(Album album) {
+	public String addAlbum(Albums album) {
 		albumRepository.save(album);
 		return "Album has been added";
 	}
 
 	@Override
-	public List<Album> getAlbums() {
+	public List<Albums> getAlbums() {
 		return albumRepository.findAll();
 	}
 

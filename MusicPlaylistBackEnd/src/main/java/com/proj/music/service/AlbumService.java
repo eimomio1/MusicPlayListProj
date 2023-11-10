@@ -2,16 +2,16 @@ package com.proj.music.service;
 
 import java.util.List;
 
-import com.proj.music.entity.Album;
+import com.proj.music.entity.Albums;
 
 public interface AlbumService {
-	String updateAlbumById(long id, Album album);
+	String updateAlbumById(long id, Albums album);
 
 	String deleteAlbumById(long id);
 
-	Album getAlbumById(long id);
+	Albums getAlbumById(long id);
 
-	String addAlbum(Album album);
+	String addAlbum(Albums album);
 
-	List<Album> getAlbums();
+	List<Albums> getAlbums();
 }

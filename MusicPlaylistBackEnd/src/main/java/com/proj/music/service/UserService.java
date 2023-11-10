@@ -18,6 +18,6 @@ public interface UserService {
 	public  Users findRefById(String refId);
 	
 	public Users findUserById(long id);
-
 	
+	public Boolean userExistByRefId(String id);
 }

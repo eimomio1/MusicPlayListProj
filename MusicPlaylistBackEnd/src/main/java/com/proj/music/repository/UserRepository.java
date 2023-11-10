@@ -8,5 +8,6 @@ import com.proj.music.entity.Users;
 @Repository
 public interface UserRepository extends JpaRepository<Users, Long> {
 	 Users findByRefId(String refId);
-	
+	 	
+	 Boolean existsByRefId(String refId);
 }
