@@ -21,7 +21,7 @@ import jakarta.persistence.Table;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "review_type", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("Review") // Default type is "Review"
-public class Review {
+public class Reviews {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,7 @@ public class Review {
 
 	@ManyToOne
 	@JoinColumn(name = "album_id")
-	private Album album;
+	private Albums album;
 
 	@ManyToOne
 	@JoinColumn(name = "playlist_id")
@@ -52,11 +52,11 @@ public class Review {
 	@Column(name = "rating")
 	private double rating;
 
-	public Review() {
+	public Reviews() {
 		super();
 	}
 
-	public Review(long id, String name, String comment, LocalDate datePosted, Song song, Album album, Playlists playlist,
+	public Reviews(long id, String name, String comment, LocalDate datePosted, Song song, Albums album, Playlists playlist,
 			double rating) {
 		super();
 		this.id = id;
@@ -109,11 +109,11 @@ public class Review {
 		this.song = song;
 	}
 
-	public Album getAlbum() {
+	public Albums getAlbum() {
 		return album;
 	}
 
-	public void setAlbum(Album album) {
+	public void setAlbum(Albums album) {
 		this.album = album;
 	}
 

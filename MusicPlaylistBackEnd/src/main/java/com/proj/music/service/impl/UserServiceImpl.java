@@ -99,6 +99,11 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Cant Find User"));
 	}
 
+	@Override
+	public Boolean userExistByRefId(String id) {
+		return userRepository.existsByRefId(id);
+	}
+
 	
 
 //	@Override

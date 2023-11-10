@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proj.music.entity.Review;
+import com.proj.music.entity.Reviews;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.ReviewRepository;
 import com.proj.music.service.ReviewService;
@@ -18,8 +18,8 @@ public class ReviewServiceImpl implements ReviewService {
 	private ReviewRepository reviewRepository;
 
 	@Override
-	public String updateReviewById(long id, Review review) {
-		Optional<Review> review1 = reviewRepository.findById(id);
+	public String updateReviewById(long id, Reviews review) {
+		Optional<Reviews> review1 = reviewRepository.findById(id);
 		if (review1.isPresent()) {
 			review1.get().setId(review.getId());
 			review1.get().setName(review.getName());
@@ -32,7 +32,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	public String deleteReviewById(long id) {
-		Optional<Review> review1 = reviewRepository.findById(id);
+		Optional<Reviews> review1 = reviewRepository.findById(id);
 		if (review1.isPresent()) {
 			reviewRepository.deleteById(id);
 		}
@@ -40,19 +40,19 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public Review getReviewById(long id) {
+	public Reviews getReviewById(long id) {
 		return reviewRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Review Object has not been found."));
 	}
 
 	@Override
-	public String addReview(Review review) {
+	public String addReview(Reviews review) {
 		reviewRepository.save(review);
 		return "Review has been added";
 	}
 
 	@Override
-	public List<Review> getReviews() {
+	public List<Reviews> getReviews() {
 		return reviewRepository.findAll();
 	}
 

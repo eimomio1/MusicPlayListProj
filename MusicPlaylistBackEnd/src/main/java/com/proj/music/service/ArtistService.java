@@ -2,16 +2,18 @@ package com.proj.music.service;
 
 import java.util.List;
 
-import com.proj.music.entity.Artist;
+import com.proj.music.entity.Artists;
 
 public interface ArtistService {
-	String updateArtistById(long id, Artist artist);
+	String updateArtistById(long id, Artists artist);
 
 	String deleteArtistById(long id);
 
-	Artist getArtistById(long id);
+	Artists getArtistById(long id);
 
-	String addArtist(Artist artist);
+	String addArtist(Artists artist);
 
-	List<Artist> getArtists();
+	List<Artists> getArtists();
+	
+	Artists findArtistByRefId(String id);
 }

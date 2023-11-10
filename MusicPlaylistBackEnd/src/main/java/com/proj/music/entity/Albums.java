@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "albums")
-public class Album {
+public class Albums {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,17 +33,17 @@ public class Album {
 
 	// Album Entity
 	@ManyToMany(mappedBy = "albums")
-	private List<Artist> artist; // An album can be associated with multiple artists.
+	private List<Artists> artist; // An album can be associated with multiple artists.
 
 	@OneToMany
 	@JoinColumn(name = "album_id") // Map the "album_id" in the Song table to create the relationship
 	private List<Song> songs; // An album can contain multiple songs
 
-	public Album() {
+	public Albums() {
 		super();
 	}
 
-	public Album(int id, String name, LocalDate releaseDate, List<Artist> artist, List<Song> songs) {
+	public Albums(int id, String name, LocalDate releaseDate, List<Artists> artist, List<Song> songs) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -77,11 +77,11 @@ public class Album {
 		this.releaseDate = releaseDate;
 	}
 
-	public List<Artist> getArtist() {
+	public List<Artists> getArtist() {
 		return artist;
 	}
 
-	public void setArtist(List<Artist> artist) {
+	public void setArtist(List<Artists> artist) {
 		this.artist = artist;
 	}
 

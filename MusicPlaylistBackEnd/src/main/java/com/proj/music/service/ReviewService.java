@@ -2,16 +2,16 @@ package com.proj.music.service;
 
 import java.util.List;
 
-import com.proj.music.entity.Review;
+import com.proj.music.entity.Reviews;
 
 public interface ReviewService {
-	String updateReviewById(long id, Review review);
+	String updateReviewById(long id, Reviews review);
 
 	String deleteReviewById(long id);
 
-	Review getReviewById(long id);
+	Reviews getReviewById(long id);
 
-	String addReview(Review review);
+	String addReview(Reviews review);
 
-	List<Review> getReviews();
+	List<Reviews> getReviews();
 }

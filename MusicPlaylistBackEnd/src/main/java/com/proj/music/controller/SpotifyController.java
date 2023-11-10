@@ -96,16 +96,19 @@ public class SpotifyController {
 	            final GetCurrentUsersProfileRequest getCurrentUsersProfile = object.getCurrentUsersProfile().build();
 	            user = getCurrentUsersProfile.execute();
 
-	            if (user != null) {
+	            if (user != null && !userProfileService.userExistByRefId(user.getId())) {
+	            	
 	                userProfileService.createUser(user, authorizationCode.getAccessToken(), authorizationCode.getRefreshToken());
 	                System.out.println("Expires in: " + authorizationCode.getExpiresIn());
 
-	                // Construct the redirect URL with query parameters
-	                
+	                // Construct the redirect URL with query parameters              
+	                response.sendRedirect(customIp + "/home?id=" + user.getId() + "&accessToken=" + authorizationCode.getAccessToken());	              
+	            } 
+	            else if(user != null)
+	            {
 	                response.sendRedirect(customIp + "/home?id=" + user.getId() + "&accessToken=" + authorizationCode.getAccessToken());
-	              
-	               
-	            } else {
+	            }
+	            else {
 	                // If the user object is null, log an error message or handle it appropriately.
 	                throw new RuntimeException("User object is null. The response may not contain a valid user.");
 	            }
@@ -130,30 +133,6 @@ public class SpotifyController {
 			System.out.println("Exception occured while landing to home page: " + e);
 		}
 		return null;
-	}
-	
-	@GetMapping(value = "/user-top-artists")
-	public Artist[] getUserTopArtists() {
-		Users userDetails = userProfileService.findUserById(1);
-		
-		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
-		
-		object.setAccessToken(userDetails.getAccessToken());
-		
-		object.setRefreshToken(userDetails.getRefreshToken());
-
-		final GetUsersTopArtistsRequest getUsersTopArtistsRequest = object.getUsersTopArtists()
-				.time_range("medium_term")
-				.limit(10)
-				.offset(0)
-				.build();
-		try {
-			final Paging<Artist> artistPaging = getUsersTopArtistsRequest.execute();
-			return artistPaging.getItems();
-		} catch(Exception e) {
-			System.out.println("Something went wrong!\n" + e.getMessage());
-		}
-		return new Artist[0];
 	}
 
 	@GetMapping(value = "/user-top-songs")

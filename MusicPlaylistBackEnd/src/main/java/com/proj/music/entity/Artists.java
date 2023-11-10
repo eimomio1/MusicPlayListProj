@@ -14,12 +14,15 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "artist")
-public class Artist {
+public class Artists {
 
 	@Id
 	@Column(name = "artist_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private long id;
+	
+	@Column(name = "ref_id")
+	private String refId;
 
 	@Column(name = "name")
 	private String name;
@@ -30,17 +33,17 @@ public class Artist {
 
 	@ManyToMany
 	@JoinTable(name = "artist_album", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "album_id"))
-	private List<Album> albums; // Artists can be associated with multiple albums.
+	private List<Albums> albums; // Artists can be associated with multiple albums.
 
 	@ManyToMany
 	@JoinTable(name = "ArtistGenre", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
-	private List<Genre> genres; // Artists can be associated with many genres.
+	private List<Genres> genres; // Artists can be associated with many genres.
 
-	public Artist() {
+	public Artists() {
 		super();
 	}
 
-	public Artist(int id, String name, List<Song> songs, List<Album> albums, List<Genre> genres) {
+	public Artists(int id, String name, List<Song> songs, List<Albums> albums, List<Genres> genres) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -49,11 +52,11 @@ public class Artist {
 		this.genres = genres;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -73,19 +76,19 @@ public class Artist {
 		this.songs = songs;
 	}
 
-	public List<Album> getAlbums() {
+	public List<Albums> getAlbums() {
 		return albums;
 	}
 
-	public void setAlbums(List<Album> albums) {
+	public void setAlbums(List<Albums> albums) {
 		this.albums = albums;
 	}
 
-	public List<Genre> getGenres() {
+	public List<Genres> getGenres() {
 		return genres;
 	}
 
-	public void setGenres(List<Genre> genres) {
+	public void setGenres(List<Genres> genres) {
 		this.genres = genres;
 	}
 

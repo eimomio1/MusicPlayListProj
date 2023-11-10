@@ -34,25 +34,25 @@ public class Song {
 
 	@ManyToOne
 	@JoinColumn(name = "album_id") // Map the "album_id" in the Album table to create the relationship
-	private Album album; // A song belongs to one album
+	private Albums album; // A song belongs to one album
 
 	@ManyToMany
 	@JoinTable(name = "SongGenres")
-	private List<Genre> genres; // A song can be associated with multiple genres
+	private List<Genres> genres; // A song can be associated with multiple genres
 
 	@ManyToMany
 	@JoinTable(name = "PlaylistSongs", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
 	private List<Playlists> playlists; // A song can belong to multiple playlists
 
 	@ManyToMany(mappedBy = "songs")
-	private List<Artist> artists; // List of artists associated with this song
+	private List<Artists> artists; // List of artists associated with this song
 
 	public Song() {
 		super();
 	}
 
-	public Song(long id, String name, double duration, LocalDate releaseDate, Album album, List<Genre> genres,
-			List<Playlists> playlists, List<Artist> artists) {
+	public Song(long id, String name, double duration, LocalDate releaseDate, Albums album, List<Genres> genres,
+			List<Playlists> playlists, List<Artists> artists) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -96,19 +96,19 @@ public class Song {
 		this.releaseDate = releaseDate;
 	}
 
-	public Album getAlbum() {
+	public Albums getAlbum() {
 		return album;
 	}
 
-	public void setAlbum(Album album) {
+	public void setAlbum(Albums album) {
 		this.album = album;
 	}
 
-	public List<Genre> getGenres() {
+	public List<Genres> getGenres() {
 		return genres;
 	}
 
-	public void setGenres(List<Genre> genres) {
+	public void setGenres(List<Genres> genres) {
 		this.genres = genres;
 	}
 
@@ -120,11 +120,11 @@ public class Song {
 		this.playlists = playlists;
 	}
 
-	public List<Artist> getArtists() {
+	public List<Artists> getArtists() {
 		return artists;
 	}
 
-	public void setArtists(List<Artist> artists) {
+	public void setArtists(List<Artists> artists) {
 		this.artists = artists;
 	}
 

@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "genres")
-public class Genre {
+public class Genres {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,11 @@ public class Genre {
 	@Column(name = "description")
 	private String description;
 
-	public Genre() {
+	public Genres() {
 		super();
 	}
 
-	public Genre(long id, String name, String description) {
+	public Genres(long id, String name, String description) {
 		super();
 		this.id = id;
 		this.name = name;
