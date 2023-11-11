@@ -78,18 +78,4 @@ public class PlaylistController {
 	        return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
-
-	   
-		
-		
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.proj.music.entity.Artists;
 
+import se.michaelthelin.spotify.model_objects.specification.Artist;
+
 public interface ArtistService {
 	String updateArtistById(long id, Artists artist);
 
@@ -11,9 +13,11 @@ public interface ArtistService {
 
 	Artists getArtistById(long id);
 
-	String addArtist(Artists artist);
+	String addArtist(Artist artist);
 
 	List<Artists> getArtists();
 	
 	Artists findArtistByRefId(String id);
+	
+	String deleteArtistBySpotifyId(String id);
 }

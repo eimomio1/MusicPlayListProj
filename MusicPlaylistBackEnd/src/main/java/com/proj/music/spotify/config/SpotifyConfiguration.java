@@ -11,7 +11,9 @@ import se.michaelthelin.spotify.SpotifyHttpManager;
 
 @Service
 public class SpotifyConfiguration {
-
+	
+	public static String url = "";
+	
 	@Value("${redirect.server.ip}")
 	private String customIp;
 	
