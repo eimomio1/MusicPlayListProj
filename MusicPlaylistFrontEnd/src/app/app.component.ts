@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'homes';
+
+  public static serverRoot: string = "http://localhost:8080";
+
+
 }

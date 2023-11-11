@@ -26,6 +26,9 @@ public class Artists {
 
 	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "artistSpotifyId")
+	private String spotifyId;
 
 	@ManyToMany
 	@JoinTable(name = "artist_song", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))

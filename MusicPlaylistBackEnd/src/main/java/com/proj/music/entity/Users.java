@@ -38,6 +38,9 @@ public class Users implements Serializable {
 
 	@Column(name = "REFRESH_TOKEN", length = 3000)
 	private String refreshToken;
+	
+	@Column(name = "Token_expiration")
+	private long accessTokenExpirationTime;
 
 	@ManyToMany
 	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
@@ -46,12 +49,17 @@ public class Users implements Serializable {
 	public Users() {
 		super();
 	}
-
-	public Users(long id, String fullName, String userName, String email, List<Playlists> playlists) {
+	
+	public Users(long id, String userName, String email, String refId, String accessToken, String refreshToken,
+			long accessTokenExpirationTime, List<Playlists> playlists) {
 		super();
 		this.id = id;
 		this.userName = userName;
 		this.email = email;
+		this.refId = refId;
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
+		this.accessTokenExpirationTime = accessTokenExpirationTime;
 		this.playlists = playlists;
 	}
 
@@ -110,5 +118,12 @@ public class Users implements Serializable {
 	public void setRefid(String refId) {
 		this.refId = refId;
 	}
+	
+	public long getAccessTokenExpirationTime() {
+		return accessTokenExpirationTime;
+	}
 
+	public void setAccessTokenExpirationTime(long accessTokenExpirationTime) {
+		this.accessTokenExpirationTime = accessTokenExpirationTime;
+	}
 }

@@ -11,6 +11,8 @@ import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.ArtistRepository;
 import com.proj.music.service.ArtistService;
 
+import se.michaelthelin.spotify.model_objects.specification.Artist;
+
 @Service
 public class ArtistServiceImpl implements ArtistService {
 
@@ -51,8 +53,8 @@ public class ArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
-	public String addArtist(Artists artist) {
-		artistRepository.save(artist);
+	public String addArtist(Artist artist) {
+		artistRepository.addArtist(artist);
 		return "Artist has been added";
 	}
 
@@ -65,5 +67,9 @@ public class ArtistServiceImpl implements ArtistService {
 	public Artists findArtistByRefId(String id) {
 		return artistRepository.findArtistByRefId(id);
 	}
-
+	
+	public String deleteArtistBySpotifyId(String id) {
+		artistRepository.deleteByArtistSpotifyId(id);
+		return "Artist has been deleted";
+	}
 }
