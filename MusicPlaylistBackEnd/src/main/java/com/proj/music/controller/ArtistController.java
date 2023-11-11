@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neovisionaries.i18n.CountryCode;
+import com.proj.music.entity.Artists;
 import com.proj.music.entity.Users;
 import com.proj.music.service.ArtistService;
 import com.proj.music.service.UserService;
@@ -67,7 +68,7 @@ public class ArtistController {
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		// Then it gets the artist
-		final GetArtistRequest getArtistRequest = spotifyApi.getArtist(userId).build();
+		final GetArtistRequest getArtistRequest = spotifyApi.getArtist(artistId).build();
 		// creates a artist object
 		Artist artist = getArtistRequest.execute();
 		// returns a http response back with artist being created and converted into

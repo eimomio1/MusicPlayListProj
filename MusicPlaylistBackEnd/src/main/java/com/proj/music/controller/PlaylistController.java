@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-@RequestMapping("/playlist")
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200") // Add your frontend URL
 public class PlaylistController {
 	 

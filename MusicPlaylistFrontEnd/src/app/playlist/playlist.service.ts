@@ -11,7 +11,7 @@ export class PlaylistService {
   constructor(private http: HttpClient) {}
 
   createPlaylist(username: string, playlistData: string): Observable<any> {
-    const url = `${this.baseUrl}/playlist/create-playlist/users/${username}/playlists`;
+    const url = `${this.baseUrl}/api/create-playlist/users/${username}/playlists`;
 
     return this.http.post(url, playlistData, { responseType: 'text' });
   }

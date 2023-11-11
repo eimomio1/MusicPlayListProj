@@ -17,7 +17,7 @@ public interface ArtistService {
 
 	List<Artists> getArtists();
 	
-	Artists findArtistByRefId(String id);
+	Artists findArtistBySpotifyId(String id);
 	
 	String deleteArtistBySpotifyId(String id);
 }
