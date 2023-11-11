@@ -42,7 +42,6 @@ public class ArtistServiceImpl implements ArtistService {
 		if (artist1.isPresent()) {
 			artistRepository.deleteById(id);
 		}
-
 		return "Artist has been deleted";
 	}
 
@@ -54,7 +53,13 @@ public class ArtistServiceImpl implements ArtistService {
 
 	@Override
 	public String addArtist(Artist artist) {
-		artistRepository.addArtist(artist);
+		Artists newArtist = new Artists();
+		newArtist.setName(artist.getName());
+		newArtist.setSpotifyId(artist.getId());
+		newArtist.setPopularity(artist.getPopularity());
+		newArtist.setUri(artist.getUri());
+		newArtist.setHref(artist.getHref());
+		artistRepository.save(newArtist);
 		return "Artist has been added";
 	}
 
@@ -64,12 +69,13 @@ public class ArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
-	public Artists findArtistByRefId(String id) {
-		return artistRepository.findArtistByRefId(id);
+	public Artists findArtistBySpotifyId(String id) {
+		return artistRepository.findArtistBySpotifyId(id);
 	}
 	
+	@Override
 	public String deleteArtistBySpotifyId(String id) {
-		artistRepository.deleteByArtistSpotifyId(id);
+		artistRepository.deleteArtistBySpotifyId(id);
 		return "Artist has been deleted";
 	}
 }

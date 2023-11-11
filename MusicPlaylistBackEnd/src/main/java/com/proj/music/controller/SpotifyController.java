@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proj.music.service.UserService;
@@ -46,9 +47,12 @@ public class SpotifyController {
 
 	@Autowired
 	private SpotifyConfiguration spotifyConfiguration;
-
+	
+	@Autowired
+	private SpotifyApi spotifyApi;
+	
+	// Method to login
 	@GetMapping(value = "/login")
-	@ResponseBody
 	public ResponseEntity<Map<String, String>> spotifyLogin() {
 
 		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
@@ -66,28 +70,29 @@ public class SpotifyController {
 	}
 
 	@GetMapping("/get-user-code/")
+	@ResponseStatus(value = HttpStatus.OK)
 	public void getSpotifyUserCode(@RequestParam("code") String userCode, HttpServletResponse response) {
-		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
-		AuthorizationCodeRequest authorizationCodeRequest = object.authorizationCode(userCode).build();
+
+		AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(userCode).build();
 		User user = null;
 
 		try {
 			final AuthorizationCodeCredentials authorizationCode = authorizationCodeRequest.execute();
 
-			object.setAccessToken(authorizationCode.getAccessToken());
-			object.setRefreshToken(authorizationCode.getRefreshToken());
+			spotifyApi.setAccessToken(authorizationCode.getAccessToken());
+			spotifyApi.setRefreshToken(authorizationCode.getRefreshToken());
 
 			// Check if the access token has expired
 			if (System.currentTimeMillis() > authorizationCode.getExpiresIn()) {
 				// Refresh the access token
-				AuthorizationCodeCredentials refreshedToken = object.authorizationCodeRefresh().build().execute();
-				object.setAccessToken(refreshedToken.getAccessToken());
+				AuthorizationCodeCredentials refreshedToken = spotifyApi.authorizationCodeRefresh().build().execute();
+				spotifyApi.setAccessToken(refreshedToken.getAccessToken());
 
 				// Log refreshed access token
 				System.out.println("Refreshed Access Token: " + refreshedToken.getAccessToken());
 			}
 
-			final GetCurrentUsersProfileRequest getCurrentUsersProfile = object.getCurrentUsersProfile().build();
+			final GetCurrentUsersProfileRequest getCurrentUsersProfile = spotifyApi.getCurrentUsersProfile().build();
 			user = getCurrentUsersProfile.execute();
 
 			if (user != null && !userProfileService.userExistByRefId(user.getId())) {
@@ -129,11 +134,11 @@ public class SpotifyController {
 
 	@GetMapping(value = "/getTokens")
 	public String getTokens() {
-		SpotifyApi spotifyApi = spotifyConfiguration.getSpotifyObject();
 		return spotifyApi.getAccessToken();
 	}
 
 	@GetMapping(value = "/user-top-songs")
+	@ResponseStatus(value = HttpStatus.OK)
 	public Track[] getUserTopTracks(@RequestParam String userId)
 			throws ParseException, SpotifyWebApiException, IOException {
 		SpotifyApi object = spotifyConfiguration.getSpotifyObject();

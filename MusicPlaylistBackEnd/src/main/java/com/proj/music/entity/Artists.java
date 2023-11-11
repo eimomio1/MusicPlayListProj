@@ -1,5 +1,6 @@
 package com.proj.music.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -11,6 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import se.michaelthelin.spotify.enums.ModelObjectType;
+import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
+import se.michaelthelin.spotify.model_objects.specification.Followers;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 
 @Entity
 @Table(name = "artist")
@@ -20,13 +25,10 @@ public class Artists {
 	@Column(name = "artist_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
-	@Column(name = "ref_id")
-	private String refId;
 
 	@Column(name = "name")
 	private String name;
-	
+
 	@Column(name = "artistSpotifyId")
 	private String spotifyId;
 
@@ -42,17 +44,43 @@ public class Artists {
 	@JoinTable(name = "ArtistGenre", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
 	private List<Genres> genres; // Artists can be associated with many genres.
 
+//	@Column(name = "externalUrls")
+//	private ExternalUrl externalUrls;
+//	
+//	@Column(name = "followers")
+//	private Followers followers;
+
+	@Column(name = "href")
+	private String href;
+
+	private Image[] images;
+
+	@Column(name = "popularity")
+	private Integer popularity;
+
+//	private ModelObjectType type;
+
+	@Column(name = "uri")
+	private String uri;
+
 	public Artists() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public Artists(int id, String name, List<Song> songs, List<Albums> albums, List<Genres> genres) {
+	public Artists(long id, String name, String spotifyId, List<Song> songs, List<Albums> albums, List<Genres> genres,
+			String href, Image[] images, Integer popularity, String uri) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.spotifyId = spotifyId;
 		this.songs = songs;
 		this.albums = albums;
 		this.genres = genres;
+		this.href = href;
+		this.images = images;
+		this.popularity = popularity;
+		this.uri = uri;
 	}
 
 	public long getId() {
@@ -61,6 +89,14 @@ public class Artists {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public String getSpotifyId() {
+		return spotifyId;
+	}
+
+	public void setSpotifyId(String spotifyId) {
+		this.spotifyId = spotifyId;
 	}
 
 	public String getName() {
@@ -95,10 +131,42 @@ public class Artists {
 		this.genres = genres;
 	}
 
-	@Override
-	public String toString() {
-		return "Artist [id=" + id + ", name=" + name + ", songs=" + songs + ", albums=" + albums + ", genres=" + genres
-				+ "]";
+	public String getHref() {
+		return href;
 	}
 
+	public void setHref(String href) {
+		this.href = href;
+	}
+
+	public Image[] getImages() {
+		return images;
+	}
+
+	public void setImages(Image[] images) {
+		this.images = images;
+	}
+
+	public Integer getPopularity() {
+		return popularity;
+	}
+
+	public void setPopularity(Integer popularity) {
+		this.popularity = popularity;
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	@Override
+	public String toString() {
+		return "Artists [id=" + id + ", name=" + name + ", spotifyId=" + spotifyId + ", songs=" + songs + ", albums="
+				+ albums + ", genres=" + genres + ", href=" + href + ", images=" + Arrays.toString(images)
+				+ ", popularity=" + popularity + ", uri=" + uri + "]";
+	}
 }
