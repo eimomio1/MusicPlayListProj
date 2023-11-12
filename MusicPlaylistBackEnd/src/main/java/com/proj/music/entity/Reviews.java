@@ -3,24 +3,19 @@ package com.proj.music.entity;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
-import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "reviews")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "review_type", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("Review") // Default type is "Review"
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//@DiscriminatorColumn(name = "review_type", discriminatorType = DiscriminatorType.STRING)
+//@DiscriminatorValue("Review") // Default type is "Review"
 public class Reviews {
 
 	@Id
@@ -38,15 +33,15 @@ public class Reviews {
 	private LocalDate datePosted;
 
 	@ManyToOne
-	@JoinColumn(name = "song_id")
-	private Song song;
+	@JoinColumn(name = "song_id") // many reviews for one song
+	private Songs songs;
 
 	@ManyToOne
-	@JoinColumn(name = "album_id")
-	private Albums album;
+	@JoinColumn(name = "album_id") // many reviews for one album
+	private Albums albums;
 
 	@ManyToOne
-	@JoinColumn(name = "playlist_id")
+	@JoinColumn(name = "playlist_id") // many reviews for one playlist
 	private Playlists playlist;
 
 	@Column(name = "rating")
@@ -56,15 +51,15 @@ public class Reviews {
 		super();
 	}
 
-	public Reviews(long id, String name, String comment, LocalDate datePosted, Song song, Albums album, Playlists playlist,
+	public Reviews(long id, String name, String comment, LocalDate datePosted, Songs song, Albums albums, Playlists playlist,
 			double rating) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.comment = comment;
 		this.datePosted = datePosted;
-		this.song = song;
-		this.album = album;
+		this.songs = song;
+		this.albums = albums;
 		this.playlist = playlist;
 		this.rating = rating;
 	}
@@ -101,20 +96,20 @@ public class Reviews {
 		this.datePosted = datePosted;
 	}
 
-	public Song getSong() {
-		return song;
+	public Songs getSong() {
+		return songs;
 	}
 
-	public void setSong(Song song) {
-		this.song = song;
+	public void setSong(Songs song) {
+		this.songs = song;
 	}
 
 	public Albums getAlbum() {
-		return album;
+		return albums;
 	}
 
-	public void setAlbum(Albums album) {
-		this.album = album;
+	public void setAlbum(Albums albums) {
+		this.albums = albums;
 	}
 
 	public Playlists getPlaylist() {
@@ -135,7 +130,8 @@ public class Reviews {
 
 	@Override
 	public String toString() {
-		return "Review [id=" + id + ", name=" + name + ", comment=" + comment + ", datePosted=" + datePosted + ", song="
-				+ song + ", album=" + album + ", playlist=" + playlist + ", rating=" + rating + "]";
+		return "Reviews [id=" + id + ", name=" + name + ", comment=" + comment + ", datePosted=" + datePosted
+				+ ", song=" + songs + ", album=" + albums + ", playlist=" + playlist + ", rating=" + rating + "]";
 	}
+
 }

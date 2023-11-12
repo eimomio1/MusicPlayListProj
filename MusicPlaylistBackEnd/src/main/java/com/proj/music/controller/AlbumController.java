@@ -30,6 +30,7 @@ import se.michaelthelin.spotify.model_objects.specification.SavedAlbum;
 import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 import se.michaelthelin.spotify.requests.data.albums.GetAlbumRequest;
 import se.michaelthelin.spotify.requests.data.albums.GetAlbumsTracksRequest;
+import se.michaelthelin.spotify.requests.data.albums.GetSeveralAlbumsRequest;
 import se.michaelthelin.spotify.requests.data.browse.GetListOfNewReleasesRequest;
 import se.michaelthelin.spotify.requests.data.library.CheckUsersSavedAlbumsRequest;
 import se.michaelthelin.spotify.requests.data.library.GetCurrentUsersSavedAlbumsRequest;
@@ -126,7 +127,7 @@ public class AlbumController {
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-
+		// sends an access token to the spotify api to save albums current users
 		SaveAlbumsForCurrentUserRequest saveAlbumsForCurrUser = spotifyApi.saveAlbumsForCurrentUser(userId).build();
 
 		try {
@@ -148,14 +149,13 @@ public class AlbumController {
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-
+		// sends an access token to the spotify api to remove saved albums
 		RemoveAlbumsForCurrentUserRequest removeUserSavedAlbums = spotifyApi.removeAlbumsForCurrentUser(userId).build();
 		
 		try {
 			String deleteAlbumForCurrUser = removeUserSavedAlbums.execute();
 			return deleteAlbumForCurrUser;
 		} catch (ParseException | SpotifyWebApiException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "User saved album has not been deleted";
@@ -170,7 +170,7 @@ public class AlbumController {
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-		
+		// sends an access token to the spotify api to check user saved albums
 		CheckUsersSavedAlbumsRequest checkUserSavedAlbumsRequest = spotifyApi.checkUsersSavedAlbums(userId).build();
 		
 		try {
@@ -193,7 +193,7 @@ public class AlbumController {
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-		
+		// then it gets the new releases
 		GetListOfNewReleasesRequest getListOfNewReleases = spotifyApi.getListOfNewReleases().build();
 		
 		Paging<AlbumSimplified> albumSimplified;
@@ -207,18 +207,26 @@ public class AlbumController {
 		return new AlbumSimplified[0];
 	}
 
-//	// Get several albums
-//	@GetMapping(value = "/albums")
-//	@ResponseStatus(value = HttpStatus.OK)
-//	public Album[] getSeveralAlbums(@RequestParam String userId)	
-//	{
-//		// first its gets the user from queried
-//		Users userDetails = userService.findRefById(userId);
-//		// Then it pass the access token for the user to do the spotify api request
-//		spotifyApi.setAccessToken(userDetails.getAccessToken());
-//		// Then it refreshes the token for the user to the spotify api request
-//		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-//		// Then it gets the album
-//		final GetSeveralAlbumsRequest getAlbumRequest = spotifyApi.getSeveralAlbums();
-//	}
+	// Get several albums
+	@GetMapping(value = "/albums")
+	@ResponseStatus(value = HttpStatus.OK)
+	public Album[] getSeveralAlbums(@RequestParam String userId, @RequestParam String... albumIds)	
+	{
+		// first its gets the user from queried
+		Users userDetails = userService.findRefById(userId);
+		// Then it pass the access token for the user to do the spotify api request
+		spotifyApi.setAccessToken(userDetails.getAccessToken());
+		// Then it refreshes the token for the user to the spotify api request
+		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
+		// Then it gets the album
+		final GetSeveralAlbumsRequest getAlbumRequest = spotifyApi.getSeveralAlbums(albumIds).build();
+		
+		try {
+			Album [] myAlbum = getAlbumRequest.execute();
+			return myAlbum;
+		} catch (ParseException | SpotifyWebApiException | IOException e) {
+			e.printStackTrace();
+		}
+		return new Album[0];
+	}
 }

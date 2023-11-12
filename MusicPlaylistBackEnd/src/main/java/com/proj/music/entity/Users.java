@@ -126,4 +126,12 @@ public class Users implements Serializable {
 	public void setAccessTokenExpirationTime(long accessTokenExpirationTime) {
 		this.accessTokenExpirationTime = accessTokenExpirationTime;
 	}
+
+	@Override
+	public String toString() {
+		return "Users [id=" + id + ", userName=" + userName + ", email=" + email + ", refId=" + refId + ", accessToken="
+				+ accessToken + ", refreshToken=" + refreshToken + ", accessTokenExpirationTime="
+				+ accessTokenExpirationTime + ", playlists=" + playlists + "]";
+	}
+	
 }

@@ -2,6 +2,7 @@ package com.proj.music.entity;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,11 +13,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "songs")
-public class Song {
+public class Songs {
 
 	@Id
 	@Column(name = "song_id", nullable = false)
@@ -34,31 +36,36 @@ public class Song {
 
 	@ManyToOne
 	@JoinColumn(name = "album_id") // Map the "album_id" in the Album table to create the relationship
-	private Albums album; // A song belongs to one album
+	private Albums albums; // Many songs are in one album
 
 	@ManyToMany
-	@JoinTable(name = "SongGenres")
-	private List<Genres> genres; // A song can be associated with multiple genres
+	@JoinTable(name = "songs_genres", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+	private Set<Genres> genres; // A song can be associated with multiple genres
 
-	@ManyToMany
-	@JoinTable(name = "PlaylistSongs", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
+	@ManyToMany(mappedBy = "songs")
 	private List<Playlists> playlists; // A song can belong to multiple playlists
 
 	@ManyToMany(mappedBy = "songs")
 	private List<Artists> artists; // List of artists associated with this song
 
-	public Song() {
+	@OneToMany(mappedBy = "songs")
+	private List<Reviews> reviews; // For one artist there are many reviews
+	
+	@Column(name = "uris")
+	private String uris;
+	
+	public Songs() {
 		super();
 	}
 
-	public Song(long id, String name, double duration, LocalDate releaseDate, Albums album, List<Genres> genres,
+	public Songs(long id, String name, double duration, LocalDate releaseDate, Albums album, Set<Genres> genres,
 			List<Playlists> playlists, List<Artists> artists) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.duration = duration;
 		this.releaseDate = releaseDate;
-		this.album = album;
+		this.albums = album;
 		this.genres = genres;
 		this.playlists = playlists;
 		this.artists = artists;
@@ -97,18 +104,18 @@ public class Song {
 	}
 
 	public Albums getAlbum() {
-		return album;
+		return albums;
 	}
 
 	public void setAlbum(Albums album) {
-		this.album = album;
+		this.albums = album;
 	}
 
-	public List<Genres> getGenres() {
+	public Set<Genres> getGenres() {
 		return genres;
 	}
 
-	public void setGenres(List<Genres> genres) {
+	public void setGenres(Set<Genres> genres) {
 		this.genres = genres;
 	}
 
@@ -127,11 +134,36 @@ public class Song {
 	public void setArtists(List<Artists> artists) {
 		this.artists = artists;
 	}
+	
+	public Albums getAlbums() {
+		return albums;
+	}
+
+	public void setAlbums(Albums albums) {
+		this.albums = albums;
+	}
+
+	public List<Reviews> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Reviews> reviews) {
+		this.reviews = reviews;
+	}
+
+	public String getUris() {
+		return uris;
+	}
+
+	public void setUris(String uris) {
+		this.uris = uris;
+	}
 
 	@Override
 	public String toString() {
-		return "Song [id=" + id + ", name=" + name + ", duration=" + duration + ", releaseDate=" + releaseDate
-				+ ", album=" + album + ", genres=" + genres + ", playlists=" + playlists + ", artists=" + artists + "]";
+		return "Songs [id=" + id + ", name=" + name + ", duration=" + duration + ", releaseDate=" + releaseDate
+				+ ", albums=" + albums + ", genres=" + genres + ", playlists=" + playlists + ", artists=" + artists
+				+ ", reviews=" + reviews + ", uris=" + uris + "]";
 	}
 
 }

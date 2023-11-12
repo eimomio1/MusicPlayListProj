@@ -2,6 +2,7 @@ package com.proj.music.entity;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,11 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import se.michaelthelin.spotify.enums.ModelObjectType;
-import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
-import se.michaelthelin.spotify.model_objects.specification.Followers;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 
 @Entity
@@ -34,41 +33,34 @@ public class Artists {
 
 	@ManyToMany
 	@JoinTable(name = "artist_song", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
-	private List<Song> songs; // Artists can be associated with one or more songs.
+	private List<Songs> songs; // Artists can be associated with one or more songs.
 
 	@ManyToMany
 	@JoinTable(name = "artist_album", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "album_id"))
 	private List<Albums> albums; // Artists can be associated with multiple albums.
 
 	@ManyToMany
-	@JoinTable(name = "ArtistGenre", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
-	private List<Genres> genres; // Artists can be associated with many genres.
-
-//	@Column(name = "externalUrls")
-//	private ExternalUrl externalUrls;
-//	
-//	@Column(name = "followers")
-//	private Followers followers;
+	@JoinTable(name = "artist_genre", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+	private Set<Genres> genres; // Artists can be associated with many genres.
 
 	@Column(name = "href")
 	private String href;
-
+	
+	@Lob
+	@Column(name = "images")
 	private Image[] images;
 
 	@Column(name = "popularity")
 	private Integer popularity;
-
-//	private ModelObjectType type;
 
 	@Column(name = "uri")
 	private String uri;
 
 	public Artists() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public Artists(long id, String name, String spotifyId, List<Song> songs, List<Albums> albums, List<Genres> genres,
+	public Artists(long id, String name, String spotifyId, List<Songs> songs, List<Albums> albums, Set<Genres> genres,
 			String href, Image[] images, Integer popularity, String uri) {
 		super();
 		this.id = id;
@@ -107,11 +99,11 @@ public class Artists {
 		this.name = name;
 	}
 
-	public List<Song> getSongs() {
+	public List<Songs> getSongs() {
 		return songs;
 	}
 
-	public void setSongs(List<Song> songs) {
+	public void setSongs(List<Songs> songs) {
 		this.songs = songs;
 	}
 
@@ -123,11 +115,11 @@ public class Artists {
 		this.albums = albums;
 	}
 
-	public List<Genres> getGenres() {
+	public Set<Genres> getGenres() {
 		return genres;
 	}
 
-	public void setGenres(List<Genres> genres) {
+	public void setGenres(Set<Genres> genres) {
 		this.genres = genres;
 	}
 

@@ -2,22 +2,30 @@ package com.proj.music.service.impl;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.proj.music.entity.Playlists;
+import com.proj.music.entity.Songs;
+import com.proj.music.entity.Users;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.PlaylistRepository;
+import com.proj.music.repository.SongRepository;
+import com.proj.music.repository.UserRepository;
 import com.proj.music.service.PlaylistService;
-
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 
 @Service
 public class PlaylistServiceImpl implements PlaylistService {
 
 	@Autowired
 	private PlaylistRepository playlistRepository;
+
+	@Autowired
+	private UserRepository userRespository;
+	
+	@Autowired
+	private SongRepository songRepository;
 
 	@Override
 	public String updatePlaylistById(long id, Playlists playlist) {
@@ -46,12 +54,27 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
-	public String addPlaylist(Playlist playlist) {
-		Playlists playlists = new Playlists();
-		playlists.setName(playlist.getName());
-		playlists.setDescription(playlist.getDescription());
-		playlistRepository.save(playlists);
-		return "Playlist has been added";
+	public String addPlaylist(Playlist playlist, String userId) {
+		Optional<Users> optionalUser = Optional.of(userRespository.findByRefId(userId));
+
+		if (optionalUser.isPresent()) {
+			Users user = optionalUser.get();
+
+			// Set playlist properties
+			Playlists playlists = new Playlists();
+			playlists.setName(playlist.getName());
+			playlists.setDescription(playlist.getDescription());
+
+			// Add the playlist to the user's playlists
+			user.getPlaylists().add(playlists);
+
+			// Save changes
+			playlistRepository.save(playlists);
+
+			return "Playlist has been added";
+		} else {
+			return "User not found";
+		}
 	}
 
 	@Override
