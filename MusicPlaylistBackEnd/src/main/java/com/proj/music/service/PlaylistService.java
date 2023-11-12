@@ -5,6 +5,7 @@ import java.util.List;
 import com.proj.music.entity.Playlists;
 
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 
 
 
@@ -15,7 +16,7 @@ public interface PlaylistService {
 
 	Playlists getPlaylistById(long id);
 
-	String addPlaylist(Playlist playlist);
+	String addPlaylist(Playlist playlist, String userId);
 
 	List<Playlists> getPlaylists();
 }

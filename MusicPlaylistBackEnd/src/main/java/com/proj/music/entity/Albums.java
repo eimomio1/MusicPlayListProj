@@ -1,17 +1,17 @@
 package com.proj.music.entity;
 
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "albums")
@@ -25,22 +25,24 @@ public class Albums {
 	@Column(name = "album_name")
 	private String name;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name = "release_date")
-	private LocalDate releaseDate;
+	private Date releaseDate;
 
-	// Album Entity
 	@ManyToMany(mappedBy = "albums")
 	private List<Artists> artist; // An album can be associated with multiple artists.
 
-	@OneToMany
-	@JoinColumn(name = "album_id") // Map the "album_id" in the Song table to create the relationship
-	private List<Song> songs; // An album can contain multiple songs
+	@OneToMany(mappedBy = "albums")
+	private List<Songs> songs; // for one album it contains multiple songs
 
+	@OneToMany(mappedBy = "albums")
+	private List<Reviews> reviews; // For one album there are many reviews
+	
 	public Albums() {
 		super();
 	}
 
-	public Albums(int id, String name, LocalDate releaseDate, List<Artists> artist, List<Song> songs) {
+	public Albums(int id, String name, Date releaseDate, List<Artists> artist, List<Songs> songs) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -66,11 +68,11 @@ public class Albums {
 		this.name = name;
 	}
 
-	public LocalDate getReleaseDate() {
+	public Date getReleaseDate() {
 		return releaseDate;
 	}
 
-	public void setReleaseDate(LocalDate releaseDate) {
+	public void setReleaseDate(Date releaseDate) {
 		this.releaseDate = releaseDate;
 	}
 
@@ -82,18 +84,18 @@ public class Albums {
 		this.artist = artist;
 	}
 
-	public List<Song> getSongs() {
+	public List<Songs> getSongs() {
 		return songs;
 	}
 
-	public void setSongs(List<Song> songs) {
+	public void setSongs(List<Songs> songs) {
 		this.songs = songs;
 	}
 
 	@Override
 	public String toString() {
-		return "Album [id=" + id + ", name=" + name + ", releaseDate=" + releaseDate + ", artist=" + artist + ", songs="
-				+ songs + "]";
+		return "Albums [id=" + id + ", name=" + name + ", releaseDate=" + releaseDate + ", artist=" + artist
+				+ ", songs=" + songs + ", reviews=" + reviews + "]";
 	}
 
 }

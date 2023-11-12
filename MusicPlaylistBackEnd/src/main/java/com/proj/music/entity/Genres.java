@@ -1,11 +1,15 @@
 package com.proj.music.entity;
 
+import java.util.Set;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
 
 @Entity
 @Table(name = "genres")
@@ -21,6 +25,16 @@ public class Genres {
 
 	@Column(name = "description")
 	private String description;
+	
+	@ManyToMany(mappedBy = "genres")
+	private Set<Songs> song;
+	
+	@Transient
+	private Artist artistSpotify;
+	
+	// For one genre there are many artist
+	@ManyToMany(mappedBy = "genres")
+	private Set<Artists> artists;
 
 	public Genres() {
 		super();
@@ -59,7 +73,8 @@ public class Genres {
 
 	@Override
 	public String toString() {
-		return "Genre [id=" + id + ", name=" + name + ", description=" + description + "]";
+		return "Genres [id=" + id + ", name=" + name + ", description=" + description + ", song=" + song + ", artists="
+				+ artists + "]";
 	}
 
 }

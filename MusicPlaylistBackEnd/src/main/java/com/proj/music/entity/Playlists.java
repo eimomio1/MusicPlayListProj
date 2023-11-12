@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,11 +28,13 @@ public class Playlists {
 
 	@Column(name = "description")
 	private String description;
+	
+	@Column(name = "spotifyId")
+	private String spotifyPlaylistId;
 
-	@Column(name = "songs")
 	@ManyToMany
-	@JoinTable(name = "PlaylistSongs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
-	private List<Song> songs; // A playlist can contain multiple songs
+	@JoinTable(name = "playlist_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+	private List<Songs> songs; // A playlist can contain multiple songs
 
 	@Column(name = "createdAt")
 	private LocalDate createdAt;
@@ -42,11 +45,14 @@ public class Playlists {
 	@ManyToMany(mappedBy = "playlists")
 	private List<Users> users; // A playlist can be associated with multiple users
 
+	@OneToMany(mappedBy = "playlist")
+	private List<Reviews> reviews; // For one playlist there are many reviews
+	
 	public Playlists() {
 		super();
 	}
 
-	public Playlists(long id, String name, String description, List<Song> songs, LocalDate createdAt,
+	public Playlists(long id, String name, String description, List<Songs> songs, LocalDate createdAt,
 			LocalDate updatedAt, List<Users> users) {
 		super();
 		this.id = id;
@@ -82,11 +88,11 @@ public class Playlists {
 		this.description = description;
 	}
 
-	public List<Song> getSongs() {
+	public List<Songs> getSongs() {
 		return songs;
 	}
 
-	public void setSongs(List<Song> songs) {
+	public void setSongs(List<Songs> songs) {
 		this.songs = songs;
 	}
 
@@ -116,7 +122,9 @@ public class Playlists {
 
 	@Override
 	public String toString() {
-		return "Playlist [id=" + id + ", name=" + name + ", description=" + description + ", songs=" + songs
-				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users + "]";
+		return "Playlists [id=" + id + ", name=" + name + ", description=" + description + ", songs=" + songs
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users + ", reviews=" + reviews
+				+ "]";
 	}
+
 }
