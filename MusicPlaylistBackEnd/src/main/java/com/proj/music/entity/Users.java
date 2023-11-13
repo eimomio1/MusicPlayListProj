@@ -1,6 +1,7 @@
 package com.proj.music.entity;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -38,9 +39,9 @@ public class Users implements Serializable {
 
 	@Column(name = "REFRESH_TOKEN", length = 3000)
 	private String refreshToken;
-	
+
 	@Column(name = "Token_expiration")
-	private long accessTokenExpirationTime;
+	private Instant expiresAt;
 
 	@ManyToMany
 	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
@@ -49,9 +50,9 @@ public class Users implements Serializable {
 	public Users() {
 		super();
 	}
-	
+
 	public Users(long id, String userName, String email, String refId, String accessToken, String refreshToken,
-			long accessTokenExpirationTime, List<Playlists> playlists) {
+			Instant expiresAt, List<Playlists> playlists) {
 		super();
 		this.id = id;
 		this.userName = userName;
@@ -59,7 +60,7 @@ public class Users implements Serializable {
 		this.refId = refId;
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
-		this.accessTokenExpirationTime = accessTokenExpirationTime;
+		this.expiresAt = expiresAt;
 		this.playlists = playlists;
 	}
 
@@ -118,20 +119,21 @@ public class Users implements Serializable {
 	public void setRefid(String refId) {
 		this.refId = refId;
 	}
-	
-	public long getAccessTokenExpirationTime() {
-		return accessTokenExpirationTime;
+
+	// Constructors, getters, setters, and other methods...
+
+	public Instant getExpiresAt() {
+		return expiresAt;
 	}
 
-	public void setAccessTokenExpirationTime(long accessTokenExpirationTime) {
-		this.accessTokenExpirationTime = accessTokenExpirationTime;
+	public void setExpiresAt(Instant expiresAt) {
+		this.expiresAt = expiresAt;
 	}
 
 	@Override
 	public String toString() {
 		return "Users [id=" + id + ", userName=" + userName + ", email=" + email + ", refId=" + refId + ", accessToken="
-				+ accessToken + ", refreshToken=" + refreshToken + ", accessTokenExpirationTime="
-				+ accessTokenExpirationTime + ", playlists=" + playlists + "]";
+				+ accessToken + ", refreshToken=" + refreshToken + ", expiresAt=" + expiresAt + ", playlists="
+				+ playlists + "]";
 	}
-	
 }

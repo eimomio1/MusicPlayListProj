@@ -1,5 +1,7 @@
 package com.proj.music.service.impl;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +32,14 @@ public class UserServiceImpl implements UserService {
 		user.setEmail(spotifyUser.getEmail()); // Use the email from the Spotify user
 		user.setUserName(spotifyUser.getDisplayName()); // Use the username from the Spotify user
 		user.setAccessToken(accessToken);
+		Instant expiresAt = Instant.now().plus(Duration.ofHours(1));
+		user.setExpiresAt(expiresAt);
 		user.setRefreshToken(refreshToken);
 		user.setRefid(spotifyUser.getId());
 		// Save the user to the database
 		userRepository.save(user);
 
 		return "User has been saved";
-
 	}
 
 	@Override
