@@ -6,5 +6,5 @@ import com.proj.music.entity.Playlists;
 
 public interface PlaylistRepository extends JpaRepository<Playlists, Long> {
 	
-	Playlists findPlaylistById(String spotifyPlaylistId);
+//	Playlists findPlaylistById(String spotifyPlaylistId);
 }

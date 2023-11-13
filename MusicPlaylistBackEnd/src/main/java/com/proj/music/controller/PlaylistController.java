@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.proj.music.entity.Users;
 import com.proj.music.service.PlaylistService;
+import com.proj.music.service.SpotifyAuthService;
 import com.proj.music.service.UserService;
 import com.proj.music.spotify.config.SpotifyConfiguration;
 
@@ -13,7 +14,6 @@ import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.special.FeaturedPlaylists;
-import se.michaelthelin.spotify.model_objects.special.SnapshotResult;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
@@ -21,14 +21,12 @@ import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistTrack;
 import se.michaelthelin.spotify.requests.data.browse.GetCategorysPlaylistsRequest;
 import se.michaelthelin.spotify.requests.data.browse.GetListOfFeaturedPlaylistsRequest;
-import se.michaelthelin.spotify.requests.data.playlists.AddItemsToPlaylistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.CreatePlaylistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetListOfCurrentUsersPlaylistsRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetListOfUsersPlaylistsRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistCoverImageRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
-import se.michaelthelin.spotify.requests.data.playlists.RemoveItemsFromPlaylistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.UploadCustomPlaylistCoverImageRequest;
 
 import java.io.IOException;
@@ -48,6 +46,9 @@ public class PlaylistController {
 
 	@Autowired
 	PlaylistService playlistService;
+	
+	@Autowired
+	SpotifyAuthService spotifyService;
 
 	@Autowired
 	private SpotifyConfiguration spotifyConfiguration;
@@ -55,49 +56,50 @@ public class PlaylistController {
 	@Autowired
 	private SpotifyApi spotifyApi;
 
-	@PostMapping("/create-playlist/users/{username}/playlists")
-	public ResponseEntity<String> createPlaylist(@RequestBody String nameOfPlaylist, @PathVariable String username) {
+	@PostMapping("/create-playlist/users/{userId}/playlists")
+	public ResponseEntity<String> createPlaylist(@RequestBody String nameOfPlaylist, @PathVariable String userId) {
 		System.out.println("Received request to create playlist");
 
-		try {
-			// Retrieve the Users object from the repository
-			Users users = userService.findRefById(username);
+	    try {
+	        // Retrieve the Users object from the repository
+	        Users users = userService.findRefById(userId);
 
-			if (users != null) {
-				spotifyApi.setAccessToken(users.getAccessToken());
-				spotifyApi.setRefreshToken(users.getRefreshToken());
+	        if (users != null) {
+	            // Check if the access token is still valid
+	            if (spotifyService.isTokenExpired(users.getExpiresAt())) {
+	                // If expired, refresh the access token
+	                spotifyService.refreshAccessToken(users);
+	            }
 
-				// Create a playlist on Spotify
-				final CreatePlaylistRequest.Builder playlistBuilder = spotifyApi.createPlaylist(username,
-						nameOfPlaylist);
+	            spotifyApi.setAccessToken(users.getAccessToken());
+	            spotifyApi.setRefreshToken(users.getRefreshToken());
 
-				// Log the request payload
-				logger.info("Playlist Request Payload: {}", playlistBuilder.build().getBody());
+	            // Create a playlist on Spotify
+	            final CreatePlaylistRequest.Builder playlistBuilder = spotifyApi.createPlaylist(userId, nameOfPlaylist);
 
-				final CreatePlaylistRequest playlistRequest = playlistBuilder.build();
+	            // Log the request payload
+	            logger.info("Playlist Request Payload: {}", playlistBuilder.build().getBody());
 
-				Playlist newPlaylist = playlistRequest.execute();
-				// Saves playlist to database table
-				playlistService.addPlaylist(newPlaylist, username);
+	            final CreatePlaylistRequest playlistRequest = playlistBuilder.build();
 
-				return new ResponseEntity<>("Playlist has been created", HttpStatus.CREATED);
-			} else {
-				return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-			}
-		} catch (BadRequestException e) {
-			// Log the detailed error information
-			logger.error("Error creating playlist: {}", e.getMessage());
+	            Playlist newPlaylist = playlistRequest.execute();
+	            // Saves playlist to database table
+	            playlistService.addPlaylist(newPlaylist, userId);
 
-			e.printStackTrace(); // This will print the stack trace for more details
-			return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (Exception e) {
-			logger.error("Failed to create playlist", e);
-			// Handle exception, log or return an error response
-
-			return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	            return new ResponseEntity<>("Playlist has been created", HttpStatus.CREATED);
+	        } else {
+	            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+	        }
+	    } catch (BadRequestException e) {
+	        // Log the detailed error information
+	        logger.error("Error creating playlist: {}", e.getMessage());
+	        e.printStackTrace(); // This will print the stack trace for more details
+	        return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	    } catch (Exception e) {
+	        logger.error("Failed to create playlist", e);
+	        // Handle exception, log, or return an error response
+	        return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
 	// Get album By Id
