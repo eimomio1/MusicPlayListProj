@@ -21,6 +21,7 @@ import com.neovisionaries.i18n.CountryCode;
 import com.proj.music.entity.Artists;
 import com.proj.music.entity.Users;
 import com.proj.music.service.ArtistService;
+import com.proj.music.service.SpotifyAuthService;
 import com.proj.music.service.UserService;
 import com.proj.music.spotify.config.SpotifyConfiguration;
 
@@ -49,6 +50,9 @@ public class ArtistController {
 
 	@Autowired
 	private ArtistService artistService;
+	
+	@Autowired
+	private SpotifyAuthService spotifyService;
 
 	private final SpotifyApi spotifyApi;
 
@@ -62,11 +66,15 @@ public class ArtistController {
 	public ResponseEntity<Artist> getArtistById(@PathVariable String artistId, @RequestParam String userId)
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
-		Users userDetails = userProfileService.findRefById(userId);
+		Users users = userProfileService.findRefById(userId);
+        if (spotifyService.isTokenExpired(users.getExpiresAt())) {
+            // If expired, refresh the access token
+            spotifyService.refreshAccessToken(users);
+        }
 		// Then it pass the access token for the user to do the spotify api request
-		spotifyApi.setAccessToken(userDetails.getAccessToken());
+		spotifyApi.setAccessToken(users.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
-		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
+		spotifyApi.setRefreshToken(users.getRefreshToken());
 		// Then it gets the artist
 		final GetArtistRequest getArtistRequest = spotifyApi.getArtist(artistId).build();
 		// creates a artist object
@@ -80,7 +88,10 @@ public class ArtistController {
 	@GetMapping(value = "/user-top-artists")
 	public Artist[] getUserTopArtists(@RequestParam String userId) {
 		Users userDetails = userProfileService.findRefById(userId);
-
+        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+            // If expired, refresh the access token
+            spotifyService.refreshAccessToken(userDetails);
+        }
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
@@ -102,6 +113,10 @@ public class ArtistController {
 	public AlbumSimplified[] getArtistAlbums(@PathVariable String artistId, @RequestParam String userId) {
 		// first its gets the user
 		Users userDetails = userProfileService.findRefById(userId);
+        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+            // If expired, refresh the access token
+            spotifyService.refreshAccessToken(userDetails);
+        }
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -125,7 +140,18 @@ public class ArtistController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public Track[] getArtistTopTracks(@PathVariable String artistId, @RequestParam String userId)
 			throws ParseException, SpotifyWebApiException, IOException {
-
+		
+		// first its gets the user
+		Users userDetails = userProfileService.findRefById(userId);
+        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+            // If expired, refresh the access token
+            spotifyService.refreshAccessToken(userDetails);
+        }
+		// Then it pass the access token for the user to do the spotify api request
+		spotifyApi.setAccessToken(userDetails.getAccessToken());
+		// Then it refreshes the token for the user to the spotify api request
+		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
+		
 		final GetArtistsTopTracksRequest getArtistTopTracksRequest = spotifyApi.getArtistsTopTracks(userId, null)
 				.build();
 		try {
@@ -141,6 +167,17 @@ public class ArtistController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public Artist[] getArtistRelatedArtist(@PathVariable String artistId,@RequestParam String userId)
 	{
+		// first its gets the user
+		Users userDetails = userProfileService.findRefById(userId);
+        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+            // If expired, refresh the access token
+            spotifyService.refreshAccessToken(userDetails);
+        }
+		// Then it pass the access token for the user to do the spotify api request
+		spotifyApi.setAccessToken(userDetails.getAccessToken());
+		// Then it refreshes the token for the user to the spotify api request
+		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
+		
 		final GetArtistsRelatedArtistsRequest getArtistRelatedArtistRequest = spotifyApi.getArtistsRelatedArtists(artistId)
 				.build();
 		try {
@@ -156,6 +193,16 @@ public class ArtistController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public String deleteArtistById(@PathVariable String artistId, @RequestParam String userId)
 	{
+		// first its gets the user
+		Users userDetails = userProfileService.findRefById(userId);
+        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+            // If expired, refresh the access token
+            spotifyService.refreshAccessToken(userDetails);
+        }
+		// Then it pass the access token for the user to do the spotify api request
+		spotifyApi.setAccessToken(userDetails.getAccessToken());
+		// Then it refreshes the token for the user to the spotify api request
+		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		return artistService.deleteArtistBySpotifyId(artistId);
 	}
 	
@@ -163,6 +210,16 @@ public class ArtistController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public String addArtist(@RequestBody Artist artist, @RequestParam String userId)
 	{
+		// first its gets the user
+		Users userDetails = userProfileService.findRefById(userId);
+        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+            // If expired, refresh the access token
+            spotifyService.refreshAccessToken(userDetails);
+        }
+		// Then it pass the access token for the user to do the spotify api request
+		spotifyApi.setAccessToken(userDetails.getAccessToken());
+		// Then it refreshes the token for the user to the spotify api request
+		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		artistService.addArtist(artist);
 		return "Artist has been added";
 	}

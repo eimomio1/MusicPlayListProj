@@ -42,13 +42,13 @@ public class PlaylistController {
 	private static final Logger logger = LoggerFactory.getLogger(PlaylistController.class);
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
 
 	@Autowired
-	PlaylistService playlistService;
-	
+	private PlaylistService playlistService;
+
 	@Autowired
-	SpotifyAuthService spotifyService;
+	private SpotifyAuthService spotifyService;
 
 	@Autowired
 	private SpotifyConfiguration spotifyConfiguration;
@@ -60,46 +60,44 @@ public class PlaylistController {
 	public ResponseEntity<String> createPlaylist(@RequestBody String nameOfPlaylist, @PathVariable String userId) {
 		System.out.println("Received request to create playlist");
 
-	    try {
-	        // Retrieve the Users object from the repository
-	        Users users = userService.findRefById(userId);
+		try {
+			// Retrieve the Users object from the repository
+			Users users = userService.findRefById(userId);
 
-	        if (users != null) {
-	            // Check if the access token is still valid
-	            if (spotifyService.isTokenExpired(users.getExpiresAt())) {
-	                // If expired, refresh the access token
-	                spotifyService.refreshAccessToken(users);
-	            }
+			if (users != null) {
+				// Check if the access token is still valid
+				if (spotifyService.isTokenExpired(users.getExpiresAt())) {
+					// If expired, refresh the access token
+					spotifyService.refreshAccessToken(users);
+				}
+				// sets the token given by the user
+				spotifyApi.setAccessToken(users.getAccessToken());
+				spotifyApi.setRefreshToken(users.getRefreshToken());
 
-	            spotifyApi.setAccessToken(users.getAccessToken());
-	            spotifyApi.setRefreshToken(users.getRefreshToken());
+				// Create a playlist on Spotify
+				final CreatePlaylistRequest.Builder playlistBuilder = spotifyApi.createPlaylist(userId, nameOfPlaylist);
 
-	            // Create a playlist on Spotify
-	            final CreatePlaylistRequest.Builder playlistBuilder = spotifyApi.createPlaylist(userId, nameOfPlaylist);
+				final CreatePlaylistRequest playlistRequest = playlistBuilder.build();
+				Playlist newPlaylist = playlistRequest.execute();
+				// Saves playlist to database table
+				playlistService.addPlaylist(newPlaylist, userId);
 
-	            // Log the request payload
-	            logger.info("Playlist Request Payload: {}", playlistBuilder.build().getBody());
-
-	            final CreatePlaylistRequest playlistRequest = playlistBuilder.build();
-
-	            Playlist newPlaylist = playlistRequest.execute();
-	            // Saves playlist to database table
-	            playlistService.addPlaylist(newPlaylist, userId);
-
-	            return new ResponseEntity<>("Playlist has been created", HttpStatus.CREATED);
-	        } else {
-	            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-	        }
-	    } catch (BadRequestException e) {
-	        // Log the detailed error information
-	        logger.error("Error creating playlist: {}", e.getMessage());
-	        e.printStackTrace(); // This will print the stack trace for more details
-	        return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	    } catch (Exception e) {
-	        logger.error("Failed to create playlist", e);
-	        // Handle exception, log, or return an error response
-	        return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+				return new ResponseEntity<>("Playlist has been created", HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+			}
+		} catch (BadRequestException e) {
+			// Log the detailed error information
+			logger.error("Error creating playlist: {}", e.getMessage());
+			e.printStackTrace(); // This will print the stack trace for more details
+			return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error("Failed to create playlist", e);
+			// Handle exception, log, or return an error response
+			return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	// Get album By Id
@@ -108,6 +106,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -128,6 +131,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -152,6 +160,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -177,6 +190,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -222,6 +240,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -242,6 +265,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -283,6 +311,11 @@ public class PlaylistController {
 			@RequestParam String... songUri) {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -295,18 +328,25 @@ public class PlaylistController {
 
 	@PutMapping(value = "/playlists/{playlistId}/images")
 	@ResponseStatus(value = HttpStatus.OK)
-	public String updateCustomImagePlaylist(@RequestParam String userId, @PathVariable String playlistId) throws ParseException, SpotifyWebApiException, IOException {
+	public String updateCustomImagePlaylist(@RequestParam String userId, @PathVariable String playlistId)
+			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-		// It send access token to spotify for the request to update playlist customer image 
+		// It send access token to spotify for the request to update playlist customer
+		// image
 		final UploadCustomPlaylistCoverImageRequest uploadCustomerPlaylistCoverImageRqst = spotifyApi
 				.uploadCustomPlaylistCoverImage(playlistId).build();
 		String uploadPlaylistCoverImage = uploadCustomerPlaylistCoverImageRqst.execute();
-		
+
 		return uploadPlaylistCoverImage;
 	}
 }

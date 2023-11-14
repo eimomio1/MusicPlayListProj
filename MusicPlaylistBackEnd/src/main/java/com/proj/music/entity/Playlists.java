@@ -119,12 +119,28 @@ public class Playlists {
 	public void setUsers(List<Users> users) {
 		this.users = users;
 	}
+	
+	public String getSpotifyPlaylistId() {
+		return spotifyPlaylistId;
+	}
+
+	public void setSpotifyPlaylistId(String spotifyPlaylistId) {
+		this.spotifyPlaylistId = spotifyPlaylistId;
+	}
+
+	public List<Reviews> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Reviews> reviews) {
+		this.reviews = reviews;
+	}
 
 	@Override
 	public String toString() {
-		return "Playlists [id=" + id + ", name=" + name + ", description=" + description + ", songs=" + songs
-				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users + ", reviews=" + reviews
-				+ "]";
+		return "Playlists [id=" + id + ", name=" + name + ", description=" + description + ", spotifyPlaylistId="
+				+ spotifyPlaylistId + ", songs=" + songs + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
+				+ ", users=" + users + ", reviews=" + reviews + "]";
 	}
 
 }
