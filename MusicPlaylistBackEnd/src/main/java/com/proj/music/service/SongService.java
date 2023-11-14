@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.proj.music.entity.Songs;
 
+import se.michaelthelin.spotify.model_objects.specification.Track;
+
 public interface SongService {
 	String updateSongById(long id, Songs song);
 
@@ -11,7 +13,11 @@ public interface SongService {
 
 	Songs getSongById(long id);
 
-	String addSong(Songs song);
+	String addSong(Track song);
 
 	List<Songs> getSongs();
+	
+	String deleteBySpotifyId(String spotifyId);
+	
+	Boolean existsBySpotifyId(String spotifyId);
 }

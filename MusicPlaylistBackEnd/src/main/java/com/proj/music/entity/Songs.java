@@ -25,7 +25,7 @@ public class Songs {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(name = "song_name")
+	@Column(name = "song_name", nullable = false)
 	private String name;
 
 	@Column(name = "duration")
@@ -54,21 +54,27 @@ public class Songs {
 	@Column(name = "uris")
 	private String uris;
 	
+	@Column(name ="spotifyId")
+	private String spotifyId;
+	
 	public Songs() {
 		super();
 	}
 
-	public Songs(long id, String name, double duration, LocalDate releaseDate, Albums album, Set<Genres> genres,
-			List<Playlists> playlists, List<Artists> artists) {
+	public Songs(long id, String name, double duration, LocalDate releaseDate, Albums albums, Set<Genres> genres,
+			List<Playlists> playlists, List<Artists> artists, List<Reviews> reviews, String uris, String spotifyId) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.duration = duration;
 		this.releaseDate = releaseDate;
-		this.albums = album;
+		this.albums = albums;
 		this.genres = genres;
 		this.playlists = playlists;
 		this.artists = artists;
+		this.reviews = reviews;
+		this.uris = uris;
+		this.spotifyId = spotifyId;
 	}
 
 	public long getId() {
@@ -157,6 +163,14 @@ public class Songs {
 
 	public void setUris(String uris) {
 		this.uris = uris;
+	}
+		
+	public String getSpotifyId() {
+		return spotifyId;
+	}
+
+	public void setSpotifyId(String spotifyId) {
+		this.spotifyId = spotifyId;
 	}
 
 	@Override
