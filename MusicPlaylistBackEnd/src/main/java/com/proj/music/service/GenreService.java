@@ -14,4 +14,6 @@ public interface GenreService {
 	String addGenre(Genres genre);
 
 	List<Genres> getGenres();
+	
+	Genres findGenreBySpotifyId(String genreSpotifyId);
 }

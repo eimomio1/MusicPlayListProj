@@ -1,11 +1,9 @@
 package com.proj.music.controller;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,15 +20,11 @@ import com.proj.music.spotify.config.SpotifyConfiguration;
 
 import jakarta.servlet.http.HttpServletResponse;
 import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
-import se.michaelthelin.spotify.model_objects.specification.Paging;
-import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.User;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
-import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 
 @CrossOrigin(origins = "http://localhost:4200") // Allow requests from your React app
@@ -130,28 +123,6 @@ public class SpotifyController {
 			System.out.println("Exception occured while landing to home page: " + e);
 		}
 		return null;
-	}
-
-	@GetMapping(value = "/getTokens")
-	public String getTokens() {
-		return spotifyApi.getAccessToken();
-	}
-
-	@GetMapping(value = "/user-top-songs")
-	@ResponseStatus(value = HttpStatus.OK)
-	public Track[] getUserTopTracks(@RequestParam String userId)
-			throws ParseException, SpotifyWebApiException, IOException {
-		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
-
-		final GetUsersTopTracksRequest getUsersTopTracksRequest = object.getUsersTopTracks().time_range("medium_term")
-				.limit(10).offset(0).build();
-		try {
-			final Paging<Track> trackPaging = getUsersTopTracksRequest.execute();
-			return trackPaging.getItems();
-		} catch (Exception e) {
-			System.out.println("Exception occured while fetching top songs: " + e);
-		}
-		return new Track[0];
 	}
 
 }

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neovisionaries.i18n.CountryCode;
-import com.proj.music.entity.Artists;
 import com.proj.music.entity.Users;
 import com.proj.music.service.ArtistService;
 import com.proj.music.service.SpotifyAuthService;
@@ -36,7 +35,6 @@ import se.michaelthelin.spotify.requests.data.artists.GetArtistsAlbumsRequest;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistsRelatedArtistsRequest;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistsTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopArtistsRequest;
-import se.michaelthelin.spotify.requests.data.personalization.simplified.GetUsersTopTracksRequest;
 
 @RestController
 @RequestMapping("/api")
@@ -63,6 +61,7 @@ public class ArtistController {
 	
 	// Get Artist By Id
 	@GetMapping(value = "/artists/{artistId}")
+	@ResponseStatus(value = HttpStatus.OK)
 	public ResponseEntity<Artist> getArtistById(@PathVariable String artistId, @RequestParam String userId)
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user

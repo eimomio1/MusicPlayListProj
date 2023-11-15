@@ -17,27 +17,27 @@ public class ReviewServiceImpl implements ReviewService {
 	@Autowired
 	private ReviewRepository reviewRepository;
 
-	@Override
-	public String updateReviewById(long id, Reviews review) {
-		Optional<Reviews> review1 = reviewRepository.findById(id);
-		if (review1.isPresent()) {
-			review1.get().setId(review.getId());
-			review1.get().setName(review.getName());
-			review1.get().setComment(review.getComment());
-			review1.get().setDatePosted(review.getDatePosted());
-			review1.get().setRating(review.getRating());
-		}
-		return "Review has been updated";
-	}
+//	@Override
+//	public String updateReviewById(String userId, String songId,Reviews review) {
+//		Optional<Reviews> review1 = reviewRepository.findReviewByUserId(userId);
+//		if (review1.isPresent()) {
+//			review1.get().setId(review.getId());
+//			review1.get().setName(review.getName());
+//			review1.get().setComment(review.getComment());
+//			review1.get().setDatePosted(review.getDatePosted());
+//			review1.get().setRating(review.getRating());
+//		}
+//		return "Review has been updated";
+//	}
 
-	@Override
-	public String deleteReviewById(long id) {
-		Optional<Reviews> review1 = reviewRepository.findById(id);
-		if (review1.isPresent()) {
-			reviewRepository.deleteById(id);
-		}
-		return "Review has been deleted";
-	}
+//	@Override
+//	public String deleteReviewById(String userId, String songId) {
+//		Optional<Reviews> review1 = reviewRepository.findReviewByUserId(userId);
+//		if (review1.isPresent()) {
+//			reviewRepository.deleteReviewByUserIdAndSongId(userId, songId);
+//		}
+//		return "Review has been deleted";
+//	}
 
 	@Override
 	public Reviews getReviewById(long id) {
@@ -52,8 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public List<Reviews> getReviews() {
-		return reviewRepository.findAll();
+	public List<Reviews> getReviewsBySongId(String spotifyId) {
+		return reviewRepository.findReviewBySongId(spotifyId);
 	}
-
 }

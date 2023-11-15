@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.proj.music.entity.Genres;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.GenreRepository;
 import com.proj.music.service.GenreService;
 
+@Service
 public class GenreServiceImpl implements GenreService {
 
 	@Autowired
@@ -56,6 +58,11 @@ public class GenreServiceImpl implements GenreService {
 	@Override
 	public List<Genres> getGenres() {
 		return genreRepository.findAll();
+	}
+
+	@Override
+	public Genres findGenreBySpotifyId(String genreSpotifyId) {
+		return genreRepository.findGenreByGenreSpotifyId(genreSpotifyId);
 	}
 
 }
