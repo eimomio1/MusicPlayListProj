@@ -48,13 +48,15 @@ public class PlaylistController {
 	private static final Logger logger = LoggerFactory.getLogger(PlaylistController.class);
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
+
+
+    @Autowired
+	private PlaylistService playlistService;
+
 
 	@Autowired
-	PlaylistService playlistService;
-
-	@Autowired
-	SpotifyAuthService spotifyService;
+	private SpotifyAuthService spotifyService;
 
 	@Autowired
 	private SpotifyConfiguration spotifyConfiguration;
@@ -77,17 +79,14 @@ public class PlaylistController {
 					spotifyService.refreshAccessToken(users);
 				}
 
+				// sets the token given by the user
 				spotifyApi.setAccessToken(users.getAccessToken());
 				spotifyApi.setRefreshToken(users.getRefreshToken());
 
 				// Create a playlist on Spotify
 				final CreatePlaylistRequest.Builder playlistBuilder = spotifyApi.createPlaylist(userId, nameOfPlaylist);
 
-				// Log the request payload
-				logger.info("Playlist Request Payload: {}", playlistBuilder.build().getBody());
-
 				final CreatePlaylistRequest playlistRequest = playlistBuilder.build();
-
 				Playlist newPlaylist = playlistRequest.execute();
 				// Saves playlist to database table
 				playlistService.addPlaylist(newPlaylist, userId);
@@ -275,6 +274,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -295,6 +299,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -319,6 +328,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -344,6 +358,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -389,6 +408,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -409,6 +433,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -450,6 +479,11 @@ public class PlaylistController {
 			@RequestParam String... songUri) {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -466,6 +500,11 @@ public class PlaylistController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request

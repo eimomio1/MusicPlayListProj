@@ -11,6 +11,9 @@ import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.SongRepository;
 import com.proj.music.service.SongService;
 
+import jakarta.transaction.Transactional;
+import se.michaelthelin.spotify.model_objects.specification.Track;
+
 @Service
 public class SongServiceImpl implements SongService {
 
@@ -45,8 +48,13 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
-	public String addSong(Songs song) {
-		songRepository.save(song);
+	public String addSong(Track song) {
+		Songs s1 = new Songs();
+		s1.setName(song.getName());
+		s1.setUris(song.getUri());
+		s1.setDuration(song.getDurationMs());
+		s1.setSpotifyId(song.getId());
+		songRepository.save(s1);
 		return "Song has been added";
 	}
 
@@ -54,5 +62,16 @@ public class SongServiceImpl implements SongService {
 	public List<Songs> getSongs() {
 		return songRepository.findAll();
 	}
+	
+	@Transactional
+	public String deleteBySpotifyId(String spotifyId)
+	{
+		songRepository.deleteBySpotifyId(spotifyId);
+		return "Song has been deleted";
+	}
 
+	@Override
+	public Boolean existsBySpotifyId(String spotifyId) {
+		return songRepository.existsBySpotifyId(spotifyId);
+	}
 }

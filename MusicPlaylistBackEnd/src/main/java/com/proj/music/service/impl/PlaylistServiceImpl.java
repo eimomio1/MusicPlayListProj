@@ -66,7 +66,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 			Playlists playlists = new Playlists();
 			playlists.setName(playlist.getName());
 			playlists.setDescription(playlist.getDescription());
+
              playlists.setSpotifyId(playlist.getId());
+
 			// Add the playlist to the user's playlists
 			user.getPlaylists().add(playlists);
 

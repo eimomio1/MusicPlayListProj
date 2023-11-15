@@ -138,6 +138,15 @@ public class Playlists {
 		this.reviews = reviews;
 	}
 
+	@Override
+	public String toString() {
+		return "Playlists [id=" + id + ", name=" + name + ", description=" + description + ", spotifyId=" + spotifyId
+				+ ", songs=" + songs + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users
+				+ ", reviews=" + reviews + "]";
+	}
+
+	
+
 	
 
 }
