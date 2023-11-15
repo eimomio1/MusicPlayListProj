@@ -30,7 +30,7 @@ public class Playlists {
 	private String description;
 	
 	@Column(name = "spotifyId")
-	private String spotifyPlaylistId;
+	private String spotifyId;
 
 	@ManyToMany
 	@JoinTable(name = "playlist_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
@@ -52,16 +52,18 @@ public class Playlists {
 		super();
 	}
 
-	public Playlists(long id, String name, String description, List<Songs> songs, LocalDate createdAt,
-			LocalDate updatedAt, List<Users> users) {
+	public Playlists(long id, String name, String description, String spotifyId, List<Songs> songs, LocalDate createdAt,
+			LocalDate updatedAt, List<Users> users, List<Reviews> reviews) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
+		this.spotifyId = spotifyId;
 		this.songs = songs;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.users = users;
+		this.reviews = reviews;
 	}
 
 	public long getId() {
@@ -86,6 +88,14 @@ public class Playlists {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getSpotifyId() {
+		return spotifyId;
+	}
+
+	public void setSpotifyId(String spotifyId) {
+		this.spotifyId = spotifyId;
 	}
 
 	public List<Songs> getSongs() {
@@ -120,11 +130,14 @@ public class Playlists {
 		this.users = users;
 	}
 
-	@Override
-	public String toString() {
-		return "Playlists [id=" + id + ", name=" + name + ", description=" + description + ", songs=" + songs
-				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users + ", reviews=" + reviews
-				+ "]";
+	public List<Reviews> getReviews() {
+		return reviews;
 	}
+
+	public void setReviews(List<Reviews> reviews) {
+		this.reviews = reviews;
+	}
+
+	
 
 }

@@ -45,6 +45,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 			playlistRepository.deleteById(id);
 		}
 		return "Playlist has been deleted";
+		
+		
 	}
 
 	@Override
@@ -64,7 +66,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 			Playlists playlists = new Playlists();
 			playlists.setName(playlist.getName());
 			playlists.setDescription(playlist.getDescription());
-
+             playlists.setSpotifyId(playlist.getId());
 			// Add the playlist to the user's playlists
 			user.getPlaylists().add(playlists);
 
@@ -80,6 +82,41 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	public List<Playlists> getPlaylists() {
 		return playlistRepository.findAll();
+	}
+
+	@Override
+	public String deletePlaylistBySpotifyId(String spotifyPlaylistId) {
+		Playlists playlist1 = playlistRepository.findPlaylistBySpotifyId(spotifyPlaylistId);
+		
+		if(playlist1 != null) {
+			
+			Playlists p = playlist1;
+			playlistRepository.deleteById(p.getId());
+			return "Playlist has been deleted";
+		}else {
+			
+			return "Playlist not found!";
+		}
+		
+		
+		
+	}
+
+	@Override
+	public Playlists getPlaylistBySpotifyId(String spotifyPlaylistId) {
+Optional<Playlists> playlist1 = Optional.of(playlistRepository.findPlaylistBySpotifyId(spotifyPlaylistId));
+		
+		if(playlist1.isPresent()) {
+			
+			Playlists plist = playlist1.get();
+			
+			return plist;
+			
+		}else {
+			
+			return null;
+		}
+		
 	}
 
 }
