@@ -19,4 +19,8 @@ public interface PlaylistService {
 	String addPlaylist(Playlist playlist, String userId);
 
 	List<Playlists> getPlaylists();
+	
+	String deletePlaylistBySpotifyId(String spotifyId);
+
+	Playlists getPlaylistBySpotifyId(String spotifyId);
 }

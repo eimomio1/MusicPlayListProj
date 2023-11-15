@@ -50,7 +50,8 @@ public class Users implements Serializable {
 	
 	@ManyToMany
 	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
-	private List<Playlists> playlists; // A user can have many playlists
+	private List<Playlists> playlists;
+ // A user can have many playlists
 
 	public Users() {
 		super();
