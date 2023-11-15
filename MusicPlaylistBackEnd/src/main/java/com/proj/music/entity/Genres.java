@@ -29,6 +29,9 @@ public class Genres {
 	@ManyToMany(mappedBy = "genres")
 	private Set<Songs> song;
 	
+	@Column(name = "genreSpotifyId")
+	private String genreSpotifyId;
+	
 	@Transient
 	private Artist artistSpotify;
 	

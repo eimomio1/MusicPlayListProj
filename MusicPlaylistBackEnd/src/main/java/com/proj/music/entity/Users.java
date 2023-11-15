@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
 
@@ -41,8 +43,11 @@ public class Users implements Serializable {
 	private String refreshToken;
 
 	@Column(name = "Token_expiration")
-	private Instant expiresAt;
-
+	private Instant expiresAt;	
+	
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Reviews> reviews;
+	
 	@ManyToMany
 	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
 	private List<Playlists> playlists; // A user can have many playlists

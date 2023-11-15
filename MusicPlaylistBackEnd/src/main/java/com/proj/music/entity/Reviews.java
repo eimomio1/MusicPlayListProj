@@ -1,21 +1,25 @@
 package com.proj.music.entity;
 
 import java.time.LocalDate;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "reviews")
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name = "review_type", discriminatorType = DiscriminatorType.STRING)
-//@DiscriminatorValue("Review") // Default type is "Review"
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "review_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("Review") // Default type is "Review"
 public class Reviews {
 
 	@Id
@@ -39,14 +43,18 @@ public class Reviews {
 	@ManyToOne
 	@JoinColumn(name = "album_id") // many reviews for one album
 	private Albums albums;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "playlist_id") // many reviews for one playlist
 	private Playlists playlist;
-
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users user;
+	
 	@Column(name = "rating")
 	private double rating;
-
+	
 	public Reviews() {
 		super();
 	}
