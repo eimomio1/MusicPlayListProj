@@ -1,7 +1,8 @@
 package com.proj.music.entity;
 
-import java.sql.Date;
+import java.util.Arrays;
 import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,13 +22,22 @@ public class Albums {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "album_id")
 	private int id;
+	
+	@Column(name = "spotifyAlbumId", nullable = false)
+	private String spotifyId;
 
-	@Column(name = "album_name")
+	@Column(name = "album_name", nullable = false)
 	private String name;
+
+	@Column(name = "genres")
+	private String[] genres;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "release_date")
-	private Date releaseDate;
+	private String releaseDate;
+	
+	@Column(name = "uri")
+	private String uri;
 
 	@ManyToMany(mappedBy = "albums")
 	private List<Artists> artist; // An album can be associated with multiple artists.
@@ -38,11 +48,14 @@ public class Albums {
 	@OneToMany(mappedBy = "albums")
 	private List<Reviews> reviews; // For one album there are many reviews
 	
+	@ManyToMany(mappedBy = "albums")
+	private List<Users> users;
+	
 	public Albums() {
 		super();
 	}
 
-	public Albums(int id, String name, Date releaseDate, List<Artists> artist, List<Songs> songs) {
+	public Albums(int id, String name, String releaseDate, List<Artists> artist, List<Songs> songs) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -60,6 +73,14 @@ public class Albums {
 		this.id = id;
 	}
 
+	public String getSpotifyId() {
+		return spotifyId;
+	}
+
+	public void setSpotifyId(String spotifyId) {
+		this.spotifyId = spotifyId;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -68,12 +89,28 @@ public class Albums {
 		this.name = name;
 	}
 
-	public Date getReleaseDate() {
+	public String[] getGenres() {
+		return genres;
+	}
+
+	public void setGenres(String[] genres) {
+		this.genres = genres;
+	}
+
+	public String getReleaseDate() {
 		return releaseDate;
 	}
 
-	public void setReleaseDate(Date releaseDate) {
+	public void setReleaseDate(String releaseDate) {
 		this.releaseDate = releaseDate;
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
 	public List<Artists> getArtist() {
@@ -92,10 +129,27 @@ public class Albums {
 		this.songs = songs;
 	}
 
+	public List<Reviews> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Reviews> reviews) {
+		this.reviews = reviews;
+	}
+
+	public List<Users> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<Users> users) {
+		this.users = users;
+	}
+
 	@Override
 	public String toString() {
-		return "Albums [id=" + id + ", name=" + name + ", releaseDate=" + releaseDate + ", artist=" + artist
-				+ ", songs=" + songs + ", reviews=" + reviews + "]";
+		return "Albums [id=" + id + ", spotifyId=" + spotifyId + ", name=" + name + ", genres="
+				+ Arrays.toString(genres) + ", releaseDate=" + releaseDate + ", uri=" + uri + ", artist=" + artist
+				+ ", songs=" + songs + ", reviews=" + reviews + ", users=" + users + "]";
 	}
 
 }

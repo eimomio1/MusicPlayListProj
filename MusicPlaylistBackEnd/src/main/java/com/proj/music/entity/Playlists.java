@@ -28,7 +28,7 @@ public class Playlists {
 
 	@Column(name = "description")
 	private String description;
-	
+
 	@Column(name = "spotifyId")
 	private String spotifyId;
 
@@ -47,7 +47,7 @@ public class Playlists {
 
 	@OneToMany(mappedBy = "playlist")
 	private List<Reviews> reviews; // For one playlist there are many reviews
-	
+
 	public Playlists() {
 		super();
 	}
@@ -144,9 +144,5 @@ public class Playlists {
 				+ ", songs=" + songs + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users
 				+ ", reviews=" + reviews + "]";
 	}
-
-	
-
-	
 
 }

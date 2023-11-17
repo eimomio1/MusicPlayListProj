@@ -1,21 +1,32 @@
 package com.proj.music.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proj.music.entity.Reviews;
+import com.proj.music.entity.Songs;
+import com.proj.music.entity.Users;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.ReviewRepository;
+import com.proj.music.repository.SongRepository;
+import com.proj.music.repository.UserRepository;
 import com.proj.music.service.ReviewService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
 	@Autowired
 	private ReviewRepository reviewRepository;
+
+	@Autowired
+	private SongRepository songRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 //	@Override
 //	public String updateReviewById(String userId, String songId,Reviews review) {
@@ -31,10 +42,10 @@ public class ReviewServiceImpl implements ReviewService {
 //	}
 
 //	@Override
-//	public String deleteReviewById(String userId, String songId) {
-//		Optional<Reviews> review1 = reviewRepository.findReviewByUserId(userId);
+//	public String deleteReviewById(String reviewId, String songId) {
+//		Optional<Reviews> review1 = reviewRepository.deleteReviewByReviewIdAndSongId(reviewId, songId);
 //		if (review1.isPresent()) {
-//			reviewRepository.deleteReviewByUserIdAndSongId(userId, songId);
+//			
 //		}
 //		return "Review has been deleted";
 //	}
@@ -46,13 +57,23 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public String addReview(Reviews review) {
-		reviewRepository.save(review);
-		return "Review has been added";
+	@Transactional
+	public String addReview(Reviews review, String songId, String userId) {
+		Optional<Songs> optionalSong = songRepository.findSongBySpotifyId(songId);
+		Optional<Users> optionalUser = Optional.of(userRepository.findByRefId(userId));
+		if (optionalSong.isPresent()) {
+			Reviews newReview = new Reviews();
+			newReview.setSong(optionalSong.get());
+			newReview.setName(review.getName());
+			newReview.setRating(review.getRating());
+			newReview.setUser(review.getUser());
+			optionalSong.get().getReviews().add(newReview);
+			optionalUser.get().getReviews().add(newReview);
+			reviewRepository.save(review);
+			return "Review has been added";
+		} else {
+			return "User not found";
+		}
 	}
 
-	@Override
-	public List<Reviews> getReviewsBySongId(String spotifyId) {
-		return reviewRepository.findReviewBySongId(spotifyId);
-	}
 }

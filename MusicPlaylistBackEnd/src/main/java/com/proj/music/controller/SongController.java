@@ -25,8 +25,10 @@ import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.miscellaneous.AudioAnalysis;
 import se.michaelthelin.spotify.model_objects.specification.AudioFeatures;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.Recommendations;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
 import se.michaelthelin.spotify.requests.data.library.CheckUsersSavedTracksRequest;
 import se.michaelthelin.spotify.requests.data.library.GetUsersSavedTracksRequest;
 import se.michaelthelin.spotify.requests.data.library.RemoveUsersSavedTracksRequest;
@@ -70,12 +72,12 @@ public class SongController {
 		final GetTrackRequest getTrackRequest = spotifyApi.getTrack(songId).build();
 
 		Track getTrack = null;
-
 		try {
 			getTrack = getTrackRequest.execute();
 		} catch (Exception e) {
 			System.out.println("Exception occured while fetching top songs: " + e);
 		}
+		songService.getSongBySpotifyId(songId);
 		return getTrack;
 	}
 
@@ -293,26 +295,26 @@ public class SongController {
 		return audioAnalysisTrack;
 	}
 
-//	@GetMapping(value = "/recommendations")
-//	private Recommendations getSongRecommendations(@RequestParam String userId) throws ParseException, SpotifyWebApiException, IOException {
-//		// first its gets the user
-//		Users userDetails = userService.findRefById(userId);
-//		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-//			// If expired, refresh the access token
-//			spotifyService.refreshAccessToken(userDetails);
-//		}
-//		// Then it pass the access token for the user to do the spotify api request
-//		spotifyApi.setAccessToken(userDetails.getAccessToken());
-//		// Then it refreshes the token for the user to the spotify api request
-//		spotifyApi.setRefreshToken(userDetails.getRefreshToken());		
-//		// Sends a request to spotifyapi to check user saved tracks
-//		GetRecommendationsRequest getRecommendations = spotifyApi.getRecommendations().limit(10).market(CountryCode.US).build();
-//		Recommendations recommendations = null;
-//		try {
-//			recommendations = getRecommendations.execute();
-//		} catch (ParseException | SpotifyWebApiException | IOException e) {
-//			e.printStackTrace();
-//		}
-//		return recommendations;
-//	}
+	@GetMapping(value = "/recommendations")
+	private Recommendations getSongRecommendations(@RequestParam String userId) throws ParseException, SpotifyWebApiException, IOException {
+		// first its gets the user
+		Users userDetails = userService.findRefById(userId);
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
+		// Then it pass the access token for the user to do the spotify api request
+		spotifyApi.setAccessToken(userDetails.getAccessToken());
+		// Then it refreshes the token for the user to the spotify api request
+		spotifyApi.setRefreshToken(userDetails.getRefreshToken());		
+		// Sends a request to spotifyapi to check user saved tracks
+		GetRecommendationsRequest getRecommendations = spotifyApi.getRecommendations().limit(10).market(CountryCode.US).build();
+		Recommendations recommendations = null;
+		try {
+			recommendations = getRecommendations.execute();
+		} catch (ParseException | SpotifyWebApiException | IOException e) {
+			e.printStackTrace();
+		}
+		return recommendations;
+	}
 }

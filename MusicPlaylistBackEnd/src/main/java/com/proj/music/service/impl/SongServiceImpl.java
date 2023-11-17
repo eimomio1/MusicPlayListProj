@@ -46,6 +46,11 @@ public class SongServiceImpl implements SongService {
 		return songRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Song Object has not been found."));
 	}
+	
+	public Songs getSongBySpotifyId(String spotifyId) {
+		return songRepository.findSongBySpotifyId(spotifyId)
+				.orElseThrow(() -> new ResourceNotFoundException("Song Object has not been found."));
+	}
 
 	@Override
 	public String addSong(Track song) {

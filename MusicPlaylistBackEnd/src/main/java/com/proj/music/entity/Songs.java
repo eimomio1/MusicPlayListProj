@@ -2,15 +2,13 @@ package com.proj.music.entity;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -38,11 +36,10 @@ public class Songs {
 	@JoinColumn(name = "album_id") // Map the "album_id" in the Album table to create the relationship
 	private Albums albums; // Many songs are in one album
 
-	@ManyToMany
-	@JoinTable(name = "songs_genres", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
-	private Set<Genres> genres; // A song can be associated with multiple genres
+	@Column(name = "genres")
+	private String[] genres;
 
-	@ManyToMany(mappedBy = "songs")
+	@OneToMany(mappedBy = "songs", cascade = CascadeType.REMOVE)
 	private List<Playlists> playlists; // A song can belong to multiple playlists
 
 	@ManyToMany(mappedBy = "songs")
@@ -61,7 +58,7 @@ public class Songs {
 		super();
 	}
 
-	public Songs(long id, String name, double duration, LocalDate releaseDate, Albums albums, Set<Genres> genres,
+	public Songs(long id, String name, double duration, LocalDate releaseDate, Albums albums, String [] genres,
 			List<Playlists> playlists, List<Artists> artists, List<Reviews> reviews, String uris, String spotifyId) {
 		super();
 		this.id = id;
@@ -117,11 +114,11 @@ public class Songs {
 		this.albums = album;
 	}
 
-	public Set<Genres> getGenres() {
+	public String[] getGenres() {
 		return genres;
 	}
 
-	public void setGenres(Set<Genres> genres) {
+	public void setGenres(String[] genres) {
 		this.genres = genres;
 	}
 

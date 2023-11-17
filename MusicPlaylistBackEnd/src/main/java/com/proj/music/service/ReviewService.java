@@ -11,7 +11,7 @@ public interface ReviewService {
 
 	Reviews getReviewById(long id);
 
-	String addReview(Reviews review);
+	String addReview(Reviews review, String songId, String userId);
 
-	List<Reviews> getReviewsBySongId(String spotifyId);
+//	List<Reviews> getReviewsBySongId(String spotifyId);
 }

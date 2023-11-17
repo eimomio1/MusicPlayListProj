@@ -134,6 +134,30 @@ public class Reviews {
 
 	public void setRating(double rating) {
 		this.rating = rating;
+	}	
+
+	public Songs getSongs() {
+		return songs;
+	}
+
+	public void setSongs(Songs songs) {
+		this.songs = songs;
+	}
+
+	public Albums getAlbums() {
+		return albums;
+	}
+
+	public void setAlbums(Albums albums) {
+		this.albums = albums;
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
 	}
 
 	@Override

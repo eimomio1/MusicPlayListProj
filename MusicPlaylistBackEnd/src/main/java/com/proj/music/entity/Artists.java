@@ -2,7 +2,6 @@ package com.proj.music.entity;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,13 +38,12 @@ public class Artists {
 	@JoinTable(name = "artist_album", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "album_id"))
 	private List<Albums> albums; // Artists can be associated with multiple albums.
 
-	@ManyToMany
-	@JoinTable(name = "artist_genre", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
-	private Set<Genres> genres; // Artists can be associated with many genres.
+	@Column(name = "genres")
+	private String[] genres;
 
 	@Column(name = "href")
 	private String href;
-	
+
 	@Lob
 	@Column(name = "images")
 	private Image[] images;
@@ -60,7 +58,7 @@ public class Artists {
 		super();
 	}
 
-	public Artists(long id, String name, String spotifyId, List<Songs> songs, List<Albums> albums, Set<Genres> genres,
+	public Artists(long id, String name, String spotifyId, List<Songs> songs, List<Albums> albums, String[] genres,
 			String href, Image[] images, Integer popularity, String uri) {
 		super();
 		this.id = id;
@@ -115,11 +113,11 @@ public class Artists {
 		this.albums = albums;
 	}
 
-	public Set<Genres> getGenres() {
+	public String[] getGenres() {
 		return genres;
 	}
 
-	public void setGenres(Set<Genres> genres) {
+	public void setGenres(String[] genres) {
 		this.genres = genres;
 	}
 

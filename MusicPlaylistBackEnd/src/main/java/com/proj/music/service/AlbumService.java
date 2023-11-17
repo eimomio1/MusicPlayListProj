@@ -4,14 +4,17 @@ import java.util.List;
 
 import com.proj.music.entity.Albums;
 
+import se.michaelthelin.spotify.model_objects.specification.Album;
+
 public interface AlbumService {
 	String updateAlbumById(long id, Albums album);
 
-	String deleteAlbumById(long id);
+	String deleteAlbumBySpotifyId(String spotifyId);
 
 	Albums getAlbumById(long id);
 
-	String addAlbum(Albums album);
+	String addAlbum(Album album, String userId);
 
 	List<Albums> getAlbums();
 }
+ 
