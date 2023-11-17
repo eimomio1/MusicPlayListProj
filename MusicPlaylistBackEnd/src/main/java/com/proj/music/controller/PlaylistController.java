@@ -3,18 +3,12 @@ package com.proj.music.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import com.google.gson.JsonArray;
-import com.proj.music.entity.Playlists;
 import com.proj.music.entity.Users;
 import com.proj.music.service.PlaylistService;
 import com.proj.music.service.SpotifyAuthService;
 import com.proj.music.service.UserService;
-import com.proj.music.spotify.config.SpotifyConfiguration;
-
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
-import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.special.FeaturedPlaylists;
 import se.michaelthelin.spotify.model_objects.special.SnapshotResult;
 import se.michaelthelin.spotify.model_objects.specification.Image;
@@ -22,6 +16,7 @@ import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistTrack;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.browse.GetCategorysPlaylistsRequest;
 import se.michaelthelin.spotify.requests.data.browse.GetListOfFeaturedPlaylistsRequest;
 import se.michaelthelin.spotify.requests.data.follow.UnfollowPlaylistRequest;
@@ -34,8 +29,12 @@ import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistCoverImageReq
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
 import se.michaelthelin.spotify.requests.data.playlists.UploadCustomPlaylistCoverImageRequest;
+import se.michaelthelin.spotify.requests.data.tracks.GetSeveralTracksRequest;
+import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 
 import java.io.IOException;
+import java.util.List;
+
 import org.apache.hc.core5.http.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,16 +49,11 @@ public class PlaylistController {
 	@Autowired
 	private UserService userService;
 
-
-    @Autowired
+	@Autowired
 	private PlaylistService playlistService;
-
 
 	@Autowired
 	private SpotifyAuthService spotifyService;
-
-	@Autowired
-	private SpotifyConfiguration spotifyConfiguration;
 
 	@Autowired
 	private SpotifyApi spotifyApi;
@@ -68,205 +62,147 @@ public class PlaylistController {
 	public ResponseEntity<String> createPlaylist(@RequestBody String nameOfPlaylist, @PathVariable String userId) {
 		System.out.println("Received request to create playlist");
 
-		try {
-			// Retrieve the Users object from the repository
-			Users users = userService.findRefById(userId);
+		// Retrieve the Users object from the repository
+		Users users = userService.findRefById(userId);
 
-			if (users != null) {
-				// Check if the access token is still valid
-				if (spotifyService.isTokenExpired(users.getExpiresAt())) {
-					// If expired, refresh the access token
-					spotifyService.refreshAccessToken(users);
-				}
-
-				// sets the token given by the user
-				spotifyApi.setAccessToken(users.getAccessToken());
-				spotifyApi.setRefreshToken(users.getRefreshToken());
-
-				// Create a playlist on Spotify
-				final CreatePlaylistRequest.Builder playlistBuilder = spotifyApi.createPlaylist(userId, nameOfPlaylist);
-
-				final CreatePlaylistRequest playlistRequest = playlistBuilder.build();
-				Playlist newPlaylist = playlistRequest.execute();
-				// Saves playlist to database table
-				playlistService.addPlaylist(newPlaylist, userId);
-
-				return new ResponseEntity<>("Playlist has been created", HttpStatus.CREATED);
-			} else {
-				return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		if (users != null) {
+			// Check if the access token is still valid
+			if (spotifyService.isTokenExpired(users.getExpiresAt())) {
+				// If expired, refresh the access token
+				spotifyService.refreshAccessToken(users);
 			}
-		} catch (BadRequestException e) {
-			// Log the detailed error information
-			logger.error("Error creating playlist: {}", e.getMessage());
-			e.printStackTrace(); // This will print the stack trace for more details
-			return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (Exception e) {
-			logger.error("Failed to create playlist", e);
-			// Handle exception, log, or return an error response
-			return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
+
+			// sets the token given by the user
+			spotifyApi.setAccessToken(users.getAccessToken());
+			spotifyApi.setRefreshToken(users.getRefreshToken());
+
+			// Create a playlist on Spotify
+			final CreatePlaylistRequest.Builder playlistBuilder = spotifyApi.createPlaylist(userId, nameOfPlaylist);
+
+			final CreatePlaylistRequest playlistRequest = playlistBuilder.build();
+			Playlist newPlaylist = null;
+			try {
+				newPlaylist = playlistRequest.execute();
+			} catch (ParseException | SpotifyWebApiException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// Saves playlist to database table
+			playlistService.addPlaylist(newPlaylist, userId);
+
+			return new ResponseEntity<>("Playlist has been created", HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
 	}
 
-	// Delete a  playlist
-	@DeleteMapping("/delete-playlist/users/{playlistId}/{userId}/playlists")
-	public ResponseEntity<String> deletePlaylist(@PathVariable String playlistId, @PathVariable String userId) {
+	// Delete a playlist
+	@DeleteMapping("/delete-playlist/users/{playlistId}")
+	public ResponseEntity<String> deletePlaylist(@PathVariable String playlistId, @RequestParam String userId) {
 
-		try {
-			// Retrieve the Users object from the repository
-			Users users = userService.findRefById(userId);
+		// Retrieve the Users object from the repository
+		Users users = userService.findRefById(userId);
 
-			if (users != null) {
-				// Check if the access token is still valid
-				if (spotifyService.isTokenExpired(users.getExpiresAt())) {
-					// If expired, refresh the access token
-					spotifyService.refreshAccessToken(users);
-				}
-
-				spotifyApi.setAccessToken(users.getAccessToken());
-				spotifyApi.setRefreshToken(users.getRefreshToken());
-
-				// Delete a playlist on Spotify
-				UnfollowPlaylistRequest deleteBuilder = spotifyApi.unfollowPlaylist(playlistId).build();
-
-				String deleteRequest = deleteBuilder.execute();
-
-				// Delete playlist in database table
-
-				return new ResponseEntity<>(deleteRequest, HttpStatus.CREATED);
-			} else {
-				return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		if (users != null) {
+			// Check if the access token is still valid
+			if (spotifyService.isTokenExpired(users.getExpiresAt())) {
+				// If expired, refresh the access token
+				spotifyService.refreshAccessToken(users);
 			}
-		} catch (BadRequestException e) {
-			// Log the detailed error information
-			logger.error("Error deleting playlist: {}", e.getMessage());
-			e.printStackTrace(); // This will print the stack trace for more details
-			return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (Exception e) {
-			logger.error("Failed to delete playlist", e);
-			// Handle exception, log, or return an error response
-			return new ResponseEntity<>("Failed to create playlist: " + e.getMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
+
+			spotifyApi.setAccessToken(users.getAccessToken());
+			spotifyApi.setRefreshToken(users.getRefreshToken());
+
+			// Delete a playlist on Spotify
+			UnfollowPlaylistRequest deleteBuilder = spotifyApi.unfollowPlaylist(playlistId).build();
+
+			String deleteRequest = null;
+			try {
+				deleteRequest = deleteBuilder.execute();
+			} catch (ParseException | SpotifyWebApiException | IOException e) {
+				e.printStackTrace();
+			}
+
+			// Delete playlist in database table
+			playlistService.deletePlaylistBySpotifyId(playlistId);
+
+			return new ResponseEntity<>(deleteRequest, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
 
 	}
-
-	
-	
 
 	// Get a list of users playlists
 	@GetMapping("/getPlaylists/users/playlists")
-	public ResponseEntity<Object> getPlaylistSongById(@RequestParam String userId) {
+	public ResponseEntity<Object> getPlaylistSongById(@RequestParam String userId, @RequestParam String songId) {
 
-		try {
-			// Retrieve the Users object from the repository
-			Users users = userService.findRefById(userId);
+		// Retrieve the Users object from the repository
+		Users users = userService.findRefById(userId);
 
-			if (users != null) {
-				// Check if the access token is still valid
-				if (spotifyService.isTokenExpired(users.getExpiresAt())) {
-					// If expired, refresh the access token
-					spotifyService.refreshAccessToken(users);
-				}
-
-				spotifyApi.setAccessToken(users.getAccessToken());
-				spotifyApi.setRefreshToken(users.getRefreshToken());
-
-				// Delete a playlist on Spotify
-				GetListOfUsersPlaylistsRequest playlistBuilder = spotifyApi.getListOfUsersPlaylists(userId)
-						.build();
-
-				Paging<PlaylistSimplified> getPlaylistsRequest = playlistBuilder.execute();
-
-				// Delete playlist in database table
-
-				return new ResponseEntity<>(getPlaylistsRequest, HttpStatus.CREATED);
-			} else {
-				return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		if (users != null) {
+			// Check if the access token is still valid
+			if (spotifyService.isTokenExpired(users.getExpiresAt())) {
+				// If expired, refresh the access token
+				spotifyService.refreshAccessToken(users);
 			}
-		} catch (BadRequestException e) {
-			// Log the detailed error information
-			logger.error("Error adding to playlist: {}", e.getMessage());
-			e.printStackTrace(); // This will print the stack trace for more details
-			return new ResponseEntity<>("Failed to get user's playlists: " + e.getMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (Exception e) {
-			logger.error("Failed to add to playlist", e);
-			// Handle exception, log, or return an error response
-			return new ResponseEntity<>("Failed to get user's playlists: " + e.getMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 
-	}
-	
-	// Update a Playlist Name
-		@PutMapping("/updateCurrentPlaylist/{playlistId}/users/playlists")
-		public ResponseEntity<Object> updatePlaylistName(@RequestParam String userId, @PathVariable String playlistId, @RequestBody Playlist playlist) {
+			spotifyApi.setAccessToken(users.getAccessToken());
+			spotifyApi.setRefreshToken(users.getRefreshToken());
 
+			// Delete a playlist on Spotify
+			GetListOfUsersPlaylistsRequest playlistBuilder = spotifyApi.getListOfUsersPlaylists(songId).build();
+
+			Paging<PlaylistSimplified> getPlaylistsRequest = null;
 			try {
-				// Retrieve the Users object from the repository
-				Users users = userService.findRefById(userId);
-
-				if (users != null) {
-					// Check if the access token is still valid
-					if (spotifyService.isTokenExpired(users.getExpiresAt())) {
-						// If expired, refresh the access token
-						spotifyService.refreshAccessToken(users);
-					}
-
-					spotifyApi.setAccessToken(users.getAccessToken());
-					spotifyApi.setRefreshToken(users.getRefreshToken());
-
-					// Delete a playlist on Spotify
-					ChangePlaylistsDetailsRequest updatePlaylistDetailBuilder = spotifyApi.changePlaylistsDetails(playlist.getId()).build();
-
-					
-					
-					
-					String updatePlaylistDetailRequest = updatePlaylistDetailBuilder.execute();
-
-				
-
-					return new ResponseEntity<>(updatePlaylistDetailRequest, HttpStatus.CREATED);
-				} else {
-					return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-				}
-			} catch (BadRequestException e) {
-				// Log the detailed error information
-				logger.error("Error adding to playlist: {}", e.getMessage());
-				e.printStackTrace(); // This will print the stack trace for more details
-				return new ResponseEntity<>("Failed to get user's playlists: " + e.getMessage(),
-						HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch (Exception e) {
-				logger.error("Failed to add to playlist", e);
-				// Handle exception, log, or return an error response
-				return new ResponseEntity<>("Failed to get user's playlists: " + e.getMessage(),
-						HttpStatus.INTERNAL_SERVER_ERROR);
+				getPlaylistsRequest = playlistBuilder.execute();
+			} catch (ParseException | SpotifyWebApiException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
+			// Delete playlist in database table
+
+			return new ResponseEntity<>(getPlaylistsRequest, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 		}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}
+
+	// Update a Playlist Name
+	@PutMapping("/user/playlist/{playlistId}")
+	public ResponseEntity<String> updatePlaylistDetails(@RequestParam String userId, @PathVariable String playlistId,
+			@RequestBody Playlist playlist) throws ParseException, SpotifyWebApiException, IOException {
+
+		// Retrieve the Users object from the repository
+		Users users = userService.findRefById(userId);
+
+		if (users != null) {
+			// Check if the access token is still valid
+			if (spotifyService.isTokenExpired(users.getExpiresAt())) {
+				// If expired, refresh the access token
+				spotifyService.refreshAccessToken(users);
+			}
+
+			spotifyApi.setAccessToken(users.getAccessToken());
+			spotifyApi.setRefreshToken(users.getRefreshToken());
+
+			// Delete a playlist on Spotify
+			ChangePlaylistsDetailsRequest.Builder updatePlaylistDetailBuilder = spotifyApi
+					.changePlaylistsDetails(playlistId);
+
+			ChangePlaylistsDetailsRequest changePlaylistDetails = updatePlaylistDetailBuilder.name(playlist.getName())
+					.description(playlist.getDescription()).build();
+
+			String newDetails = changePlaylistDetails.execute();
+
+			playlistService.updatePlaylistById(playlistId, playlist);
+
+			return new ResponseEntity<>(newDetails, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+	}
 
 	// Get album By Id
 	@GetMapping(value = "/playlists/{playlistId}")
@@ -343,6 +279,7 @@ public class PlaylistController {
 		try {
 			// creates a playlistSimplified object
 			Paging<PlaylistSimplified> playlist = getCurrUserPlaylistRequest.execute();
+
 			// returns a http response back with playlist being created and converted into
 			return playlist.getItems();
 		} catch (Exception e) {
@@ -450,27 +387,42 @@ public class PlaylistController {
 		// returns a http response back with featureplalyist
 		return playlistCoverImage;
 	}
-//
-//	@PostMapping(value = "/playlists/{playlistId}/songs")
-//	@ResponseStatus(value = HttpStatus.CREATED)
-//	public SnapshotResult addSongsToPlaylist(@PathVariable String playlistId, @RequestParam String userId,
-//			@RequestParam String... songUri) throws ParseException, SpotifyWebApiException, IOException {
-//		// first its gets the users
-//		Users userDetails = userService.findRefById(userId);
-//		// Then it pass the access token for the user to do the spotify api request
-//		spotifyApi.setAccessToken(userDetails.getAccessToken());
-//		// Then it refreshes the token for the user to the spotify api request
-//		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-//		// It send access token to spotify to add songs to playlist
-//		
-//		playlistService.addSongToPlaylist(null, songUri);
-//		
-//		final AddItemsToPlaylistRequest addSongsPlaylistRequest = spotifyApi.addItemsToPlaylist(playlistId, songUri)
-//				.build();
-//		
-//		SnapshotResult songSavedToPlaylist = addSongsPlaylistRequest.execute();
-//		return songSavedToPlaylist;
-//	}
+
+	@PostMapping(value = "/playlists/{playlistId}/songs")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public SnapshotResult addSongsToPlaylist(@PathVariable String playlistId, @RequestParam String userId,
+			@RequestParam String... songUri) throws ParseException, SpotifyWebApiException, IOException {
+		// first its gets the users
+		Users userDetails = userService.findRefById(userId);
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
+		// Then it pass the access token for the user to do the spotify api request
+		spotifyApi.setAccessToken(userDetails.getAccessToken());
+		// Then it refreshes the token for the user to the spotify api request
+		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
+		// It send access token to spotify to add songs to playlist
+
+		final AddItemsToPlaylistRequest addSongsPlaylistRequest = spotifyApi.addItemsToPlaylist(playlistId, songUri)
+				.build();
+
+		SnapshotResult songSavedToPlaylist = addSongsPlaylistRequest.execute();
+
+		// Retrieve details about the added tracks from Spotify by iterating through
+		// each URI
+		for (String uri : songUri) {
+			String[] parts = uri.split(":");
+			String songId = parts[parts.length - 1];
+			GetTrackRequest getTrackRequest = spotifyApi.getTrack(songId).build();
+			Track newTrack = getTrackRequest.execute();
+
+			// Save information about the added track to your database
+			playlistService.addSongToPlaylist(playlistId, newTrack);
+		}
+		return songSavedToPlaylist;
+	}
 
 	// Deletes Songs From Playlist
 	@DeleteMapping(value = "/playlists/{playlistId}/songs")
@@ -484,12 +436,19 @@ public class PlaylistController {
 			// If expired, refresh the access token
 			spotifyService.refreshAccessToken(userDetails);
 		}
+		// Retrieve details about the added tracks from Spotify by iterating through
+		// each URI
+		for (String uri : songUri) {
+			String[] parts = uri.split(":");
+			String songId = parts[parts.length - 1];
+
+			// Save information about the added track to your database
+			playlistService.deleteSongFromPlaylist(songId);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-
-//		final RemoveItemsFromPlaylistRequest removeItemsFromPlaylist = spotifyApi.remove
 
 		return "Playlist has been deleted";
 	}

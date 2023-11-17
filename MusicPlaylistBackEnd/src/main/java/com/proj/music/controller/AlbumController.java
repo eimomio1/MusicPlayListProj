@@ -53,21 +53,21 @@ public class AlbumController {
 
 	@Autowired
 	private SpotifyApi spotifyApi;
-	
+
 	@Autowired
 	private SpotifyAuthService spotifyService;
 
 	// Get album By Id
 	@GetMapping(value = "/albums/{albumId}")
-	public ResponseEntity<Album> getArtistById(@PathVariable String albumId, @RequestParam String userId)
+	public ResponseEntity<Album> getAlbumById(@PathVariable String albumId, @RequestParam String userId)
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user from queried
 		Users userDetails = userService.findRefById(userId);
-        // Check if the access token is still valid
-        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-            // If expired, refresh the access token
-            spotifyService.refreshAccessToken(userDetails);
-        }
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -87,11 +87,11 @@ public class AlbumController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user from queried
 		Users userDetails = userService.findRefById(userId);
-        // Check if the access token is still valid
-        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-            // If expired, refresh the access token
-            spotifyService.refreshAccessToken(userDetails);
-        }
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -111,11 +111,11 @@ public class AlbumController {
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user from queried
 		Users userDetails = userService.findRefById(userId);
-        // Check if the access token is still valid
-        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-            // If expired, refresh the access token
-            spotifyService.refreshAccessToken(userDetails);
-        }
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
@@ -133,110 +133,107 @@ public class AlbumController {
 	}
 
 	@PutMapping(value = "/user/albums")
-	@ResponseStatus(value = HttpStatus.OK)
-	public String saveAlbumsForCurrentUsers(@RequestParam String userId)
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public String saveAlbumsForCurrentUsers(@RequestParam String userId, @RequestParam String... albumIds)
 			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user from queried
 		Users userDetails = userService.findRefById(userId);
-        // Check if the access token is still valid
-        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-            // If expired, refresh the access token
-            spotifyService.refreshAccessToken(userDetails);
-        }
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		// sends an access token to the spotify api to save albums current users
-		SaveAlbumsForCurrentUserRequest saveAlbumsForCurrUser = spotifyApi.saveAlbumsForCurrentUser(userId).build();
+		SaveAlbumsForCurrentUserRequest saveAlbumsForCurrUser = spotifyApi.saveAlbumsForCurrentUser(albumIds).build();
+		String newSavedAlbumForCurrUser = saveAlbumsForCurrUser.execute();
 
-		try {
-			String newSavedAlbumForCurrUser = saveAlbumsForCurrUser.execute();
-
-			return newSavedAlbumForCurrUser;
-		} catch (Exception e) {
-			System.out.println("Exception occured while saving album for user");
+		for (String id : albumIds) {
+			GetAlbumRequest albumRequest = spotifyApi.getAlbum(id).build();
+			Album newAlbum = albumRequest.execute();
+			albumService.addAlbum(newAlbum, userId);
 		}
-		return "Current albums has not been saved for user";
+
+		return newSavedAlbumForCurrUser;
 	}
 
 	@DeleteMapping(value = "/user/albums")
 	@ResponseStatus(value = HttpStatus.OK)
-	public String deleteUserSavedAlbums(@RequestParam String userId) {
+	public String deleteUserSavedAlbums(@RequestParam String userId, @RequestParam String... albumIds)
+			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user from queried
 		Users userDetails = userService.findRefById(userId);
-        // Check if the access token is still valid
-        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-            // If expired, refresh the access token
-            spotifyService.refreshAccessToken(userDetails);
-        }
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		// sends an access token to the spotify api to remove saved albums
-		RemoveAlbumsForCurrentUserRequest removeUserSavedAlbums = spotifyApi.removeAlbumsForCurrentUser(userId).build();
-		
-		try {
-			String deleteAlbumForCurrUser = removeUserSavedAlbums.execute();
-			return deleteAlbumForCurrUser;
-		} catch (ParseException | SpotifyWebApiException | IOException e) {
-			e.printStackTrace();
+		RemoveAlbumsForCurrentUserRequest removeUserSavedAlbums = spotifyApi.removeAlbumsForCurrentUser(albumIds)
+				.build();
+
+		String deleteAlbumForCurrUser = removeUserSavedAlbums.execute();
+		for (String id : albumIds) {
+			albumService.deleteAlbumBySpotifyId(id);
 		}
-		return "User saved album has not been deleted";
+		return deleteAlbumForCurrUser;
 	}
-	
+
 	@DeleteMapping(value = "/user/albums/contains")
 	@ResponseStatus(value = HttpStatus.OK)
 	public Boolean[] checkUserSavedAlbums(@RequestParam String userId) {
 		// first its gets the user from queried
 		Users userDetails = userService.findRefById(userId);
-        // Check if the access token is still valid
-        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-            // If expired, refresh the access token
-            spotifyService.refreshAccessToken(userDetails);
-        }
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		// sends an access token to the spotify api to check user saved albums
 		CheckUsersSavedAlbumsRequest checkUserSavedAlbumsRequest = spotifyApi.checkUsersSavedAlbums(userId).build();
-		
+
 		try {
 			Boolean[] isSavedAlbumsExist = checkUserSavedAlbumsRequest.execute();
 			return isSavedAlbumsExist;
 		} catch (ParseException | SpotifyWebApiException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new Boolean[0];
 	}
-	
+
 	@GetMapping(value = "/browse/new_release")
 	@ResponseStatus(value = HttpStatus.OK)
-	public AlbumSimplified[] getNewReleases(@RequestParam String userId)
-	{
+	public AlbumSimplified[] getNewReleases(@RequestParam String userId) {
 		// first its gets the user from queried
 		Users userDetails = userService.findRefById(userId);
-        // Check if the access token is still valid
-        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-            // If expired, refresh the access token
-            spotifyService.refreshAccessToken(userDetails);
-        }
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		// then it gets the new releases
 		GetListOfNewReleasesRequest getListOfNewReleases = spotifyApi.getListOfNewReleases().build();
-		
+
 		Paging<AlbumSimplified> albumSimplified;
 		try {
 			albumSimplified = getListOfNewReleases.execute();
 			return albumSimplified.getItems();
 		} catch (ParseException | SpotifyWebApiException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new AlbumSimplified[0];
@@ -245,24 +242,23 @@ public class AlbumController {
 	// Get several albums
 	@GetMapping(value = "/albums")
 	@ResponseStatus(value = HttpStatus.OK)
-	public Album[] getSeveralAlbums(@RequestParam String userId, @RequestParam String... albumIds)	
-	{
+	public Album[] getSeveralAlbums(@RequestParam String userId, @RequestParam String... albumIds) {
 		// first its gets the user from queried
 		Users userDetails = userService.findRefById(userId);
-        // Check if the access token is still valid
-        if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-            // If expired, refresh the access token
-            spotifyService.refreshAccessToken(userDetails);
-        }
+		// Check if the access token is still valid
+		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
+			// If expired, refresh the access token
+			spotifyService.refreshAccessToken(userDetails);
+		}
 		// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		// Then it gets the album
 		final GetSeveralAlbumsRequest getAlbumRequest = spotifyApi.getSeveralAlbums(albumIds).build();
-		
+
 		try {
-			Album [] myAlbum = getAlbumRequest.execute();
+			Album[] myAlbum = getAlbumRequest.execute();
 			return myAlbum;
 		} catch (ParseException | SpotifyWebApiException | IOException e) {
 			e.printStackTrace();

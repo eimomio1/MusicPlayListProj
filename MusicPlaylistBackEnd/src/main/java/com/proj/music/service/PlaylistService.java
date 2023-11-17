@@ -10,7 +10,7 @@ import se.michaelthelin.spotify.model_objects.specification.Track;
 
 
 public interface PlaylistService {
-	String updatePlaylistById(long id, Playlists playlist);
+	String updatePlaylistById(String id, Playlist playlist);
 
 	String deletePlaylistById(long id);
 
@@ -23,4 +23,8 @@ public interface PlaylistService {
 	String deletePlaylistBySpotifyId(String spotifyId);
 
 	Playlists getPlaylistBySpotifyId(String spotifyId);
+	
+	String addSongToPlaylist(String userId, Track track);
+	
+	public String deleteSongFromPlaylist(String songId);
 }

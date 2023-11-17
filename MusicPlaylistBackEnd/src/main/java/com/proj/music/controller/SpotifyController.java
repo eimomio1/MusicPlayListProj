@@ -20,7 +20,6 @@ import com.proj.music.spotify.config.SpotifyConfiguration;
 
 import jakarta.servlet.http.HttpServletResponse;
 import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.User;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
@@ -40,18 +39,18 @@ public class SpotifyController {
 
 	@Autowired
 	private SpotifyConfiguration spotifyConfiguration;
-	
+
 	@Autowired
 	private SpotifyApi spotifyApi;
-	
+
 	// Method to login
 	@GetMapping(value = "/login")
 	public ResponseEntity<Map<String, String>> spotifyLogin() {
 
 		SpotifyApi object = spotifyConfiguration.getSpotifyObject();
 
-		AuthorizationCodeUriRequest authorizationCodeUriRequest = object.authorizationCodeUri()
-				.scope("user-library-read, user-read-private, user-read-email, user-top-read, playlist-modify-public, user-library-modify")
+		AuthorizationCodeUriRequest authorizationCodeUriRequest = object.authorizationCodeUri().scope(
+				"user-library-read, user-read-private, user-read-email, user-top-read, playlist-modify-public, playlist-modify-private, playlist-read-collaborative, playlist-read-private, user-library-modify")
 				.show_dialog(true).build();
 
 		final URI uri = authorizationCodeUriRequest.execute();
@@ -104,13 +103,9 @@ public class SpotifyController {
 				// If the user object is null, log an error message or handle it appropriately.
 				throw new RuntimeException("User object is null. The response may not contain a valid user.");
 			}
-		} catch (BadRequestException e) {
+		} catch (Exception e) {
 			// Handle the exception and log an error message
 			System.out.println("Invalid authorization code: " + userCode);
-			e.printStackTrace();
-		} catch (Exception e) {
-			// Handle other exceptions
-			System.out.println("Exception occurred during Spotify authentication: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}

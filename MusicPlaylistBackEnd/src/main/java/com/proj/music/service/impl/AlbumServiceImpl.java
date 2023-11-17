@@ -7,15 +7,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proj.music.entity.Albums;
+import com.proj.music.entity.Users;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.AlbumRepository;
+import com.proj.music.repository.UserRepository;
 import com.proj.music.service.AlbumService;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import se.michaelthelin.spotify.model_objects.specification.Album;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
 
 	@Autowired
 	private AlbumRepository albumRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Override
 	public String updateAlbumById(long id, Albums album) {
@@ -32,14 +46,30 @@ public class AlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public String deleteAlbumById(long id) {
-		Optional<Albums> album1 = albumRepository.findById(id);
+	@Transactional
+	public String deleteAlbumBySpotifyId(String spotifyId) {
+		List<Albums> albums = entityManager
+				.createQuery("SELECT a FROM Albums a WHERE a.spotifyId = :spotifyAlbumId", Albums.class)
+				.setParameter("spotifyAlbumId", spotifyId).getResultList();
 
-		if (album1.isPresent()) {
-			albumRepository.deleteById(id);
+		if (!albums.isEmpty()) {
+			for (Albums album : albums) {
+				// Disassociate from users
+				List<Users> users = album.getUsers();
+				users.forEach(user -> user.getAlbums().remove(album));
+
+				// Manually delete associated records from user_albums
+				Query query = entityManager.createNativeQuery("DELETE FROM user_albums WHERE album_id = :albumId");
+				query.setParameter("albumId", album.getId());
+				query.executeUpdate();
+
+				// Now, delete the album
+				albumRepository.delete(album);
+			}
+			return "Album has been deleted for user";
+		} else {
+			return "No album found with Spotify ID: " + spotifyId;
 		}
-
-		return "Album has been deleted";
 	}
 
 	@Override
@@ -49,9 +79,26 @@ public class AlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public String addAlbum(Albums album) {
-		albumRepository.save(album);
-		return "Album has been added";
+	@Transactional
+	public String addAlbum(Album album, String userId) {
+		Optional<Users> optionalUser = Optional.of(userRepository.findByRefId(userId));
+
+		if (optionalUser.isPresent()) {
+			Users newUser = optionalUser.get();
+			Albums newAlbum = new Albums();
+			newAlbum.setName(album.getName());
+			newAlbum.setSpotifyId(album.getId());
+			newAlbum.setUri(album.getUri());
+			newAlbum.setGenres(album.getGenres());
+			newAlbum.setReleaseDate(album.getReleaseDate());
+			newUser.getAlbums().add(newAlbum);
+
+			albumRepository.save(newAlbum);
+
+			return "Playlist has been added";
+		} else {
+			return "User not found";
+		}
 	}
 
 	@Override

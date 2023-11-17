@@ -20,16 +20,17 @@ public class ArtistServiceImpl implements ArtistService {
 	private ArtistRepository artistRepository;
 
 	@Override
-	public String updateArtistById(long id, Artists artist) {
+	public String updateArtistById(long id, Artist artist) {
 
 		Optional<Artists> artist1 = artistRepository.findById(id);
 
 		if (artist1.isPresent()) {
-			artist1.get().setId(artist.getId());
 			artist1.get().setName(artist.getName());
 			artist1.get().setGenres(artist.getGenres());
-			artist1.get().setSongs(artist.getSongs());
-			artist1.get().setAlbums(artist.getAlbums());
+			artist1.get().setHref(artist.getHref());
+			artist1.get().setImages(artist.getImages());
+			artist1.get().setPopularity(artist.getPopularity());
+			artist1.get().setUri(artist.getUri());
 		}
 
 		return "Artist has been updated";
@@ -59,6 +60,8 @@ public class ArtistServiceImpl implements ArtistService {
 		newArtist.setPopularity(artist.getPopularity());
 		newArtist.setUri(artist.getUri());
 		newArtist.setHref(artist.getHref());
+		newArtist.setGenres(artist.getGenres());
+		newArtist.setImages(artist.getImages());
 		artistRepository.save(newArtist);
 		return "Artist has been added";
 	}
@@ -72,7 +75,7 @@ public class ArtistServiceImpl implements ArtistService {
 	public Artists findArtistBySpotifyId(String id) {
 		return artistRepository.findArtistBySpotifyId(id);
 	}
-	
+
 	@Override
 	public String deleteArtistBySpotifyId(String id) {
 		artistRepository.deleteArtistBySpotifyId(id);

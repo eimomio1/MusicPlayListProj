@@ -51,12 +51,12 @@ public class ReviewController {
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		
-		return reviewService.addReview(review);
+		return reviewService.addReview(review, songId, userId);
 	}
 	
-//	@DeleteMapping("/song/review/{reviewId}")
+//	@DeleteMapping("/song/{songid}/review/{reviewId}")
 //	@ResponseStatus(value = HttpStatus.OK)
-//	public String deleteReviewForSong(@RequestParam String userId, @RequestParam String songId, @PathVariable long reviewId)
+//	public String deleteReviewForSong(@RequestParam String userId, @PathVariable String songId, @PathVariable long reviewId)
 //	{
 //		// first its gets the user
 //		Users userDetails = userService.findRefById(userId);
@@ -89,4 +89,3 @@ public class ReviewController {
 		return reviewService.getReviewById(reviewId);
 	}
 }
-

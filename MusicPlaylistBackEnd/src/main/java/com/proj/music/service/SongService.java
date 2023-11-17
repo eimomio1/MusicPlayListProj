@@ -20,4 +20,6 @@ public interface SongService {
 	String deleteBySpotifyId(String spotifyId);
 	
 	Boolean existsBySpotifyId(String spotifyId);
+
+	Songs getSongBySpotifyId(String spotifyId);
 }

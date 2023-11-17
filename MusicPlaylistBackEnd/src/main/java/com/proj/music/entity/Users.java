@@ -43,15 +43,19 @@ public class Users implements Serializable {
 	private String refreshToken;
 
 	@Column(name = "Token_expiration")
-	private Instant expiresAt;	
-	
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Reviews> reviews;
-	
+	private Instant expiresAt;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Reviews> reviews;
+
 	@ManyToMany
 	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
 	private List<Playlists> playlists;
- // A user can have many playlists
+	// A user can have many playlists
+
+	@ManyToMany
+	@JoinTable(name = "user_albums", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "album_id"))
+	private List<Albums> albums;
 
 	public Users() {
 		super();
@@ -134,6 +138,30 @@ public class Users implements Serializable {
 
 	public void setExpiresAt(Instant expiresAt) {
 		this.expiresAt = expiresAt;
+	}
+
+	public List<Albums> getAlbums() {
+		return albums;
+	}
+
+	public void setAlbums(List<Albums> albums) {
+		this.albums = albums;
+	}
+	
+	public String getRefId() {
+		return refId;
+	}
+
+	public void setRefId(String refId) {
+		this.refId = refId;
+	}
+
+	public List<Reviews> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Reviews> reviews) {
+		this.reviews = reviews;
 	}
 
 	@Override

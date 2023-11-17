@@ -1,5 +1,6 @@
 package com.proj.music.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,11 @@ import com.proj.music.repository.PlaylistRepository;
 import com.proj.music.repository.SongRepository;
 import com.proj.music.repository.UserRepository;
 import com.proj.music.service.PlaylistService;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
@@ -23,18 +29,20 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Autowired
 	private UserRepository userRespository;
-	
+
 	@Autowired
 	private SongRepository songRepository;
 
+	@PersistenceContext
+	private EntityManager entityManager;
 	@Override
-	public String updatePlaylistById(long id, Playlists playlist) {
-		Optional<Playlists> playlist1 = playlistRepository.findById(id);
+	public String updatePlaylistById(String id, Playlist playlist) {
+		Optional<Playlists> playlist1 = playlistRepository.findPlaylistBySpotifyId(id);
 		if (playlist1.isPresent()) {
-			playlist1.get().setId(playlist.getId());
 			playlist1.get().setName(playlist.getName());
 			playlist1.get().setDescription(playlist.getDescription());
 		}
+		playlistRepository.save(playlist1.get());
 		return "Playlist has been updated";
 	}
 
@@ -45,8 +53,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 			playlistRepository.deleteById(id);
 		}
 		return "Playlist has been deleted";
-		
-		
 	}
 
 	@Override
@@ -67,7 +73,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 			playlists.setName(playlist.getName());
 			playlists.setDescription(playlist.getDescription());
 
-             playlists.setSpotifyId(playlist.getId());
+			playlists.setSpotifyId(playlist.getId());
 
 			// Add the playlist to the user's playlists
 			user.getPlaylists().add(playlists);
@@ -87,38 +93,110 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
+	@Transactional
 	public String deletePlaylistBySpotifyId(String spotifyPlaylistId) {
-		Playlists playlist1 = playlistRepository.findPlaylistBySpotifyId(spotifyPlaylistId);
-		
-		if(playlist1 != null) {
-			
-			Playlists p = playlist1;
-			playlistRepository.deleteById(p.getId());
-			return "Playlist has been deleted";
-		}else {
-			
-			return "Playlist not found!";
+		List<Playlists> playlists = entityManager
+				.createQuery("SELECT p FROM Playlists p WHERE p.spotifyId = :spotifyPlaylistId", Playlists.class)
+				.setParameter("spotifyPlaylistId", spotifyPlaylistId).getResultList();
+
+		if (!playlists.isEmpty()) {
+			for (Playlists playlist : playlists) {
+				// Disassociate from users
+				List<Users> users = playlist.getUsers();
+				users.forEach(user -> user.getPlaylists().remove(playlist));
+
+				// Manually delete associated records from user_playlist
+				Query query = entityManager
+						.createNativeQuery("DELETE FROM user_playlist WHERE playlist_id = :playlistId");
+				query.setParameter("playlistId", playlist.getId());
+				query.executeUpdate();
+
+				// Now, delete the playlist
+				playlistRepository.delete(playlist);
+			}
+
+			return "Playlist has been deleted for user";
+		} else {
+			return "No playlist found with Spotify ID: " + spotifyPlaylistId;
 		}
-		
-		
-		
 	}
 
 	@Override
 	public Playlists getPlaylistBySpotifyId(String spotifyPlaylistId) {
-Optional<Playlists> playlist1 = Optional.of(playlistRepository.findPlaylistBySpotifyId(spotifyPlaylistId));
-		
-		if(playlist1.isPresent()) {
-			
+		Optional<Playlists> playlist1 = playlistRepository.findPlaylistBySpotifyId(spotifyPlaylistId);
+
+		if (playlist1.isPresent()) {
+
 			Playlists plist = playlist1.get();
-			
+
 			return plist;
-			
-		}else {
-			
+
+		} else {
+
 			return null;
 		}
-		
+
 	}
 
+	@Transactional
+	public String addSongToPlaylist(String playlistId, Track track) {
+		Optional<Playlists> optionalPlaylist = playlistRepository.findPlaylistBySpotifyId(playlistId);
+		List<Songs> newSongs = new ArrayList<Songs>();
+		if (optionalPlaylist.isPresent()) {
+
+			// Set playlist properties
+			Songs song = new Songs();
+			song.setName(track.getName());
+			song.setUris(track.getUri());
+			song.setDuration(track.getDurationMs());
+			song.setSpotifyId(track.getId());
+			newSongs.add(song);
+			optionalPlaylist.get().getSongs().add(song);
+
+			// Save changes
+			songRepository.save(song);
+			playlistRepository.save(optionalPlaylist.get());
+
+			return "New Song has been added to playlist";
+		} else {
+			return "User not found";
+		}
+	}
+
+	@Transactional
+	public String deleteSongFromPlaylist(String songId) {
+		List<Songs> songs = entityManager
+				.createQuery("SELECT s FROM Songs s WHERE s.spotifyId = :spotifyId", Songs.class)
+				.setParameter("spotifyId", songId).getResultList();
+
+		if (!songs.isEmpty()) {
+			for (Songs song : songs) {
+				// Disassociate from playlists
+				List<Playlists> playlists = song.getPlaylists();
+				playlists.forEach(playlist -> playlist.getSongs().remove(song));
+
+				// Manually delete associated records from playlist_songs
+				Query query = entityManager.createNativeQuery("DELETE FROM playlist_songs WHERE song_id = :songId");
+				query.setParameter("songId", song.getId());
+				query.executeUpdate();
+
+				// Now, delete the song
+				songRepository.delete(song);
+			}
+
+			return "Songs have been deleted from the playlist";
+		} else {
+			return "No songs found with Spotify ID " + songId;
+		}
+	}
+
+	@Transactional
+	public void deleteUserPlaylistAssociation(long userId, long playlistId) {
+		String sql = "DELETE FROM user_playlist WHERE user_id = :userId AND playlist_id = :playlistId";
+
+		int deletedRows = entityManager.createNativeQuery(sql).setParameter("userId", userId)
+				.setParameter("playlistId", playlistId).executeUpdate();
+
+		System.out.println("Deleted rows: " + deletedRows);
+	}
 }
