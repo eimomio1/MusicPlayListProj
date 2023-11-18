@@ -2,6 +2,7 @@ package com.proj.music.entity;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -56,7 +57,11 @@ public class Users implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "user_albums", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "album_id"))
 	private List<Albums> albums;
-
+	
+	@ManyToMany
+	@JoinTable(name = "user_songs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+	private List<Songs> songs;
+	
 	public Users() {
 		super();
 	}
@@ -130,8 +135,6 @@ public class Users implements Serializable {
 		this.refId = refId;
 	}
 
-	// Constructors, getters, setters, and other methods...
-
 	public Instant getExpiresAt() {
 		return expiresAt;
 	}
@@ -148,6 +151,14 @@ public class Users implements Serializable {
 		this.albums = albums;
 	}
 	
+	public List<Songs> getSongs() {
+		return songs;
+	}
+
+	public void setSongs(List<Songs> songs) {
+		this.songs = songs;
+	}
+
 	public String getRefId() {
 		return refId;
 	}
@@ -157,7 +168,10 @@ public class Users implements Serializable {
 	}
 
 	public List<Reviews> getReviews() {
-		return reviews;
+		if (reviews == null) {
+            reviews = new ArrayList<>();
+        }
+        return reviews;
 	}
 
 	public void setReviews(List<Reviews> reviews) {

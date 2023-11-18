@@ -1,6 +1,7 @@
 package com.proj.music.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -37,10 +38,10 @@ public class Playlists {
 	private List<Songs> songs; // A playlist can contain multiple songs
 
 	@Column(name = "createdAt")
-	private LocalDate createdAt;
+	private LocalDateTime createdAt;
 
 	@Column(name = "updatedAt")
-	private LocalDate updatedAt;
+	private LocalDateTime updatedAt;
 
 	@ManyToMany(mappedBy = "playlists")
 	private List<Users> users; // A playlist can be associated with multiple users
@@ -50,10 +51,11 @@ public class Playlists {
 
 	public Playlists() {
 		super();
+		this.updatedAt = LocalDateTime.now();
 	}
 
-	public Playlists(long id, String name, String description, String spotifyId, List<Songs> songs, LocalDate createdAt,
-			LocalDate updatedAt, List<Users> users, List<Reviews> reviews) {
+	public Playlists(long id, String name, String description, String spotifyId, List<Songs> songs, LocalDateTime createdAt,
+			LocalDateTime updatedAt, List<Users> users, List<Reviews> reviews) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -106,19 +108,19 @@ public class Playlists {
 		this.songs = songs;
 	}
 
-	public LocalDate getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(LocalDate createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public LocalDate getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(LocalDate updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
