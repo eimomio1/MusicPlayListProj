@@ -155,7 +155,7 @@ public class SongController {
 
 			Track t1 = getTrackRequest.execute();
 
-			songService.addSong(t1);
+			songService.addSong(t1, userId);
 		}
 		// Saved tracks for user
 		final SaveTracksForUserRequest saveTrackForUserRequest = spotifyApi.saveTracksForUser(songId).build();

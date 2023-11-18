@@ -1,6 +1,7 @@
 package com.proj.music.entity;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,6 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "songs")
@@ -29,15 +31,15 @@ public class Songs {
 	@Column(name = "duration")
 	private double duration;
 
-	@Column(name = "release_date")
-	private LocalDate releaseDate;
-
+	@Column(name = "preview_url")
+	private String previewUrl;
+	
 	@ManyToOne
 	@JoinColumn(name = "album_id") // Map the "album_id" in the Album table to create the relationship
 	private Albums albums; // Many songs are in one album
 
-	@Column(name = "genres")
-	private String[] genres;
+//	@Column(name = "genres")
+//	private String[] genres;
 
 	@OneToMany(mappedBy = "songs", cascade = CascadeType.REMOVE)
 	private List<Playlists> playlists; // A song can belong to multiple playlists
@@ -54,19 +56,21 @@ public class Songs {
 	@Column(name ="spotifyId")
 	private String spotifyId;
 	
+	@ManyToMany(mappedBy = "songs")
+	private List<Users> users;
+	
 	public Songs() {
 		super();
 	}
 
-	public Songs(long id, String name, double duration, LocalDate releaseDate, Albums albums, String [] genres,
+	public Songs(long id, String name, double duration, String previewUrl, Albums albums, 
 			List<Playlists> playlists, List<Artists> artists, List<Reviews> reviews, String uris, String spotifyId) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.duration = duration;
-		this.releaseDate = releaseDate;
+		this.previewUrl = previewUrl;
 		this.albums = albums;
-		this.genres = genres;
 		this.playlists = playlists;
 		this.artists = artists;
 		this.reviews = reviews;
@@ -97,15 +101,7 @@ public class Songs {
 	public void setDuration(double duration) {
 		this.duration = duration;
 	}
-
-	public LocalDate getReleaseDate() {
-		return releaseDate;
-	}
-
-	public void setReleaseDate(LocalDate releaseDate) {
-		this.releaseDate = releaseDate;
-	}
-
+	
 	public Albums getAlbum() {
 		return albums;
 	}
@@ -114,13 +110,13 @@ public class Songs {
 		this.albums = album;
 	}
 
-	public String[] getGenres() {
-		return genres;
-	}
-
-	public void setGenres(String[] genres) {
-		this.genres = genres;
-	}
+//	public String[] getGenres() {
+//		return genres;
+//	}
+//
+//	public void setGenres(String[] genres) {
+//		this.genres = genres;
+//	}
 
 	public List<Playlists> getPlaylists() {
 		return playlists;
@@ -131,6 +127,9 @@ public class Songs {
 	}
 
 	public List<Artists> getArtists() {
+		if (artists == null) {
+            artists = new ArrayList<>();
+		}
 		return artists;
 	}
 
@@ -170,11 +169,30 @@ public class Songs {
 		this.spotifyId = spotifyId;
 	}
 
+	public String getPreviewUrl() {
+		return previewUrl;
+	}
+
+	public void setPreviewUrl(String previewUrl) {
+		this.previewUrl = previewUrl;
+	}
+	
+	public List<Users> getUsers() {
+		if (users == null) {
+			users = new ArrayList<>();
+		}
+		return users;
+	}
+
+	public void setUsers(List<Users> users) {
+		this.users = users;
+	}
+
 	@Override
 	public String toString() {
-		return "Songs [id=" + id + ", name=" + name + ", duration=" + duration + ", releaseDate=" + releaseDate
-				+ ", albums=" + albums + ", genres=" + genres + ", playlists=" + playlists + ", artists=" + artists
-				+ ", reviews=" + reviews + ", uris=" + uris + "]";
+		return "Songs [id=" + id + ", name=" + name + ", duration=" + duration + ", previewUrl=" + previewUrl
+				+ ", albums=" + albums + ", playlists=" + playlists
+				+ ", artists=" + artists + ", reviews=" + reviews + ", uris=" + uris + ", spotifyId=" + spotifyId + "]";
 	}
 
 }

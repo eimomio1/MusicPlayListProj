@@ -1,5 +1,6 @@
 package com.proj.music.entity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class Albums {
 	private String uri;
 
 	@ManyToMany(mappedBy = "albums")
-	private List<Artists> artist; // An album can be associated with multiple artists.
+	private List<Artists> artists; // An album can be associated with multiple artists.
 
 	@OneToMany(mappedBy = "albums")
 	private List<Songs> songs; // for one album it contains multiple songs
@@ -55,12 +56,12 @@ public class Albums {
 		super();
 	}
 
-	public Albums(int id, String name, String releaseDate, List<Artists> artist, List<Songs> songs) {
+	public Albums(int id, String name, String releaseDate, List<Artists> artists, List<Songs> songs) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.releaseDate = releaseDate;
-		this.artist = artist;
+		this.artists = artists;
 		this.songs = songs;
 
 	}
@@ -113,12 +114,15 @@ public class Albums {
 		this.uri = uri;
 	}
 
-	public List<Artists> getArtist() {
-		return artist;
-	}
+	public List<Artists> getArtists() {
+        if (artists == null) {
+            artists = new ArrayList<>();
+        }
+        return artists;
+    }
 
-	public void setArtist(List<Artists> artist) {
-		this.artist = artist;
+	public void setArtists(List<Artists> artists) {
+		this.artists = artists;
 	}
 
 	public List<Songs> getSongs() {
@@ -138,6 +142,9 @@ public class Albums {
 	}
 
 	public List<Users> getUsers() {
+        if (users == null) {
+        	users = new ArrayList<>();
+        }
 		return users;
 	}
 
@@ -148,7 +155,7 @@ public class Albums {
 	@Override
 	public String toString() {
 		return "Albums [id=" + id + ", spotifyId=" + spotifyId + ", name=" + name + ", genres="
-				+ Arrays.toString(genres) + ", releaseDate=" + releaseDate + ", uri=" + uri + ", artist=" + artist
+				+ Arrays.toString(genres) + ", releaseDate=" + releaseDate + ", uri=" + uri + ", artist=" + artists
 				+ ", songs=" + songs + ", reviews=" + reviews + ", users=" + users + "]";
 	}
 

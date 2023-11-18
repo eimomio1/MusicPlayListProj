@@ -5,13 +5,15 @@ import java.util.List;
 import com.proj.music.entity.Reviews;
 
 public interface ReviewService {
-//	String updateReviewById(String userId, String songId, Reviews reviews);
+	String updateReviewById(long reviewId, String entityId, String entityType, Reviews review);
 
-//	String deleteReviewById(String userId, String songId);
+	String deleteReviewById(long reviewId, String entityType, String entityId);
 
-	Reviews getReviewById(long id);
+	Reviews getReviewById(long reviewid, String entityType, String entityId);
 
-	String addReview(Reviews review, String songId, String userId);
-
+	String addReview(Reviews review, String entityId, String entityType, String userId);
+	
 //	List<Reviews> getReviewsBySongId(String spotifyId);
+	
+	List<Reviews> getReviews(String entityType, String entityId);
 }

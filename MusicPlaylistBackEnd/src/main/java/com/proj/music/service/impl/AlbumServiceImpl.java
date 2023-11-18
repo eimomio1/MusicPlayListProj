@@ -1,15 +1,19 @@
 package com.proj.music.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proj.music.entity.Albums;
+import com.proj.music.entity.Artists;
 import com.proj.music.entity.Users;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.AlbumRepository;
+import com.proj.music.repository.ArtistRepository;
 import com.proj.music.repository.UserRepository;
 import com.proj.music.service.AlbumService;
 
@@ -18,6 +22,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import se.michaelthelin.spotify.model_objects.specification.Album;
+import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
+import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
@@ -27,6 +33,9 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ArtistRepository artistRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -39,7 +48,7 @@ public class AlbumServiceImpl implements AlbumService {
 			album1.get().setId(album.getId());
 			album1.get().setName(album.getName());
 			album1.get().setReleaseDate(album.getReleaseDate());
-			album1.get().setArtist(album.getArtist());
+			album1.get().setArtists(album.getArtists());
 		}
 
 		return "Song has been updated";
@@ -83,22 +92,55 @@ public class AlbumServiceImpl implements AlbumService {
 	public String addAlbum(Album album, String userId) {
 		Optional<Users> optionalUser = Optional.of(userRepository.findByRefId(userId));
 
-		if (optionalUser.isPresent()) {
-			Users newUser = optionalUser.get();
-			Albums newAlbum = new Albums();
-			newAlbum.setName(album.getName());
-			newAlbum.setSpotifyId(album.getId());
-			newAlbum.setUri(album.getUri());
-			newAlbum.setGenres(album.getGenres());
-			newAlbum.setReleaseDate(album.getReleaseDate());
-			newUser.getAlbums().add(newAlbum);
+	    if (optionalUser.isPresent()) {
+	        Albums newAlbum = createAlbumFromSpotifyData(album, optionalUser.get());
+	        List<Artists> newArtists = new ArrayList<>();
 
-			albumRepository.save(newAlbum);
+	        if (album.getArtists() != null) {
+	            for (ArtistSimplified artistSimplified : album.getArtists()) {
+	                Artists artist = createArtistFromSpotifyData(artistSimplified);
+	                newArtists.add(artist);
+	            }
+	        }
 
-			return "Playlist has been added";
-		} else {
-			return "User not found";
-		}
+	        // Save the album first
+	        albumRepository.save(newAlbum);
+
+	        // Save the artists after saving the album
+	        newArtists.forEach(artist -> {
+	            artist.getAlbums().add(newAlbum);
+	            newAlbum.getArtists().add(artist);
+	            artistRepository.save(artist);
+	        });
+
+	        optionalUser.get().getAlbums().add(newAlbum);
+
+	        userRepository.save(optionalUser.get());
+
+	        return "Album has been saved and added";
+	    } else {
+	        return "User not found";
+	    }
+	}
+
+	private Albums createAlbumFromSpotifyData(Album album, Users user) {
+	    Albums newAlbum = new Albums();
+	    newAlbum.setName(album.getName());
+	    newAlbum.setSpotifyId(album.getId());
+	    newAlbum.setUri(album.getUri());
+	    newAlbum.setGenres(album.getGenres());
+	    newAlbum.setReleaseDate(album.getReleaseDate());
+	    newAlbum.getUsers().add(user);
+	    return newAlbum;
+	}
+
+	private Artists createArtistFromSpotifyData(ArtistSimplified artistSimplified) {
+	    Artists artist = new Artists();
+	    artist.setName(artistSimplified.getName());
+	    artist.setSpotifyId(artistSimplified.getId());
+	    artist.setHref(artistSimplified.getHref());
+	    artist.setUri(artistSimplified.getUri());
+	    return artist;
 	}
 
 	@Override

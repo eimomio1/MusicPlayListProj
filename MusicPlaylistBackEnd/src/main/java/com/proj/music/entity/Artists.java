@@ -1,8 +1,10 @@
 package com.proj.music.entity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +36,7 @@ public class Artists {
 	@JoinTable(name = "artist_song", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
 	private List<Songs> songs; // Artists can be associated with one or more songs.
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(name = "artist_album", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "album_id"))
 	private List<Albums> albums; // Artists can be associated with multiple albums.
 
@@ -98,6 +100,9 @@ public class Artists {
 	}
 
 	public List<Songs> getSongs() {
+        if (songs == null) {
+        	songs = new ArrayList<>();
+        }
 		return songs;
 	}
 
@@ -106,7 +111,10 @@ public class Artists {
 	}
 
 	public List<Albums> getAlbums() {
-		return albums;
+        if (albums == null) {
+            albums = new ArrayList<>();
+        }
+        return albums;
 	}
 
 	public void setAlbums(List<Albums> albums) {

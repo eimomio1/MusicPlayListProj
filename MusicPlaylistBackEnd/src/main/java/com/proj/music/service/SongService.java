@@ -13,7 +13,7 @@ public interface SongService {
 
 	Songs getSongById(long id);
 
-	String addSong(Track song);
+	String addSong(Track song, String userId);
 
 	List<Songs> getSongs();
 	

@@ -1,6 +1,9 @@
 package com.proj.music.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
@@ -17,9 +20,6 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "reviews")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "review_type", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("Review") // Default type is "Review"
 public class Reviews {
 
 	@Id
@@ -34,18 +34,21 @@ public class Reviews {
 	private String comment;
 
 	@Column(name = "date_posted")
-	private LocalDate datePosted;
+	private LocalDateTime datePosted;
 
 	@ManyToOne
 	@JoinColumn(name = "song_id") // many reviews for one song
+	@JsonIgnore
 	private Songs songs;
 
 	@ManyToOne
 	@JoinColumn(name = "album_id") // many reviews for one album
+	@JsonIgnore
 	private Albums albums;
 	
 	@ManyToOne
 	@JoinColumn(name = "playlist_id") // many reviews for one playlist
+	@JsonIgnore
 	private Playlists playlist;
     
     @ManyToOne
@@ -57,18 +60,20 @@ public class Reviews {
 	
 	public Reviews() {
 		super();
+		this.datePosted = LocalDateTime.now();
 	}
 
-	public Reviews(long id, String name, String comment, LocalDate datePosted, Songs song, Albums albums, Playlists playlist,
-			double rating) {
+	public Reviews(long id, String name, String comment, LocalDateTime datePosted, Songs songs, Albums albums,
+			Playlists playlist, Users user, double rating) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.comment = comment;
 		this.datePosted = datePosted;
-		this.songs = song;
+		this.songs = songs;
 		this.albums = albums;
 		this.playlist = playlist;
+		this.user = user;
 		this.rating = rating;
 	}
 
@@ -96,45 +101,13 @@ public class Reviews {
 		this.comment = comment;
 	}
 
-	public LocalDate getDatePosted() {
+	public LocalDateTime getDatePosted() {
 		return datePosted;
 	}
 
-	public void setDatePosted(LocalDate datePosted) {
+	public void setDatePosted(LocalDateTime datePosted) {
 		this.datePosted = datePosted;
 	}
-
-	public Songs getSong() {
-		return songs;
-	}
-
-	public void setSong(Songs song) {
-		this.songs = song;
-	}
-
-	public Albums getAlbum() {
-		return albums;
-	}
-
-	public void setAlbum(Albums albums) {
-		this.albums = albums;
-	}
-
-	public Playlists getPlaylist() {
-		return playlist;
-	}
-
-	public void setPlaylist(Playlists playlist) {
-		this.playlist = playlist;
-	}
-
-	public double getRating() {
-		return rating;
-	}
-
-	public void setRating(double rating) {
-		this.rating = rating;
-	}	
 
 	public Songs getSongs() {
 		return songs;
@@ -152,6 +125,14 @@ public class Reviews {
 		this.albums = albums;
 	}
 
+	public Playlists getPlaylist() {
+		return playlist;
+	}
+
+	public void setPlaylist(Playlists playlist) {
+		this.playlist = playlist;
+	}
+
 	public Users getUser() {
 		return user;
 	}
@@ -160,10 +141,19 @@ public class Reviews {
 		this.user = user;
 	}
 
+	public double getRating() {
+		return rating;
+	}
+
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+
 	@Override
 	public String toString() {
 		return "Reviews [id=" + id + ", name=" + name + ", comment=" + comment + ", datePosted=" + datePosted
-				+ ", song=" + songs + ", album=" + albums + ", playlist=" + playlist + ", rating=" + rating + "]";
+				+ ", songs=" + songs + ", albums=" + albums + ", playlist=" + playlist + ", user=" + user + ", rating="
+				+ rating + "]";
 	}
 
 }
