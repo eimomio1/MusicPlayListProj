@@ -130,7 +130,7 @@ public class ReviewServiceImpl implements ReviewService {
 	public List<Reviews> getReviews(String entityType, String entityId) {
 		Optional<List<Reviews>> foundReview = null;
 		switch (entityType) {
-		case "song":
+		case "songs":
 			foundReview = reviewRepository.findBySongs_SpotifyId(entityId);
 			break;
 		case "playlist":

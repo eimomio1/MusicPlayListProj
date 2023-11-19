@@ -96,10 +96,12 @@ public class PlaylistController {
 		}
 	}
 
+	
+	
 	// Delete a playlist
 	@DeleteMapping("/delete-playlist/users/{playlistId}")
 	public ResponseEntity<String> deletePlaylist(@PathVariable String playlistId, @RequestParam String userId) {
-
+System.out.println("Im inside the delete method");
 		// Retrieve the Users object from the repository
 		Users users = userService.findRefById(userId);
 

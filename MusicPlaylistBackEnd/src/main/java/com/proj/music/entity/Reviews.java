@@ -43,21 +43,19 @@ public class Reviews {
 
 	@ManyToOne
 	@JoinColumn(name = "album_id") // many reviews for one album
-	@JsonIgnore
 	private Albums albums;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "playlist_id") // many reviews for one playlist
-	@JsonIgnore
 	private Playlists playlist;
-    
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users user;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private Users user;
+
 	@Column(name = "rating")
 	private double rating;
-	
+
 	public Reviews() {
 		super();
 		this.datePosted = LocalDateTime.now();

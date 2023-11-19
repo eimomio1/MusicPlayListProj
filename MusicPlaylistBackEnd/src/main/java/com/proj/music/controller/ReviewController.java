@@ -93,37 +93,42 @@ public class ReviewController {
 		return reviewService.deleteReviewById(reviewId, entityType, entityId);
 	}
 
-//	@GetMapping("/{entityType}/{entityId}/review/{reviewId}")
-//	@ResponseStatus(value = HttpStatus.OK)
-//	public Reviews getReviewByReviewIdForUser(@RequestParam String userId, @PathVariable String entityType, @PathVariable String entityId, @PathVariable long reviewId) {
-//		// first its gets the user
-//		Users userDetails = userService.findRefById(userId);
-//		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-//			// If expired, refresh the access token
-//			spotifyService.refreshAccessToken(userDetails);
-//		}
-//		// Then it pass the access token for the user to do the spotify api request
-//		spotifyApi.setAccessToken(userDetails.getAccessToken());
-//		// Then it refreshes the token for the user to the spotify api request
-//		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-//
-//		return reviewService.getReviewById(reviewId, entityType, entityId);
-//	}
-
-	@GetMapping("/{entityType}/{entityId}/reviews")
+	@GetMapping("/{entityType}/{entityId}/review/{reviewId}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public List<Reviews> getReviews(@RequestParam String userId, @PathVariable String entityType, @PathVariable String entityId) {
-		// first its gets the user
-		Users userDetails = userService.findRefById(userId);
+	public Reviews getReviewByReviewIdForUser(@RequestParam String userId, @PathVariable String entityType, @PathVariable String entityId, @PathVariable long reviewId) {
+//		// first its gets the user
+		Users userDetails = userService.findRefById(userId);		
 		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
-			// If expired, refresh the access token
+		// If expired, refresh the access token
 			spotifyService.refreshAccessToken(userDetails);
-		}
-		// Then it pass the access token for the user to do the spotify api request
+	}
+	// Then it pass the access token for the user to do the spotify api request
 		spotifyApi.setAccessToken(userDetails.getAccessToken());
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
-
-		return reviewService.getReviews(entityType, entityId);
+		return reviewService.getReviewById(reviewId, entityType, entityId);
 	}
+
+	/*
+	 * @GetMapping("/{entityType}/{entityId}/reviews")
+	 * 
+	 * @ResponseStatus(value = HttpStatus.OK) public List<Reviews>
+	 * getReviews(@RequestParam String userId, @PathVariable String
+	 * entityType, @PathVariable String entityId) { // first it gets the user Users
+	 * userDetails = userService.findRefById(userId); if
+	 * (spotifyService.isTokenExpired(userDetails.getExpiresAt())) { // If expired,
+	 * refresh the access token spotifyService.refreshAccessToken(userDetails); } //
+	 * Then it passes the access token for the user to do the Spotify API request
+	 * spotifyApi.setAccessToken(userDetails.getAccessToken()); // Then it refreshes
+	 * the token for the user to the Spotify API request
+	 * spotifyApi.setRefreshToken(userDetails.getRefreshToken());
+	 * 
+	 * List<Reviews> reviews = reviewService.getReviews(entityType, entityId);
+	 * 
+	 * // Print the list of reviews for debugging System.out.println("Reviews: " +
+	 * reviews);
+	 * 
+	 * return reviews; }
+	 */
+
 }
