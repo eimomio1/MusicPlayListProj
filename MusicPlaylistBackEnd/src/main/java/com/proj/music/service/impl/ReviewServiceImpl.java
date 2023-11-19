@@ -46,30 +46,30 @@ public class ReviewServiceImpl implements ReviewService {
 		Optional<Reviews> review1 = null;
 		switch (entityType) {
 		case "songs":
-				review1 = reviewRepository.findBySongs_SpotifyIdAndId(entityId, reviewId);
-				review1.get().setName(review.getName());
-				review1.get().setComment(review.getComment());
-				review1.get().setDatePosted(review.getDatePosted());
-				review1.get().setRating(review.getRating());
-				reviewRepository.save(review1.get());
+			review1 = reviewRepository.findBySongs_SpotifyIdAndId(entityId, reviewId);
+			review1.get().setName(review.getName());
+			review1.get().setComment(review.getComment());
+			review1.get().setDatePosted(review.getDatePosted());
+			review1.get().setRating(review.getRating());
+			reviewRepository.save(review1.get());
 			break;
 
 		case "albums":
-				review1 = reviewRepository.findByAlbums_SpotifyIdAndId(entityId, reviewId);
-				review1.get().setName(review.getName());
-				review1.get().setComment(review.getComment());
-				review1.get().setDatePosted(review.getDatePosted());
-				review1.get().setRating(review.getRating());
-				reviewRepository.save(review1.get());
+			review1 = reviewRepository.findByAlbums_SpotifyIdAndId(entityId, reviewId);
+			review1.get().setName(review.getName());
+			review1.get().setComment(review.getComment());
+			review1.get().setDatePosted(review.getDatePosted());
+			review1.get().setRating(review.getRating());
+			reviewRepository.save(review1.get());
 			break;
 
 		case "playlist":
-				review1 = reviewRepository.findByPlaylist_SpotifyIdAndId(entityId, reviewId);
-				review1.get().setName(review.getName());
-				review1.get().setComment(review.getComment());
-				review1.get().setDatePosted(review.getDatePosted());
-				review1.get().setRating(review.getRating());
-				reviewRepository.save(review1.get());			
+			review1 = reviewRepository.findByPlaylist_SpotifyIdAndId(entityId, reviewId);
+			review1.get().setName(review.getName());
+			review1.get().setComment(review.getComment());
+			review1.get().setDatePosted(review.getDatePosted());
+			review1.get().setRating(review.getRating());
+			reviewRepository.save(review1.get());
 			break;
 
 		default:
@@ -127,7 +127,7 @@ public class ReviewServiceImpl implements ReviewService {
 		ReviewDTO newReview = convertToDTO(foundReview);
 		return newReview;
 	}
-	
+
 	@Override
 	public List<ReviewDTO> getReviews(String entityType, String entityId) {
 		List<Reviews> foundReview = null;
@@ -144,20 +144,18 @@ public class ReviewServiceImpl implements ReviewService {
 		default:
 			throw new ResourceNotFoundException("Not the correct entity type");
 		}
-	    return foundReview.stream()
-	            .map(this::convertToDTO)
-	            .collect(Collectors.toList());
+		return foundReview.stream().map(this::convertToDTO).collect(Collectors.toList());
 	}
-	
+
 	private ReviewDTO convertToDTO(Reviews review) {
-	    ReviewDTO dto = new ReviewDTO();
-	    // Set DTO properties based on the review entity
-	    dto.setId(review.getId());
-	    dto.setName(review.getName());
-	    dto.setComment(review.getComment());
-	    dto.setDatePosted(review.getDatePosted());
-	    dto.setRating(review.getRating());
-	    return dto;
+		ReviewDTO dto = new ReviewDTO();
+		// Set DTO properties based on the review entity
+		dto.setId(review.getId());
+		dto.setName(review.getName());
+		dto.setComment(review.getComment());
+		dto.setDatePosted(review.getDatePosted());
+		dto.setRating(review.getRating());
+		return dto;
 	}
 
 	@Override

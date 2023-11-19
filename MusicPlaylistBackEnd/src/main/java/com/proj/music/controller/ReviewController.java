@@ -96,9 +96,11 @@ public class ReviewController {
 	}
 
 	@GetMapping("/{entityType}/{entityId}/review/{reviewId}")
-	public ResponseEntity<ReviewDTO> getReviewByReviewIdForUser(@RequestParam String userId, @PathVariable String entityType, @PathVariable String entityId, @PathVariable long reviewId) {
+	public ResponseEntity<ReviewDTO> getReviewByReviewIdForUser(@RequestParam String userId,
+			@PathVariable String entityType, @PathVariable String entityId, @PathVariable long reviewId) {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
+
 		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
 			// If expired, refresh the access token
 			spotifyService.refreshAccessToken(userDetails);
@@ -113,7 +115,8 @@ public class ReviewController {
 	}
 
 	@GetMapping("/{entityType}/{entityId}/reviews")
-	public ResponseEntity<List<ReviewDTO>> getReviews(@RequestParam String userId, @PathVariable String entityType, @PathVariable String entityId) {
+	public ResponseEntity<List<ReviewDTO>> getReviews(@RequestParam String userId, @PathVariable String entityType,
+			@PathVariable String entityId) {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
 		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
@@ -129,5 +132,29 @@ public class ReviewController {
 		// Print the reviews just before returning them
 
 		return ResponseEntity.ok().body(reviewDTOs);
+
 	}
+
+	/*
+	 * @GetMapping("/{entityType}/{entityId}/reviews")
+	 * 
+	 * @ResponseStatus(value = HttpStatus.OK) public List<Reviews>
+	 * getReviews(@RequestParam String userId, @PathVariable String
+	 * entityType, @PathVariable String entityId) { // first it gets the user Users
+	 * userDetails = userService.findRefById(userId); if
+	 * (spotifyService.isTokenExpired(userDetails.getExpiresAt())) { // If expired,
+	 * refresh the access token spotifyService.refreshAccessToken(userDetails); } //
+	 * Then it passes the access token for the user to do the Spotify API request
+	 * spotifyApi.setAccessToken(userDetails.getAccessToken()); // Then it refreshes
+	 * the token for the user to the Spotify API request
+	 * spotifyApi.setRefreshToken(userDetails.getRefreshToken());
+	 * 
+	 * List<Reviews> reviews = reviewService.getReviews(entityType, entityId);
+	 * 
+	 * // Print the list of reviews for debugging System.out.println("Reviews: " +
+	 * reviews);
+	 * 
+	 * return reviews; }
+	 */
+
 }

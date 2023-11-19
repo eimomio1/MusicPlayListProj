@@ -50,14 +50,14 @@ public class Reviews {
 	@ManyToOne
 	@JoinColumn(name = "playlist_id")
 	private Playlists playlist;
-    
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users user;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private Users user;
+
 	@Column(name = "rating")
 	private double rating;
-	
+
 	public Reviews() {
 		super();
 	}
@@ -150,8 +150,8 @@ public class Reviews {
 
 	@Override
 	public String toString() {
-	    return "Reviews [id=" + id + ", name=" + name + ", comment=" + comment + ", datePosted=" + datePosted
-	            + ", user=" + user.getId() + ", rating=" + rating + "]";
+		return "Reviews [id=" + id + ", name=" + name + ", comment=" + comment + ", datePosted=" + datePosted
+				+ ", user=" + user.getId() + ", rating=" + rating + "]";
 	}
 
 }

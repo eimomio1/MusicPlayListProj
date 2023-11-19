@@ -33,7 +33,7 @@ public class Songs {
 
 	@Column(name = "preview_url")
 	private String previewUrl;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "album_id")
 	private Albums albums; // Many songs are in one album
@@ -49,22 +49,22 @@ public class Songs {
 
 	@OneToMany(mappedBy = "songs")
 	private List<Reviews> reviews; // For one artist there are many reviews
-	
+
 	@Column(name = "uris")
 	private String uris;
-	
-	@Column(name ="spotifyId")
+
+	@Column(name = "spotifyId")
 	private String spotifyId;
-	
+
 	@ManyToMany(mappedBy = "songs")
 	private List<Users> users;
-	
+
 	public Songs() {
 		super();
 	}
 
-	public Songs(long id, String name, double duration, String previewUrl, Albums albums, 
-			List<Playlists> playlists, List<Artists> artists, List<Reviews> reviews, String uris, String spotifyId) {
+	public Songs(long id, String name, double duration, String previewUrl, Albums albums, List<Playlists> playlists,
+			List<Artists> artists, List<Reviews> reviews, String uris, String spotifyId) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -101,7 +101,7 @@ public class Songs {
 	public void setDuration(double duration) {
 		this.duration = duration;
 	}
-	
+
 	public Albums getAlbum() {
 		return albums;
 	}
@@ -128,7 +128,7 @@ public class Songs {
 
 	public List<Artists> getArtists() {
 		if (artists == null) {
-            artists = new ArrayList<>();
+			artists = new ArrayList<>();
 		}
 		return artists;
 	}
@@ -136,7 +136,7 @@ public class Songs {
 	public void setArtists(List<Artists> artists) {
 		this.artists = artists;
 	}
-	
+
 	public Albums getAlbums() {
 		return albums;
 	}
@@ -160,7 +160,7 @@ public class Songs {
 	public void setUris(String uris) {
 		this.uris = uris;
 	}
-		
+
 	public String getSpotifyId() {
 		return spotifyId;
 	}
@@ -176,7 +176,7 @@ public class Songs {
 	public void setPreviewUrl(String previewUrl) {
 		this.previewUrl = previewUrl;
 	}
-	
+
 	public List<Users> getUsers() {
 		if (users == null) {
 			users = new ArrayList<>();
@@ -194,7 +194,5 @@ public class Songs {
 				+ ", albums=" + albums + ", playlists=" + playlists + ", artists=" + artists + ", reviews=" + reviews
 				+ ", uris=" + uris + ", spotifyId=" + spotifyId + ", users=" + users + "]";
 	}
-
-
 
 }

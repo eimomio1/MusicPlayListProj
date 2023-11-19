@@ -2,5 +2,42 @@
     <label for="nameOfPlaylist">Playlist Name:</label>
     <input type="text" id="nameOfPlaylist" [(ngModel)]="nameOfPlaylist" placeholder="Enter playlist name">
   </div>
+
   <button (click)="createPlaylist()">Create Playlist</button>
+
+  <br><br>
+
+  <div>
+    <label for="playlistDropdown">Select Playlist:</label>
+    <select id="playlistDropdown" [(ngModel)]="selectedPlaylistId" (change)="onPlaylistSelected()">
+      <option *ngFor="let playlist of playlists" [value]="playlist.spotifyId">{{ playlist.playlistName }}</option>
+    </select>
+  </div>
+  
+
+<div>
+    <label for="updatedName">Updated Playlist Name:</label>
+    <input type="text" id="updatedName" [(ngModel)]="updatedPlaylistName" placeholder="Enter updated playlist name">
+</div>
+
+<div>
+    <label for="updatedDescription">Updated Playlist Description:</label>
+    <input type="text" id="updatedDescription" [(ngModel)]="updatedPlaylistDescription" placeholder="Enter updated playlist description">
+</div>
+  
+  <button (click)="updatePlaylist()">Update Playlist</button>
+  
+  
+  <br><br>
+
+  
+  
+  <div>
+    <label for="playlistDropdownDelete">Select Playlist to Delete:</label>
+    <select id="playlistDropdownDelete" [(ngModel)]="selectedDeletePlaylistId" (change)="onDeletePlaylistSelected()">
+      <option *ngFor="let playlist of playlists" [value]="playlist.spotifyId">{{ playlist.playlistName }}</option>
+    </select>
+  </div>
+  
+  <button (click)="deletePlaylist()">Delete Playlist</button>
   
