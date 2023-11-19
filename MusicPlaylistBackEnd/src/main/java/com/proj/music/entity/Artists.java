@@ -163,8 +163,8 @@ public class Artists {
 
 	@Override
 	public String toString() {
-		return "Artists [id=" + id + ", name=" + name + ", spotifyId=" + spotifyId + ", songs=" + songs + ", albums="
-				+ albums + ", genres=" + genres + ", href=" + href + ", images=" + Arrays.toString(images)
-				+ ", popularity=" + popularity + ", uri=" + uri + "]";
+	    return "Artists [id=" + id + ", name=" + name + ", spotifyId=" + spotifyId + ", genres=" + Arrays.toString(genres)
+	            + ", href=" + href + ", popularity=" + popularity + ", uri=" + uri + "]";
 	}
+
 }

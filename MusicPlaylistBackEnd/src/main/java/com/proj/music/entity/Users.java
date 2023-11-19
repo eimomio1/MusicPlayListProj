@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,16 +52,22 @@ public class Users implements Serializable {
 	private List<Reviews> reviews;
 
 	@ManyToMany
-	@JoinTable(name = "user_playlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "playlist_id"))
+	@JoinTable(name = "user_playlist", 
+			joinColumns = @JoinColumn(name = "user_id"), 
+			inverseJoinColumns = @JoinColumn(name = "playlist_id"))
 	private List<Playlists> playlists;
-	// A user can have many playlists
 
 	@ManyToMany
-	@JoinTable(name = "user_albums", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "album_id"))
+	@JoinTable(name = "user_albums", 
+			joinColumns = @JoinColumn(name = "user_id"), 
+			inverseJoinColumns = @JoinColumn(name = "album_id"))
+	@JsonBackReference
 	private List<Albums> albums;
 	
 	@ManyToMany
-	@JoinTable(name = "user_songs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+	@JoinTable(name = "user_songs", 
+			joinColumns = @JoinColumn(name = "user_id"), 
+			inverseJoinColumns = @JoinColumn(name = "song_id"))
 	private List<Songs> songs;
 	
 	public Users() {
@@ -181,7 +189,8 @@ public class Users implements Serializable {
 	@Override
 	public String toString() {
 		return "Users [id=" + id + ", userName=" + userName + ", email=" + email + ", refId=" + refId + ", accessToken="
-				+ accessToken + ", refreshToken=" + refreshToken + ", expiresAt=" + expiresAt + ", playlists="
-				+ playlists + "]";
+				+ accessToken + ", refreshToken=" + refreshToken + ", expiresAt=" + expiresAt + ", reviews=" + reviews
+				+ ", playlists=" + playlists + ", albums=" + albums + ", songs=" + songs + "]";
 	}
+
 }
