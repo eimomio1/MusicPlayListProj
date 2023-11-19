@@ -2,6 +2,7 @@ package com.proj.music.service;
 
 import java.util.List;
 
+import com.proj.music.dto.ReviewDTO;
 import com.proj.music.entity.Reviews;
 
 public interface ReviewService {
@@ -9,11 +10,11 @@ public interface ReviewService {
 
 	String deleteReviewById(long reviewId, String entityType, String entityId);
 
-	Reviews getReviewById(long reviewid, String entityType, String entityId);
+	ReviewDTO getReviewById(long reviewid, String entityType, String entityId);
 
 	String addReview(Reviews review, String entityId, String entityType, String userId);
 	
 //	List<Reviews> getReviewsBySongId(String spotifyId);
 	
-	List<Reviews> getReviews(String entityType, String entityId);
+	List<ReviewDTO> getReviews(String entityType, String entityId);
 }

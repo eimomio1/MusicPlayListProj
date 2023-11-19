@@ -15,4 +15,6 @@ public interface SongRepository extends JpaRepository<Songs, Long> {
 	List<Songs> getSongsByUris(String uris);
 	
 	Optional<Songs> findSongBySpotifyId(String spotifyId);
+	
+//	List<Songs> findByNameContainingAndType(String name, String type);
 }

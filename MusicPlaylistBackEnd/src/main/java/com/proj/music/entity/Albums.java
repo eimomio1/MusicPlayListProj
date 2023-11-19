@@ -14,6 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 
 @Entity
 @Table(name = "albums")
@@ -39,6 +40,9 @@ public class Albums {
 	
 	@Column(name = "uri")
 	private String uri;
+	
+	@Column(name = "images")
+	private Image[] images;
 
 	@ManyToMany(mappedBy = "albums")
 	private List<Artists> artists; // An album can be associated with multiple artists.
@@ -47,7 +51,7 @@ public class Albums {
 	private List<Songs> songs; // for one album it contains multiple songs
 
 	@OneToMany(mappedBy = "albums")
-	private List<Reviews> reviews; // For one album there are many reviews
+	private List<Reviews> reviews;
 	
 	@ManyToMany(mappedBy = "albums")
 	private List<Users> users;
@@ -151,12 +155,19 @@ public class Albums {
 	public void setUsers(List<Users> users) {
 		this.users = users;
 	}
+	
+	public Image[] getImages() {
+		return images;
+	}
+
+	public void setImages(Image[] images) {
+		this.images = images;
+	}
 
 	@Override
 	public String toString() {
-		return "Albums [id=" + id + ", spotifyId=" + spotifyId + ", name=" + name + ", genres="
-				+ Arrays.toString(genres) + ", releaseDate=" + releaseDate + ", uri=" + uri + ", artist=" + artists
-				+ ", songs=" + songs + ", reviews=" + reviews + ", users=" + users + "]";
+	    return "Albums [id=" + id + ", spotifyId=" + spotifyId + ", name=" + name + ", genres="
+	            + Arrays.toString(genres) + ", Images="+ Arrays.toString(images) + ", releaseDate=" + releaseDate + ", uri=" + uri + "]";
 	}
 
 }

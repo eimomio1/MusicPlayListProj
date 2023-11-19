@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.proj.music.entity.Reviews;
 
@@ -23,5 +25,7 @@ public interface ReviewRepository extends JpaRepository<Reviews, Long> {
     
     Optional<List<Reviews>> findByPlaylist_SpotifyId(String playlistId);
     
-    Optional<List<Reviews>> findByAlbums_SpotifyId(String albumId);
+    @Query("SELECT r FROM Reviews r LEFT JOIN FETCH r.albums WHERE r.albums.spotifyId = :albumId")
+    Optional<List<Reviews>> findByAlbums_SpotifyId(@Param("albumId") String albumId);
+
 }
