@@ -2,6 +2,9 @@ package com.proj.music.entity;
 
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -33,20 +36,19 @@ public class Reviews {
 	@Column(name = "comment")
 	private String comment;
 
-	@Column(name = "date_posted")
+	@Column(name = "date_posted", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, updatable = false)
 	private LocalDateTime datePosted;
 
 	@ManyToOne
-	@JoinColumn(name = "song_id") // many reviews for one song
-	@JsonIgnore
+	@JoinColumn(name = "song_id")
 	private Songs songs;
 
 	@ManyToOne
-	@JoinColumn(name = "album_id") // many reviews for one album
+	@JoinColumn(name = "album_id")
 	private Albums albums;
 
 	@ManyToOne
-	@JoinColumn(name = "playlist_id") // many reviews for one playlist
+	@JoinColumn(name = "playlist_id")
 	private Playlists playlist;
 
 	@ManyToOne
@@ -58,7 +60,6 @@ public class Reviews {
 
 	public Reviews() {
 		super();
-		this.datePosted = LocalDateTime.now();
 	}
 
 	public Reviews(long id, String name, String comment, LocalDateTime datePosted, Songs songs, Albums albums,
@@ -150,8 +151,7 @@ public class Reviews {
 	@Override
 	public String toString() {
 		return "Reviews [id=" + id + ", name=" + name + ", comment=" + comment + ", datePosted=" + datePosted
-				+ ", songs=" + songs + ", albums=" + albums + ", playlist=" + playlist + ", user=" + user + ", rating="
-				+ rating + "]";
+				+ ", user=" + user.getId() + ", rating=" + rating + "]";
 	}
 
 }

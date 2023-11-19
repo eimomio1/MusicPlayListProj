@@ -2,10 +2,12 @@ package com.proj.music.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proj.music.dto.ReviewDTO;
 import com.proj.music.entity.Albums;
 import com.proj.music.entity.Playlists;
 import com.proj.music.entity.Reviews;
@@ -44,30 +46,30 @@ public class ReviewServiceImpl implements ReviewService {
 		Optional<Reviews> review1 = null;
 		switch (entityType) {
 		case "songs":
-				review1 = reviewRepository.findBySongs_SpotifyIdAndId(entityId, reviewId);
-				review1.get().setName(review.getName());
-				review1.get().setComment(review.getComment());
-				review1.get().setDatePosted(review.getDatePosted());
-				review1.get().setRating(review.getRating());
-				reviewRepository.save(review1.get());
+			review1 = reviewRepository.findBySongs_SpotifyIdAndId(entityId, reviewId);
+			review1.get().setName(review.getName());
+			review1.get().setComment(review.getComment());
+			review1.get().setDatePosted(review.getDatePosted());
+			review1.get().setRating(review.getRating());
+			reviewRepository.save(review1.get());
 			break;
 
 		case "albums":
-				review1 = reviewRepository.findByAlbums_SpotifyIdAndId(entityId, reviewId);
-				review1.get().setName(review.getName());
-				review1.get().setComment(review.getComment());
-				review1.get().setDatePosted(review.getDatePosted());
-				review1.get().setRating(review.getRating());
-				reviewRepository.save(review1.get());
+			review1 = reviewRepository.findByAlbums_SpotifyIdAndId(entityId, reviewId);
+			review1.get().setName(review.getName());
+			review1.get().setComment(review.getComment());
+			review1.get().setDatePosted(review.getDatePosted());
+			review1.get().setRating(review.getRating());
+			reviewRepository.save(review1.get());
 			break;
 
 		case "playlist":
-				review1 = reviewRepository.findByPlaylist_SpotifyIdAndId(entityId, reviewId);
-				review1.get().setName(review.getName());
-				review1.get().setComment(review.getComment());
-				review1.get().setDatePosted(review.getDatePosted());
-				review1.get().setRating(review.getRating());
-				reviewRepository.save(review1.get());			
+			review1 = reviewRepository.findByPlaylist_SpotifyIdAndId(entityId, reviewId);
+			review1.get().setName(review.getName());
+			review1.get().setComment(review.getComment());
+			review1.get().setDatePosted(review.getDatePosted());
+			review1.get().setRating(review.getRating());
+			reviewRepository.save(review1.get());
 			break;
 
 		default:
@@ -107,43 +109,53 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public Reviews getReviewById(long reviewid, String entityType, String entityId) {
-		Optional<Reviews> foundReview = null;
+	public ReviewDTO getReviewById(long reviewid, String entityType, String entityId) {
+		Reviews foundReview = null;
 		switch (entityType) {
 		case "songs":
-			foundReview = reviewRepository.findBySongs_SpotifyIdAndId(entityId, reviewid);
+			foundReview = reviewRepository.findBySongs_SpotifyIdAndId(entityId, reviewid).get();
 			break;
 		case "playlist":
-			foundReview = reviewRepository.findByPlaylist_SpotifyIdAndId(entityId, reviewid);
+			foundReview = reviewRepository.findByPlaylist_SpotifyIdAndId(entityId, reviewid).get();
 			break;
 		case "albums":
-			foundReview = reviewRepository.findByAlbums_SpotifyIdAndId(entityId, reviewid);
+			foundReview = reviewRepository.findByAlbums_SpotifyIdAndId(entityId, reviewid).get();
 			break;
 		default:
-			System.out.println("Object has not been found.");
-			break;
+			throw new ResourceNotFoundException("Not the correct entity type");
 		}
-		return foundReview.orElseThrow(()-> new ResourceNotFoundException("Object has not been found"));
+		ReviewDTO newReview = convertToDTO(foundReview);
+		return newReview;
 	}
-	
+
 	@Override
-	public List<Reviews> getReviews(String entityType, String entityId) {
-		Optional<List<Reviews>> foundReview = null;
+	public List<ReviewDTO> getReviews(String entityType, String entityId) {
+		List<Reviews> foundReview = null;
 		switch (entityType) {
 		case "songs":
-			foundReview = reviewRepository.findBySongs_SpotifyId(entityId);
+			foundReview = reviewRepository.findBySongs_SpotifyId(entityId).get();
 			break;
 		case "playlist":
-			foundReview = reviewRepository.findByPlaylist_SpotifyId(entityId);
+			foundReview = reviewRepository.findByPlaylist_SpotifyId(entityId).get();
 			break;
 		case "albums":
-			foundReview = reviewRepository.findByAlbums_SpotifyId(entityId);
+			foundReview = reviewRepository.findByAlbums_SpotifyId(entityId).get();
 			break;
 		default:
-			System.out.println("Object has not been found.");
-			break;
+			throw new ResourceNotFoundException("Not the correct entity type");
 		}
-		return foundReview.orElseThrow(()-> new ResourceNotFoundException("Object has not been found"));
+		return foundReview.stream().map(this::convertToDTO).collect(Collectors.toList());
+	}
+
+	private ReviewDTO convertToDTO(Reviews review) {
+		ReviewDTO dto = new ReviewDTO();
+		// Set DTO properties based on the review entity
+		dto.setId(review.getId());
+		dto.setName(review.getName());
+		dto.setComment(review.getComment());
+		dto.setDatePosted(review.getDatePosted());
+		dto.setRating(review.getRating());
+		return dto;
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package com.proj.music.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 
 @Entity
 @Table(name = "playlist")
@@ -33,6 +33,9 @@ public class Playlists {
 	@Column(name = "spotifyId")
 	private String spotifyId;
 
+	@Column(name = "images")
+	private Image[] images;
+	
 	@ManyToMany
 	@JoinTable(name = "playlist_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
 	private List<Songs> songs; // A playlist can contain multiple songs
@@ -40,7 +43,7 @@ public class Playlists {
 	@Column(name = "createdAt")
 	private LocalDateTime createdAt;
 
-	@Column(name = "updatedAt")
+	@Column(name = "updatedAt", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, updatable = false)
 	private LocalDateTime updatedAt;
 
 	@ManyToMany(mappedBy = "playlists")
@@ -139,11 +142,19 @@ public class Playlists {
 	public void setReviews(List<Reviews> reviews) {
 		this.reviews = reviews;
 	}
+	
+	public Image[] getImages() {
+		return images;
+	}
+
+	public void setImages(Image[] images) {
+		this.images = images;
+	}
 
 	@Override
 	public String toString() {
 		return "Playlists [id=" + id + ", name=" + name + ", description=" + description + ", spotifyId=" + spotifyId
-				+ ", songs=" + songs + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users
+				+ ", songs=" + songs + ", images=" + images + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users
 				+ ", reviews=" + reviews + "]";
 	}
 

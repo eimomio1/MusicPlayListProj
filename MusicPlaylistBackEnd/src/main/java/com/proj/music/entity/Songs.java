@@ -35,7 +35,7 @@ public class Songs {
 	private String previewUrl;
 
 	@ManyToOne
-	@JoinColumn(name = "album_id") // Map the "album_id" in the Album table to create the relationship
+	@JoinColumn(name = "album_id")
 	private Albums albums; // Many songs are in one album
 
 //	@Column(name = "genres")
@@ -192,7 +192,7 @@ public class Songs {
 	public String toString() {
 		return "Songs [id=" + id + ", name=" + name + ", duration=" + duration + ", previewUrl=" + previewUrl
 				+ ", albums=" + albums + ", playlists=" + playlists + ", artists=" + artists + ", reviews=" + reviews
-				+ ", uris=" + uris + ", spotifyId=" + spotifyId + "]";
+				+ ", uris=" + uris + ", spotifyId=" + spotifyId + ", users=" + users + "]";
 	}
 
 }
