@@ -15,4 +15,24 @@ export class PlaylistService {
 
     return this.http.post(url, playlistData, { responseType: 'text' });
   }
+  
+  updatePlaylist(userId: string, playlistId: string, playlistData: any): Observable<any> {
+    const url = `${this.baseUrl}/api/user/playlist/${playlistId}?userId=${userId}`;
+
+    return this.http.put(url, playlistData, { responseType: 'text' });
+  }
+ 
+
+  getPlaylists(userId: string): Observable<any[]> {
+    const url = `${this.baseUrl}/api/users/${userId}/playlists`;
+    return this.http.get<any[]>(url);
+  }
+
+  
+  deletePlaylist(userId: string, playlistId: string): Observable<any> {
+    const url = `${this.baseUrl}/api/delete-playlist/users/${playlistId}?userId=${userId}`;
+  
+    return this.http.delete(url, { responseType: 'text' });
+  }
+  
 }
