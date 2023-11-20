@@ -8,7 +8,11 @@
         </a>
       </div>
       <div class="col-sm">
-        Button 2
+        <a [routerLink]="['/reviews']" [queryParams]="{ id: userId, accessToken: accessToken }"role="button"
+        class="btn btn-outline-primary btn-lg btn-block text-center">
+        Go To Reviews Page
+       <span><i class="fa fa-users"></i></span>
+     </a>
       </div>
       <div class="col-sm">
         Button 3
