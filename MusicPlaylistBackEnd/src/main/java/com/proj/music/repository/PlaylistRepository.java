@@ -12,5 +12,5 @@ public interface PlaylistRepository extends JpaRepository<Playlists, Long> {
 	
 	Optional<Playlists> findPlaylistBySpotifyId(String spotifyId);
 	
-//	void deleteBySongId(String song_id);
+	Boolean existsBySpotifyId(String spotifyId);
 }
