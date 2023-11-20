@@ -3,6 +3,10 @@ package com.proj.music.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.proj.music.entity.Users;
 import com.proj.music.service.PlaylistService;
 import com.proj.music.service.SpotifyAuthService;
@@ -28,11 +32,13 @@ import se.michaelthelin.spotify.requests.data.playlists.GetListOfUsersPlaylistsR
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistCoverImageRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
+import se.michaelthelin.spotify.requests.data.playlists.RemoveItemsFromPlaylistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.UploadCustomPlaylistCoverImageRequest;
-import se.michaelthelin.spotify.requests.data.tracks.GetSeveralTracksRequest;
 import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.hc.core5.http.ParseException;
@@ -428,9 +434,8 @@ System.out.println("Im inside the delete method");
 
 	// Deletes Songs From Playlist
 	@DeleteMapping(value = "/playlists/{playlistId}/songs")
-	@ResponseStatus(value = HttpStatus.OK)
-	public String removePlaylistSongs(@PathVariable String playlistId, @RequestParam String userId,
-			@RequestParam String... songUri) {
+	public ResponseEntity<SnapshotResult> removePlaylistSongs(@PathVariable String playlistId, @RequestParam String userId,
+			@RequestParam String... songUri) throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
 		// Check if the access token is still valid
@@ -438,21 +443,40 @@ System.out.println("Im inside the delete method");
 			// If expired, refresh the access token
 			spotifyService.refreshAccessToken(userDetails);
 		}
+		// Then it pass the access token for the user to do the spotify api request
+		spotifyApi.setAccessToken(userDetails.getAccessToken());
+		// Then it refreshes the token for the user to the spotify api request
+		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		// Retrieve details about the added tracks from Spotify by iterating through
 		// each URI
 		for (String uri : songUri) {
 			String[] parts = uri.split(":");
 			String songId = parts[parts.length - 1];
-
 			// Save information about the added track to your database
 			playlistService.deleteSongFromPlaylist(songId);
 		}
-		// Then it pass the access token for the user to do the spotify api request
-		spotifyApi.setAccessToken(userDetails.getAccessToken());
-		// Then it refreshes the token for the user to the spotify api request
-		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
+		
+		List<String> songUris = Arrays.asList(songUri);
 
-		return "Playlist has been deleted";
+		// Convert song URIs to a list of JSON objects
+		List<JsonObject> trackObjects = new ArrayList<>();
+		for (String uri : songUris) {
+		    JsonObject trackObject = new JsonObject();
+		    trackObject.addProperty("uri", uri);
+		    trackObjects.add(trackObject);
+		}
+
+		// Create a JSON array from the list of track objects
+		JsonArray jsonArray = new JsonArray();
+		for (JsonObject trackObject : trackObjects) {
+		    jsonArray.add(trackObject);
+		}
+
+		RemoveItemsFromPlaylistRequest removeItemsFromPlaylist = spotifyApi.removeItemsFromPlaylist(playlistId, jsonArray).build();
+		
+		SnapshotResult snapShot = removeItemsFromPlaylist.execute();
+		
+		return ResponseEntity.ok().body(snapShot);
 	}
 
 	@PutMapping(value = "/playlists/{playlistId}/images")
