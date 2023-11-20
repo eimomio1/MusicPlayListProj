@@ -1,6 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { PlaylistService } from './playlist.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
+interface ApiResponse {
+  albums: any;
+  artists: any;
+  episodes: any;
+  playlists: any;
+  shows: any;
+  tracks: {
+    href: string;
+    items: any[];
+    limit: number;
+    next: string;
+    offset: number;
+    // Add any other properties if needed
+  };
+}
+
 
 @Component({
   selector: 'app-playlist',
@@ -16,7 +35,12 @@ export class PlaylistComponent implements OnInit {
   playlists: any[] = [];
   selectedPlaylistId: string = ''; // new property
   selectedDeletePlaylistId: string = ''; // new property
+  
 
+  searchQuery: string = '';
+  searchResults: any[] = [];
+  selectedSongId: string = '';
+  private searchSubject = new Subject<string>();
 
 
 
@@ -27,13 +51,37 @@ export class PlaylistComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Extract userId from the URL
     this.route.queryParams.subscribe(params => {
       this.userId = params['id'];
-
       this.loadPlaylists();
     });
+
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(query => this.playlistService.searchSongs(this.userId, query))
+    ).subscribe(
+      (response: any) => {
+        console.log('API Response:', response);
+    
+        // Check if there are items in the tracks property
+        if (response.tracks && response.tracks.items) {
+          this.searchResults = response.tracks.items;
+          console.log('Debug: Search Results -', this.searchResults);
+        } else {
+          console.warn('API response is missing expected structure:', response);
+        }
+      },
+      error => {
+        console.error('Failed to search songs:', error);
+      }
+    );
+    
+
+  
   }
+
+  
 
   createPlaylist(): void {
     if (this.nameOfPlaylist && this.userId) {
@@ -139,7 +187,54 @@ deletePlaylist(): void {
   }
 }
 
+// Function to handle the search input
+searchSongs(): void {
+  console.log('Before searchSubject.next:', this.searchQuery);
+  this.searchSubject.next(this.searchQuery);
+  console.log('After searchSubject.next:', this.searchQuery);
+  
+  // Debug statement for search results
+  console.log('Debug: Search Results -', this.searchResults);
+  
+  // Reset selectedSongId when a new search is performed
+  this.selectedSongId = '';
+}
 
 
+// Function to update the URL when a song is selected
 
+onSongSelected(): void {
+  // Check if a song is selected
+  if (this.selectedSongId) {
+    // Update the URL with the selected trackId
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { trackId: this.selectedSongId },
+      queryParamsHandling: 'merge'
+    });
+  }
+}
+
+
+ // Updated method to add songs to the playlist
+  addSongsToPlaylist(): void {
+    // Check if the required parameters are available
+    if (this.playlistId && this.userId && this.selectedSongId) {
+      // Call the service method to add songs to the playlist
+      this.playlistService.addSongsToPlaylist(this.playlistId, this.userId, this.selectedSongId).subscribe(
+        response => {
+          console.log('Songs added successfully:', response);
+          // Handle success, e.g., show a success message to the user
+        },
+        error => {
+          console.error('Failed to add songs to playlist:', error);
+          // Handle error, e.g., show an error message to the user
+        }
+      );
+    } else {
+      // Handle invalid input or missing parameters, e.g., show a validation message
+    }
+  }
+
+ 
 }

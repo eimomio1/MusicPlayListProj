@@ -35,4 +35,22 @@ export class PlaylistService {
     return this.http.delete(url, { responseType: 'text' });
   }
   
+// Updated searchSongs method to accept userId and query
+searchSongs(userId: string, query: string): Observable<any[]> {
+  const url = `${this.baseUrl}/api/search?userId=${userId}&q=${query}&type=track`;
+  return this.http.get<any[]>(url);
+}
+
+ // New method to add songs to a playlist
+ // New method to add songs to a playlist
+addSongsToPlaylist(playlistId: string, userId: string, songId: string): Observable<any> {
+  const url = `${this.baseUrl}/api/playlists/${playlistId}/songs?userId=${userId}&songUri=spotify:track:${songId}`;
+
+  // Assuming you need to send a POST request to add songs
+  
+  return this.http.post(url, { responseType: 'text' });
+}
+
+
+
 }
