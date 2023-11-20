@@ -43,7 +43,7 @@ public class Playlists {
 	@Column(name = "createdAt")
 	private LocalDateTime createdAt;
 
-	@Column(name = "updatedAt", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, updatable = false)
+	@Column(name = "updatedAt", nullable = false, updatable = false)
 	private LocalDateTime updatedAt;
 
 	@ManyToMany(mappedBy = "playlists")

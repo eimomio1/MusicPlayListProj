@@ -36,7 +36,7 @@ public class Reviews {
 	@Column(name = "comment")
 	private String comment;
 
-	@Column(name = "date_posted", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, updatable = false)
+	@Column(name = "date_posted", nullable = false, updatable = false)
 	private LocalDateTime datePosted;
 
 	@ManyToOne
@@ -60,6 +60,7 @@ public class Reviews {
 
 	public Reviews() {
 		super();
+		datePosted = LocalDateTime.now();
 	}
 
 	public Reviews(long id, String name, String comment, LocalDateTime datePosted, Songs songs, Albums albums,
