@@ -50,7 +50,19 @@ addSongsToPlaylist(playlistId: string, userId: string, songId: string): Observab
   
   return this.http.post(url, { responseType: 'text' });
 }
+deleteSongsFromPlaylistO(playlistId: string, userId: string, songId: string): Observable<any> {
+  const url = `${this.baseUrl}/api/playlists/${playlistId}/songs?userId=${userId}&songUri=spotify:track:${songId}`;
+
+ 
+  
+  return this.http.delete(url, { responseType: 'text' });
+}
 
 
+// New method to get songs for a playlist
+getPlaylistSongs(userId: string, playlistId: string): Observable<any[]> {
+  const url = `${this.baseUrl}/api/playlists/${playlistId}?userId=${userId}`;
+  return this.http.get<any[]>(url);
+}
 
 }

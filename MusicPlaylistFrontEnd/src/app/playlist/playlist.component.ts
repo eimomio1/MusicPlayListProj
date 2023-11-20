@@ -40,6 +40,11 @@ export class PlaylistComponent implements OnInit {
   searchQuery: string = '';
   searchResults: any[] = [];
   selectedSongId: string = '';
+
+  selectedPlaylist: any = {}; // New property to store the selected playlist details (New Update)
+  playlistSongs: any[] = []; // New property to store playlist songs(New Update)
+
+
   private searchSubject = new Subject<string>();
 
 
@@ -48,7 +53,11 @@ export class PlaylistComponent implements OnInit {
     private playlistService: PlaylistService,
     private route: ActivatedRoute,
     private router: Router // Inject the Router service
-  ) {}
+  ) {
+
+
+    
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -135,6 +144,7 @@ onPlaylistSelected(): void {
 
   // Set the playlistId property
   this.playlistId = this.selectedPlaylistId;
+  this.loadPlaylistSongs(this.selectedPlaylistId);// New Update
 }
 
 
@@ -235,6 +245,53 @@ onSongSelected(): void {
       // Handle invalid input or missing parameters, e.g., show a validation message
     }
   }
+  deleteSongsFromPlaylist(): void {
+    // Check if the required parameters are available
+    if (this.playlistId && this.userId && this.selectedSongId) {
+      // Call the service method to add songs to the playlist
+      this.playlistService.deleteSongsFromPlaylistO(this.playlistId, this.userId, this.selectedSongId).subscribe(
+        response => {
+          console.log('Songs deleted from playlist successfully:', response);
+          // Handle success, e.g., show a success message to the user
+        },
+        error => {
+          console.error('Failed to delete songs from playlist:', error);
+          // Handle error, e.g., show an error message to the user
+        }
+      );
+    } else {
+      // Handle invalid input or missing parameters, e.g., show a validation message
+    }
+  }
 
- 
+
+  private loadPlaylistSongs(playlistId: string): void {
+    if (this.userId && playlistId) {
+      // Call the service method to get songs for the playlist
+      this.playlistService.getPlaylistSongs(this.userId, playlistId).subscribe(
+        (playlistSongsResponse: any) => {
+          // Extract the items array from the tracks property
+          const playlistItems = playlistSongsResponse.tracks.items;
+
+          // Check if there are items in the playlist
+          if (playlistItems && playlistItems.length > 0) {
+            // Map the items array to populate the playlistSongs array
+            this.playlistSongs = playlistItems.map((item: any) => ({
+              id: item.track.id,
+              name: item.track.name,
+              // Add other properties as needed
+            }));
+
+            console.log('Playlist Songs:', this.playlistSongs);
+          } else {
+            console.warn('No songs found in the playlist.');
+          }
+        },
+        (error) => {
+          console.error('Failed to load playlist songs:', error);
+        }
+      );
+    }
+  }
+
 }
