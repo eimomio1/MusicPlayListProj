@@ -19,6 +19,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
 @Service
@@ -198,5 +199,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 				.setParameter("playlistId", playlistId).executeUpdate();
 
 		System.out.println("Deleted rows: " + deletedRows);
+	}
+	
+	public Boolean isplaylistExist(String spotifyId) {
+		return playlistRepository.existsBySpotifyId(spotifyId);
 	}
 }

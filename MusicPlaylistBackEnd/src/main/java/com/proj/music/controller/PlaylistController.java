@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.proj.music.entity.Users;
 import com.proj.music.service.PlaylistService;
 import com.proj.music.service.SpotifyAuthService;
@@ -40,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.hc.core5.http.ParseException;
 import org.slf4j.Logger;
@@ -90,7 +90,6 @@ public class PlaylistController {
 			try {
 				newPlaylist = playlistRequest.execute();
 			} catch (ParseException | SpotifyWebApiException | IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			// Saves playlist to database table
@@ -457,20 +456,29 @@ System.out.println("Im inside the delete method");
 		}
 		
 		List<String> songUris = Arrays.asList(songUri);
+		
+		List<JsonObject> newTrackObjects = songUris.stream().map((x)-> {
+			JsonObject newtrackObject = new JsonObject();
+			newtrackObject.addProperty("uri", x);
+			return newtrackObject;
+		}).collect(Collectors.toList());
 
 		// Convert song URIs to a list of JSON objects
-		List<JsonObject> trackObjects = new ArrayList<>();
-		for (String uri : songUris) {
-		    JsonObject trackObject = new JsonObject();
-		    trackObject.addProperty("uri", uri);
-		    trackObjects.add(trackObject);
-		}
-
+//		List<JsonObject> trackObjects = new ArrayList<>();
+//		for (String uri : songUris) {
+//		    JsonObject trackObject = new JsonObject();
+//		    trackObject.addProperty("uri", uri);
+//		    trackObjects.add(trackObject);
+//		}
+		
+		JsonArray jsonArray = newTrackObjects.stream()
+			    .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
+		
 		// Create a JSON array from the list of track objects
-		JsonArray jsonArray = new JsonArray();
-		for (JsonObject trackObject : trackObjects) {
-		    jsonArray.add(trackObject);
-		}
+//		JsonArray jsonArray = new JsonArray();
+//		for (JsonObject trackObject : newTrackObjects) {
+//		    jsonArray.add(trackObject);
+//		}
 
 		RemoveItemsFromPlaylistRequest removeItemsFromPlaylist = spotifyApi.removeItemsFromPlaylist(playlistId, jsonArray).build();
 		

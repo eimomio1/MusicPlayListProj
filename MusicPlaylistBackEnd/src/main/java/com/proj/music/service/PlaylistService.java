@@ -27,4 +27,6 @@ public interface PlaylistService {
 	String addSongToPlaylist(String userId, Track track);
 	
 	public String deleteSongFromPlaylist(String songId);
+	
+	Boolean isplaylistExist(String spotifyId);
 }

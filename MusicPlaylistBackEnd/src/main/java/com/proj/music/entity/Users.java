@@ -128,6 +128,9 @@ public class Users implements Serializable {
 	}
 
 	public List<Playlists> getPlaylists() {
+		if (playlists == null) {
+			playlists = new ArrayList<>();
+		}
 		return playlists;
 	}
 
