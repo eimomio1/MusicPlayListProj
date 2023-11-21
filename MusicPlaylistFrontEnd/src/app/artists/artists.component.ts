@@ -16,6 +16,8 @@ export class ArtistsComponent implements OnInit {
   selectedAlbumId: string = '';
   searchResults: any[] = [];
   albumResults: any[] = [];
+  songResults: any[] = [];
+  selectedSongId: string = ''; // Add this line
   private searchSubject = new Subject<string>();
 
   constructor(private artistsService: ArtistsService, private route: ActivatedRoute, private router: Router) {}
@@ -93,6 +95,38 @@ export class ArtistsComponent implements OnInit {
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { albumId: this.selectedAlbumId },
+        queryParamsHandling: 'merge'
+      });
+    }
+  }
+
+
+  getSongsFromAlbum(): void {
+    if (this.selectedAlbumId) {
+      this.artistsService.getAlbumTracks(this.selectedAlbumId, this.userId).subscribe(
+        (response: any) => {
+          if (response && response.length > 0) {
+            this.songResults = response;
+          } else {
+            console.warn('No songs found for the selected album.');
+          }
+        },
+        error => {
+          console.error('Failed to get songs:', error);
+        }
+      );
+    } else {
+      console.warn('No album selected. Please select an album first.');
+    }
+  }
+
+
+
+  onSongSelected(): void {
+    if (this.selectedSongId) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { songId: this.selectedSongId },
         queryParamsHandling: 'merge'
       });
     }
