@@ -15,7 +15,11 @@
      </a>
       </div>
       <div class="col-sm">
-        Button 3
+        <a [routerLink]="['/artists']" [queryParams]="{ id: userId, accessToken: accessToken }"role="button"
+        class="btn btn-outline-primary btn-lg btn-block text-center">
+
+       Go to Artists Page
+      </a>
       </div>
       <div class="col-sm">
         Button 4

@@ -5,6 +5,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginsComponent } from './logins/logins.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { ReviewsComponent } from './reviews/reviews.component';
+import { ArtistsComponent } from './artists/artists.component'; // Import the ArtistsComponent
 const routes: Routes = [
   // Define the route for the "home" component
   {
@@ -23,6 +24,11 @@ const routes: Routes = [
   {
     path: 'reviews',
     component: ReviewsComponent, 
+    pathMatch: 'full',
+  },
+  {
+    path: 'artists',
+    component: ArtistsComponent,  // Add a route for ArtistsComponent
     pathMatch: 'full',
   },
   // Add other routes if needed

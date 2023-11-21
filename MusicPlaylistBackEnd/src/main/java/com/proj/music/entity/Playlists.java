@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -33,8 +34,11 @@ public class Playlists {
 	@Column(name = "spotifyId")
 	private String spotifyId;
 
-	@Column(name = "images")
-	private Image[] images;
+	/*
+	 * @Lob
+	 * 
+	 * @Column(name = "images", length=300) private Image[] images;
+	 */
 	
 	@ManyToMany
 	@JoinTable(name = "playlist_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
@@ -143,19 +147,14 @@ public class Playlists {
 		this.reviews = reviews;
 	}
 	
-	public Image[] getImages() {
-		return images;
-	}
+//	public Image[] getImages() {
+//		return images;
+//	}
+//
+//	public void setImages(Image[] images) {
+//		this.images = images;
+//	}
 
-	public void setImages(Image[] images) {
-		this.images = images;
-	}
-
-	@Override
-	public String toString() {
-		return "Playlists [id=" + id + ", name=" + name + ", description=" + description + ", spotifyId=" + spotifyId
-				+ ", songs=" + songs + ", images=" + images + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", users=" + users
-				+ ", reviews=" + reviews + "]";
-	}
+	
 
 }
