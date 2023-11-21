@@ -6,22 +6,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ArtistsService {
-  private baseUrl = 'http://localhost:8080'; // Replace with your backend URL and port
+  private baseUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient) {}
 
-
-  // Updated searchSongs method to accept userId and query
-searchSongs(userId: string, query: string): Observable<any[]> {
+  searchArtist(userId: string, query: string): Observable<any[]> {
     const url = `${this.baseUrl}/api/search?userId=${userId}&q=${query}&type=artist`;
     return this.http.get<any[]>(url);
   }
 
-
   getAlbumsByArtistId(artistId: string, userId: string): Observable<any[]> {
     const url = `${this.baseUrl}/api/artists/${artistId}/albums?userId=${userId}`;
     return this.http.get<any[]>(url);
-}
-
-
+  }
 }

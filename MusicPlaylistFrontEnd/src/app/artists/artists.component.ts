@@ -1,37 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ArtistsService } from './artists.service';
 import { Subject } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router'; // Import Router
+import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-
-interface ApiResponse {
-  albums: any;
-  artists: any;
-  episodes: any;
-  playlists: any;
-  shows: any;
-  tracks: {
-    href: string;
-    items: any[];
-    limit: number;
-    next: string;
-    offset: number;
-    // Add any other properties if needed
-  };
-}
-
 
 @Component({
   selector: 'app-artists',
   templateUrl: './artists.component.html',
   styleUrls: ['./artists.component.css']
 })
-
 export class ArtistsComponent implements OnInit {
   userId: string = '';
   searchQuery: string = '';
+  selectedArtistId: string = '';
   selectedAlbumId: string = '';
   searchResults: any[] = [];
+  albumResults: any[] = [];
   private searchSubject = new Subject<string>();
 
   constructor(private artistsService: ArtistsService, private route: ActivatedRoute, private router: Router) {}
@@ -39,20 +23,21 @@ export class ArtistsComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.userId = params['id'];
+      this.selectedArtistId = params['artistId'];
+      this.selectedAlbumId = params['albumId'];
+
+      // Fetch albums based on selectedArtistId if needed
+     
     });
 
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(query => this.artistsService.searchSongs(this.userId, query))
+      switchMap(query => this.artistsService.searchArtist(this.userId, query))
     ).subscribe(
       (response: any) => {
-        console.log('API Response:', response);
-
-        // Check if there are items in the tracks property
         if (response.artists && response.artists.items) {
           this.searchResults = response.artists.items;
-          console.log('Debug: Search Results -', this.searchResults);
         } else {
           console.warn('API response is missing expected structure:', response);
         }
@@ -63,56 +48,53 @@ export class ArtistsComponent implements OnInit {
     );
   }
 
-
   // Function to handle the search input
-searchArtists(): void {
-  console.log('Before searchSubject.next:', this.searchQuery);
-  this.searchSubject.next(this.searchQuery);
-  console.log('After searchSubject.next:', this.searchQuery);
-  
-  // Debug statement for search results
-  console.log('Debug: Search Results -', this.searchResults);
-  
-  // Reset selectedSongId when a new search is performed
-  this.selectedAlbumId = '';
-}
-
-
-
-onAlbumSelected(): void {
-  // Check if a song is selected
-  if (this.selectedAlbumId) {
-    // Update the URL with the selected trackId
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { artistId: this.selectedAlbumId },
-      queryParamsHandling: 'merge'
-    });
+  searchArtists(): void {
+    this.searchSubject.next(this.searchQuery);
+    this.selectedArtistId = ''; // Reset selectedArtistId when a new search is performed
+    this.selectedAlbumId = ''; // Reset selectedAlbumId when a new search is performed
   }
-}
 
-
-getAlbums(): void {
-  if (this.selectedAlbumId) {
-    // Extract the artistId from the URL
-    const artistId = this.route.snapshot.queryParamMap.get('artistId');
-
-    if (artistId) {
-      // Call the backend endpoint to get albums by artist ID
-      this.artistsService.getAlbumsByArtistId(artistId, this.userId).subscribe(
-        (albums: any[]) => {
-          // Update the searchResults with the albums
-          this.searchResults = albums;
-          console.log('Debug: Albums -', this.searchResults);
+  // Function to handle the fetching of albums
+  getAlbums(): void {
+    if (this.selectedArtistId) {
+      this.artistsService.getAlbumsByArtistId(this.selectedArtistId, this.userId).subscribe(
+        (response: any) => {
+          if (response && response.length > 0) {
+            this.albumResults = response;
+          } else {
+            console.warn('No albums found for the selected artist.');
+          }
         },
         error => {
           console.error('Failed to get albums:', error);
         }
       );
     } else {
-      console.warn('ArtistId not found in the URL.');
+      console.warn('No artist selected. Please select an artist first.');
     }
   }
-}
 
+  // Function to handle the selection of an artist
+  onArtistSelected(): void {
+    if (this.selectedArtistId) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { artistId: this.selectedArtistId },
+        queryParamsHandling: 'merge'
+      });
+   
+    }
+  }
+
+  // Function to handle the selection of an album
+  onAlbumSelected(): void {
+    if (this.selectedAlbumId) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { albumId: this.selectedAlbumId },
+        queryParamsHandling: 'merge'
+      });
+    }
+  }
 }
