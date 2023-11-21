@@ -19,4 +19,10 @@ export class ArtistsService {
     const url = `${this.baseUrl}/api/artists/${artistId}/albums?userId=${userId}`;
     return this.http.get<any[]>(url);
   }
+
+  getAlbumTracks(albumId: string, userId: string): Observable<any[]> {
+    const url = `${this.baseUrl}/api/albums/${albumId}/tracks?userId=${userId}`;
+    return this.http.get<any[]>(url);
+  }
+  
 }
