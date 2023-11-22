@@ -1,69 +1,113 @@
-<div>
-  <label for="nameOfPlaylist">Playlist Name:</label>
-  <input type="text" id="nameOfPlaylist" [(ngModel)]="nameOfPlaylist" placeholder="Enter playlist name">
+<div class = "PlaylistCreation" style = "padding: 40px;">
+  <h1>Create Playlist: </h1>
+  <div>
+    <label for="nameOfPlaylist">Playlist Name:</label>
+    <input type="text" id="nameOfPlaylist" [(ngModel)]="nameOfPlaylist" placeholder="Enter playlist name">
+    <input type="text" id="description" [(ngModel)]="nameOfPlaylist" placeholder="Enter description">
+  </div>
+  
+  <button (click)="createPlaylist()">Create Playlist</button>  
+</div>
+<br><br>
+
+<div class="UpdatePlaylist" style="padding: 40px;">
+  <h1>Update Playlist Or Delete</h1>
+  <div>
+    <label for="updatedName">Updated Playlist Name:</label>
+    <input type="text" id="updatedName" [(ngModel)]="updatedPlaylistName" placeholder="Enter updated playlist name">
+  </div>
+  
+  <div>
+    <label for="updatedDescription">Updated Playlist Description:</label>
+    <input type="text" id="updatedDescription" [(ngModel)]="updatedPlaylistDescription" placeholder="Enter updated playlist description">
+  </div>
+
+  <div>
+    <label for="playlistDropdownDelete">Select Playlist to Delete:</label>
+    <select id="playlistDropdownDelete" [(ngModel)]="selectedDeletePlaylistId" (change)="onDeletePlaylistSelected()">
+      <option *ngFor="let playlist of playlists" [value]="playlist.spotifyId">{{ playlist.playlistName }}</option>
+    </select>
+  </div>
+  
+  <button (click)="updatePlaylist()">Update Playlist</button> 
+  <button (click)="deletePlaylist()">Delete Playlist</button>
 </div>
 
-<button (click)="createPlaylist()">Create Playlist</button>
+<div class = "SongPlaylist" style = "padding: 40px;">
+  <h1>Add Or Delete Song From Playlist</h1>
+  <div>
+    <label for="playlistDropdown">Select Playlist:</label>
+    <select id="playlistDropdown" [(ngModel)]="selectedPlaylistId" (change)="onPlaylistSelected()">
+      <option *ngFor="let playlist of playlists" [value]="playlist.spotifyId">{{ playlist.playlistName }}</option>
+    </select>
+  </div>
+  <div *ngIf="playlistSongs.length > 0">
+    <label for="playlistSongsDropdown">Select Song:</label>
+    <select id="playlistSongsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
+      <option *ngFor="let song of playlistSongs" [value]="song.id">{{ song.name }}</option>
+    </select>
+  </div>
+  <button (click)="addSongsToPlaylist()">Add Song To Playlist</button>
+  <button (click)="deleteSongsFromPlaylist()">Delete Song To Playlist</button>  
+</div>
 
 <br><br>
 
-<div>
-  <label for="playlistDropdown">Select Playlist:</label>
-  <select id="playlistDropdown" [(ngModel)]="selectedPlaylistId" (change)="onPlaylistSelected()">
-    <option *ngFor="let playlist of playlists" [value]="playlist.spotifyId">{{ playlist.playlistName }}</option>
-  </select>
-</div>
-<div *ngIf="playlistSongs.length > 0">
-  <label for="playlistSongsDropdown">Select Song:</label>
-  <select id="playlistSongsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
-    <option *ngFor="let song of playlistSongs" [value]="song.id">{{ song.name }}</option>
-  </select>
-</div>
-
-<div>
-  <label for="updatedName">Updated Playlist Name:</label>
-  <input type="text" id="updatedName" [(ngModel)]="updatedPlaylistName" placeholder="Enter updated playlist name">
-</div>
-
-<div>
-  <label for="updatedDescription">Updated Playlist Description:</label>
-  <input type="text" id="updatedDescription" [(ngModel)]="updatedPlaylistDescription" placeholder="Enter updated playlist description">
+<div class = "Search Songs" style="padding: 40px;">
+  <h1>Search Songs</h1>
+  <div>
+    <label for="searchSong">Search Song:</label>
+    <input type="text" id="searchSong" [(ngModel)]="searchQuery" (input)="searchSongs()" placeholder="Enter song name">
+  </div>
+  
+  <!-- Dropdown for search results -->
+  <div *ngIf="searchResults.length > 0">
+    <label for="searchResultsDropdown">Search Results:</label>
+    <select id="searchResultsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
+      <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
+    </select>
+  </div>
+    <!-- Display the image of the selected song -->
+    <div *ngIf="selectedSongId">
+      <img [src]="getSelectedSongImage()" alt="Selected Song Image" style="max-width: 200px; max-height: 200px;">
+    </div>
+  
 </div>
 
-<button (click)="updatePlaylist()">Update Playlist</button> 
-<button (click)="addSongsToPlaylist()">Add Song To Playlist</button>
-<button (click)="deleteSongsFromPlaylist()">Delete Song To Playlist</button>
-
-<br><br>
-
-<div>
-  <label for="playlistDropdownDelete">Select Playlist to Delete:</label>
-  <select id="playlistDropdownDelete" [(ngModel)]="selectedDeletePlaylistId" (change)="onDeletePlaylistSelected()">
-    <option *ngFor="let playlist of playlists" [value]="playlist.spotifyId">{{ playlist.playlistName }}</option>
-  </select>
+<div class="container row">
+  <h1>Upload Image</h1>
+  <div class="col-md-6">
+      <input type="file" (change)="onFileChanged($event)">
+  </div>
+  <div class="col-md-6">
+      <input type="button" (click)="onUpload()" value="upload">
+  </div>
 </div>
-
-<button (click)="deletePlaylist()">Delete Playlist</button>
-
-<br><br>
-
-<div>
-  <label for="searchSong">Search Song:</label>
-  <input type="text" id="searchSong" [(ngModel)]="searchQuery" (input)="searchSongs()" placeholder="Enter song name">
-</div>
-
-<!-- Dropdown for search results -->
-<div *ngIf="searchResults.length > 0">
-  <label for="searchResultsDropdown">Search Results:</label>
-  <select id="searchResultsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
-    <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
-  </select>
-
-  <!-- Display the image of the selected song -->
-  <div *ngIf="selectedSongId">
-    <img [src]="getSelectedSongImage()" alt="Selected Song Image" style="max-width: 200px; max-height: 200px;">
+<hr />
+<div class="container row">
+  <div class="col-md-12">
+      <div *ngIf=message>{{message}}</div>
   </div>
 </div>
 
-<!-- Debug statement for search results length -->
-<div>Debug: Search Results Length - {{ searchResults.length }}</div>
+<div class="container row">
+  <div class="col-md-6">
+      <input type="text" class="form-control" id="name" placeholder="image name" [(ngModel)]="imageName"
+          name="name" />
+  </div>
+  <div class="col-md-6">
+      <input type="button" (click)="getImage()" value="Get Image">
+
+  </div>
+</div>
+
+<div class="container row">
+  <div class="col-md-12">
+      <div *ngIf=retrievedImage>
+          <img [src]="retrievedImage">
+      </div>
+  </div>
+</div>
+
+
+

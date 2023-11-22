@@ -14,7 +14,6 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import se.michaelthelin.spotify.model_objects.specification.Image;
 
 @Entity
 @Table(name = "playlist")
@@ -34,17 +33,15 @@ public class Playlists {
 	@Column(name = "spotifyId")
 	private String spotifyId;
 
-	/*
-	 * @Lob
-	 * 
-	 * @Column(name = "images", length=300) private Image[] images;
-	 */
-	
+	@Lob
+	@Column(name = "image_data", columnDefinition = "BLOB", length = 5000)
+	private byte[] imageData;
+
 	@ManyToMany
 	@JoinTable(name = "playlist_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
 	private List<Songs> songs; // A playlist can contain multiple songs
 
-	@Column(name = "createdAt")
+	@Column(name = "createdAt", nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
 	@Column(name = "updatedAt", nullable = false, updatable = false)
@@ -58,11 +55,12 @@ public class Playlists {
 
 	public Playlists() {
 		super();
+		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
 	}
 
-	public Playlists(long id, String name, String description, String spotifyId, List<Songs> songs, LocalDateTime createdAt,
-			LocalDateTime updatedAt, List<Users> users, List<Reviews> reviews) {
+	public Playlists(long id, String name, String description, String spotifyId, List<Songs> songs,
+			LocalDateTime createdAt, LocalDateTime updatedAt, List<Users> users, List<Reviews> reviews) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -146,15 +144,20 @@ public class Playlists {
 	public void setReviews(List<Reviews> reviews) {
 		this.reviews = reviews;
 	}
-	
-//	public Image[] getImages() {
-//		return images;
-//	}
-//
-//	public void setImages(Image[] images) {
-//		this.images = images;
-//	}
 
-	
+	public byte[] getImageData() {
+		return imageData;
+	}
+
+	public void setImageData(byte[] imageData) {
+		this.imageData = imageData;
+	}
+
+	@Override
+	public String toString() {
+		return "Playlists [id=" + id + ", name=" + name + ", description=" + description + ", spotifyId=" + spotifyId
+				+ ", songs=" + songs + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + ", users=" + users + ", reviews=" + reviews + "]";
+	}
 
 }

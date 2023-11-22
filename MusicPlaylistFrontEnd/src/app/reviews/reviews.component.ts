@@ -15,6 +15,7 @@ export class ReviewsComponent implements OnInit{
   reviewComment: string = '';
   reviewName: string = '';
   reviewRating: number = 0.0;
+  reviews: any[] = [];
 
   constructor(
     private reviewService: ReviewService,
@@ -22,10 +23,11 @@ export class ReviewsComponent implements OnInit{
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-      this.route.queryParams.subscribe(params =>
-        this.userId = params['id']);
-
+  ngOnInit(): void 
+  {
+    this.route.queryParams.subscribe((params) => {
+      this.userId = params['id'];
+    });
   }
 
   createReview(): void {
@@ -87,6 +89,28 @@ export class ReviewsComponent implements OnInit{
       this.reviewService.deleteReview(url).subscribe(
         response => {
           console.log('Review deleted successfully:', response);
+          // Handle success, e.g., show a success message to the user
+        },
+        error => {
+          console.error('Failed to delete review:', error);
+          // Handle error, e.g., show an error message to the user
+        }
+      );
+    } else {
+      // Handle invalid input or missing userId, e.g., show a validation message
+    }
+  }
+
+  getReviews(): void {
+    if (this.userId && this.entityType && this.entityId) {
+
+      // Include the selected entity type in the URL
+      const url = `/${this.entityType}/${this.entityId}/reviews?userId=${this.userId}`;
+
+      this.reviewService.getReviews(url).subscribe(
+        (response: any[]) => {
+          this.reviews = response; // Update the reviews array with the data received from the server
+          console.log('Reviews retrieved successfully:', this.reviews);
           // Handle success, e.g., show a success message to the user
         },
         error => {

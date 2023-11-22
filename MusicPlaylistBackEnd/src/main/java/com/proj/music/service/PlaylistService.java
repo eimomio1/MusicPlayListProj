@@ -28,5 +28,5 @@ public interface PlaylistService {
 	
 	public String deleteSongFromPlaylist(String songId);
 	
-	Boolean isplaylistExist(String spotifyId);
+	Boolean isPlaylistExist(String spotifyId);
 }

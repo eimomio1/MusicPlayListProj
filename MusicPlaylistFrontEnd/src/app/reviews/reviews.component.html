@@ -75,3 +75,49 @@
        </div>
        <button type="submit" class="btn btn-primary">Delete</button>
 </form>
+
+<!-- Allow the user to input entityId and entityName -->
+  <div>
+    <label for="entityType">Select Entity Type:</label>
+    <select id="entityType" [(ngModel)]="entityType">
+      <option value="albums">Albums</option>
+      <option value="playlist">Playlist</option>
+      <option value="songs">Songs</option>
+    </select>
+  </div>
+  
+  <div *ngIf="entityType">
+    <div>
+      <label for="entityId">Enter Entity ID:</label>
+      <input type="text" id="entityId" [(ngModel)]="entityId" />
+    </div>
+  </div>
+  
+  <!-- Button to trigger the getReviews method -->
+  <button (click)="getReviews()">Get Reviews</button>
+  
+  <!-- Display reviews if available -->
+  <section *ngIf="reviews.length > 0">
+    <div *ngFor="let review of reviews">
+        <div class="d-flex flex-start mb-4">
+            <img class="rounded-circle shadow-1-strong me-3" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(32).webp" alt="avatar" width="65" height="65" />
+            <div class="card w-100">
+              <div class="card-body p-4">
+                <div class="">
+                  <h5>{{ review.name }}</h5>
+                  <p class="small">{{ review.timestamp }}</p>
+                  <p>{{ review.comment }}</p>
+      
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                      <a href="#!" class="link-muted me-2"><i class="fas fa-thumbs-up me-1"></i>{{ review.likes }}</a>
+                      <a href="#!" class="link-muted"><i class="fas fa-thumbs-down me-1"></i>{{ review.dislikes }}</a>
+                    </div>
+                    <a href="#!" class="link-muted"><i class="fas fa-reply me-1"></i> Reply</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+  </section>

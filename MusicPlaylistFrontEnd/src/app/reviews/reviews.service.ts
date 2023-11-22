@@ -18,9 +18,8 @@ export class ReviewService {
     return this.http.put(`${this.baseUrl}${url}`, reviewData, { responseType: 'text' });
   }
  
-  getReviews(userId: string): Observable<any[]> {
-    const url = `${this.baseUrl}/users/${userId}/playlists`;
-    return this.http.get<any[]>(url);
+  getReviews(url: string): Observable<any[]> {
+    return this.http.get<any[]>(this.baseUrl + url);
   }
 
   deleteReview(url: string): Observable<any> {
