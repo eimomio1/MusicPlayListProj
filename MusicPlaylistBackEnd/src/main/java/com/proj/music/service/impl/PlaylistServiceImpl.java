@@ -18,8 +18,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
-import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
 @Service
@@ -33,7 +33,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Autowired
 	private SongRepository songRepository;
-
+	
 	@PersistenceContext
 	private EntityManager entityManager;
 	@Override
@@ -65,7 +65,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	public String addPlaylist(Playlist playlist, String userId) {
 		Optional<Users> optionalUser = Optional.of(userRespository.findByRefId(userId));
-
+//		Playlist spotifyPlaylist = spotifyService.getPlaylist(playlistId);
+        // Convert Spotify Playlist images to byte arrays
+//        List<byte[]> imageDatas = convertImagesToByteArrays(spotifyPlaylist.getImages());
 		if (optionalUser.isPresent()) {
 			Users user = optionalUser.get();
 
@@ -73,9 +75,11 @@ public class PlaylistServiceImpl implements PlaylistService {
 			Playlists playlists = new Playlists();
 			playlists.setName(playlist.getName());
 			playlists.setDescription(playlist.getDescription());
-			playlists.setImages(playlist.getImages());
+//			playlists.setImages(playlist.getImages());
 			playlists.setSpotifyId(playlist.getId());
-
+//	        if (!imageDatas.isEmpty()) {
+//	            playlists.setImageData(imageDatas.get(0)); // Assuming you are storing only the first image
+//	        }
 			// Add the playlist to the user's playlists
 			user.getPlaylists().add(playlists);
 
@@ -88,6 +92,20 @@ public class PlaylistServiceImpl implements PlaylistService {
 		}
 	}
 
+	private List<byte[]> convertImagesToByteArrays(Image[] images) {
+        List<byte[]> imageDatas = new ArrayList<>();
+
+        for (Image image : images) {
+            // Assuming you have a method to fetch image data as byte array
+//            byte[] imageData = fetchImageDataFromUrl(image.getUrl());
+//            if (imageData != null) {
+//                imageDatas.add(imageData);
+//            }
+        }
+
+        return imageDatas;
+    }
+	
 	@Override
 	public List<Playlists> getPlaylists() {
 		return playlistRepository.findAll();
@@ -201,7 +219,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		System.out.println("Deleted rows: " + deletedRows);
 	}
 	
-	public Boolean isplaylistExist(String spotifyId) {
+	public Boolean isPlaylistExist(String spotifyId) {
 		return playlistRepository.existsBySpotifyId(spotifyId);
 	}
 }

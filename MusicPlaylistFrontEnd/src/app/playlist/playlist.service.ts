@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -22,12 +22,10 @@ export class PlaylistService {
     return this.http.put(url, playlistData, { responseType: 'text' });
   }
  
-
   getPlaylists(userId: string): Observable<any[]> {
     const url = `${this.baseUrl}/api/users/${userId}/playlists`;
     return this.http.get<any[]>(url);
   }
-
   
   deletePlaylist(userId: string, playlistId: string): Observable<any> {
     const url = `${this.baseUrl}/api/delete-playlist/users/${playlistId}?userId=${userId}`;
@@ -63,6 +61,23 @@ deleteSongsFromPlaylistO(playlistId: string, userId: string, songId: string): Ob
 getPlaylistSongs(userId: string, playlistId: string): Observable<any[]> {
   const url = `${this.baseUrl}/api/playlists/${playlistId}?userId=${userId}`;
   return this.http.get<any[]>(url);
+}
+
+getImage(imageName: string): Observable<any[]> {
+  //Make a call to Sprinf Boot to get the Image Bytes.
+  return this.http.get<any[]>(`http://localhost:8080/api/get/${imageName}`);
+
+}
+
+uploadImage(file: File): Observable<any>{
+  const formData: FormData = new FormData();
+  formData.append('imageFile', file, file.name);
+
+  const headers = new HttpHeaders();
+  headers.append('Content-Type', 'multipart/form-data');
+  headers.append('Accept', 'application/json');
+
+  return this.http.post(`${this.baseUrl}/api/upload`, formData, { headers, observe: 'response' });
 }
 
 }

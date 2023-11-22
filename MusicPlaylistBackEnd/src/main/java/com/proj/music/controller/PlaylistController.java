@@ -2,11 +2,17 @@ package com.proj.music.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.proj.music.entity.ImageModel;
+import com.proj.music.entity.Playlists;
 import com.proj.music.entity.Users;
+import com.proj.music.repository.ImageRepository;
+import com.proj.music.service.ImageService;
 import com.proj.music.service.PlaylistService;
 import com.proj.music.service.SpotifyAuthService;
 import com.proj.music.service.UserService;
@@ -35,22 +41,22 @@ import se.michaelthelin.spotify.requests.data.playlists.RemoveItemsFromPlaylistR
 import se.michaelthelin.spotify.requests.data.playlists.UploadCustomPlaylistCoverImageRequest;
 import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 import org.apache.hc.core5.http.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200") // Add your frontend URL
 public class PlaylistController {
-
-	private static final Logger logger = LoggerFactory.getLogger(PlaylistController.class);
 
 	@Autowired
 	private UserService userService;
@@ -60,6 +66,9 @@ public class PlaylistController {
 
 	@Autowired
 	private SpotifyAuthService spotifyService;
+	
+	@Autowired
+	private ImageService imageService;
 
 	@Autowired
 	private SpotifyApi spotifyApi;
@@ -101,12 +110,10 @@ public class PlaylistController {
 		}
 	}
 
-	
-	
 	// Delete a playlist
 	@DeleteMapping("/delete-playlist/users/{playlistId}")
 	public ResponseEntity<String> deletePlaylist(@PathVariable String playlistId, @RequestParam String userId) {
-System.out.println("Im inside the delete method");
+		System.out.println("Im inside the delete method");
 		// Retrieve the Users object from the repository
 		Users users = userService.findRefById(userId);
 
@@ -417,8 +424,6 @@ System.out.println("Im inside the delete method");
 
 		SnapshotResult songSavedToPlaylist = addSongsPlaylistRequest.execute();
 
-		// Retrieve details about the added tracks from Spotify by iterating through
-		// each URI
 		for (String uri : songUri) {
 			String[] parts = uri.split(":");
 			String songId = parts[parts.length - 1];
@@ -433,8 +438,9 @@ System.out.println("Im inside the delete method");
 
 	// Deletes Songs From Playlist
 	@DeleteMapping(value = "/playlists/{playlistId}/songs")
-	public ResponseEntity<SnapshotResult> removePlaylistSongs(@PathVariable String playlistId, @RequestParam String userId,
-			@RequestParam String... songUri) throws ParseException, SpotifyWebApiException, IOException {
+	public ResponseEntity<SnapshotResult> removePlaylistSongs(@PathVariable String playlistId,
+			@RequestParam String userId, @RequestParam String... songUri)
+			throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the users
 		Users userDetails = userService.findRefById(userId);
 		// Check if the access token is still valid
@@ -454,10 +460,10 @@ System.out.println("Im inside the delete method");
 			// Save information about the added track to your database
 			playlistService.deleteSongFromPlaylist(songId);
 		}
-		
+
 		List<String> songUris = Arrays.asList(songUri);
-		
-		List<JsonObject> newTrackObjects = songUris.stream().map((x)-> {
+
+		List<JsonObject> newTrackObjects = songUris.stream().map((x) -> {
 			JsonObject newtrackObject = new JsonObject();
 			newtrackObject.addProperty("uri", x);
 			return newtrackObject;
@@ -470,20 +476,20 @@ System.out.println("Im inside the delete method");
 //		    trackObject.addProperty("uri", uri);
 //		    trackObjects.add(trackObject);
 //		}
-		
-		JsonArray jsonArray = newTrackObjects.stream()
-			    .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
-		
+
+		JsonArray jsonArray = newTrackObjects.stream().collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
+
 		// Create a JSON array from the list of track objects
 //		JsonArray jsonArray = new JsonArray();
 //		for (JsonObject trackObject : newTrackObjects) {
 //		    jsonArray.add(trackObject);
 //		}
 
-		RemoveItemsFromPlaylistRequest removeItemsFromPlaylist = spotifyApi.removeItemsFromPlaylist(playlistId, jsonArray).build();
-		
+		RemoveItemsFromPlaylistRequest removeItemsFromPlaylist = spotifyApi
+				.removeItemsFromPlaylist(playlistId, jsonArray).build();
+
 		SnapshotResult snapShot = removeItemsFromPlaylist.execute();
-		
+
 		return ResponseEntity.ok().body(snapShot);
 	}
 
@@ -503,11 +509,23 @@ System.out.println("Im inside the delete method");
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		// It send access token to spotify for the request to update playlist customer
-		// image
 		final UploadCustomPlaylistCoverImageRequest uploadCustomerPlaylistCoverImageRqst = spotifyApi
 				.uploadCustomPlaylistCoverImage(playlistId).build();
 		String uploadPlaylistCoverImage = uploadCustomerPlaylistCoverImageRqst.execute();
 
 		return uploadPlaylistCoverImage;
 	}
+	
+	@PostMapping(value = "/upload")
+	public BodyBuilder updateImage(@RequestParam("imageFile") MultipartFile file)
+	{
+		imageService.uploadImage(file);
+		return ResponseEntity.status(HttpStatus.OK);
+	}
+	@GetMapping(path = { "/get/{imageName}" })
+	public ResponseEntity<ImageModel> getImageForPlaylist(@PathVariable("imageName") String imageName) throws IOException {
+		return ResponseEntity.ok().body(imageService.getImage(imageName));
+	}
+	
+	
 }

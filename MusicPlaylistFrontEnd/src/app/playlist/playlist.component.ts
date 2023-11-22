@@ -20,6 +20,9 @@ interface ApiResponse {
   };
 }
 
+interface ImageResponse {
+  picByte: string; 
+}
 
 @Component({
   selector: 'app-playlist',
@@ -44,6 +47,10 @@ export class PlaylistComponent implements OnInit {
   selectedPlaylist: any = {}; // New property to store the selected playlist details (New Update)
   playlistSongs: any[] = []; // New property to store playlist songs(New Update)
 
+  selectedFile: File;
+  message: string = '';
+  imageName: string = '';
+  retrievedImage: any;
 
   private searchSubject = new Subject<string>();
 
@@ -55,7 +62,7 @@ export class PlaylistComponent implements OnInit {
     private router: Router // Inject the Router service
   ) {
 
-
+    this.selectedFile = new File([], 'defaultFileName'); 
     
   }
 
@@ -85,12 +92,53 @@ export class PlaylistComponent implements OnInit {
         console.error('Failed to search songs:', error);
       }
     );
-    
-
-  
   }
 
+  onFileChanged(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
   
+    if (inputElement.files && inputElement.files.length > 0) {
+      this.selectedFile = inputElement.files[0];
+    } else {
+      // Handle the case where no file is selected, or files array is empty
+      console.warn('No file selected.');
+      // You might want to set a default file, throw an error, or handle it based on your requirements.
+    }
+  }
+
+  onUpload() {
+    this.playlistService.uploadImage(this.selectedFile).subscribe(
+      (response) => {
+        if (response.status === 200) {
+          this.message = 'Image uploaded successfully';
+        } else {
+          this.message = 'Image not uploaded successfully';
+        }
+      },
+      (error) => {
+        console.error('Error uploading image:', error);
+        this.message = 'Error uploading image';
+      }
+    );
+  }
+
+  getImage() {
+    this.playlistService.getImage(this.imageName).subscribe(
+      (data: any[]) => {
+        // Assuming the response is an array
+        if (data && data.length > 0) {
+          const firstImageData = data[0];
+          this.retrievedImage = 'data:image/jpeg;base64,' + firstImageData.picByte;
+        } else {
+          console.warn('Image data is empty or not in the expected format.');
+        }
+      },
+      (error) => {
+        console.error('Error retrieving image:', error);
+        // Handle error as needed
+      }
+    );
+  }
 
   createPlaylist(): void {
     if (this.nameOfPlaylist && this.userId) {

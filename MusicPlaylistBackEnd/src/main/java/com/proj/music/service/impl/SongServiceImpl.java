@@ -7,19 +7,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proj.music.entity.Albums;
 import com.proj.music.entity.Artists;
 import com.proj.music.entity.Songs;
 import com.proj.music.entity.Users;
 import com.proj.music.exceptions.ResourceNotFoundException;
-import com.proj.music.repository.AlbumRepository;
 import com.proj.music.repository.ArtistRepository;
 import com.proj.music.repository.SongRepository;
 import com.proj.music.repository.UserRepository;
 import com.proj.music.service.SongService;
 
 import jakarta.transaction.Transactional;
-import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 

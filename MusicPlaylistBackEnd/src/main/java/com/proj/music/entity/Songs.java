@@ -1,7 +1,6 @@
 package com.proj.music.entity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,7 +13,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "songs")
@@ -36,7 +34,7 @@ public class Songs {
 
 	@ManyToOne
 	@JoinColumn(name = "album_id")
-	private Albums albums; // Many songs are in one album
+	private Albums albums; 
 
 //	@Column(name = "genres")
 //	private String[] genres;

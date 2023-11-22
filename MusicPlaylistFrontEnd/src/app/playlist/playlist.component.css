@@ -1,0 +1,69 @@
+#playlistBar {
+    border: solid;
+    border-color: green;
+    color: white;
+    position: relative;
+    height: 99%;
+    width: 99%;
+  
+    .playlistBarDiv {
+      display: block;
+      position: absolute;
+      height: 100%;
+      width: 95%;
+    }
+  
+    .playlistBarHead {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      margin-left: 15px;
+      height: 40px;
+  
+      .clickable {
+        &:hover {
+          color: yellow;
+        }
+      }
+  
+      #tracksBack {
+        flex: 3.5;
+      }
+  
+      #playPlaylist {
+        flex: 5;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-left: 15px;
+        text-align: right;
+  
+        fa-icon {
+          margin-left: 15px
+        }
+      }
+  
+    }
+  
+    .bigList {
+      height: calc(100% - 90px);
+      overflow-y: auto;
+      padding-right: 15px;
+  
+
+      scrollbar-color: white black;
+      scrollbar-width: thin;
+
+    }
+  
+    li {
+      border: 1px solid white;
+      padding: 10px;
+      font-size: 13px;
+  
+      &:hover {
+        border: 2px solid yellow;
+      }
+    }
+  }

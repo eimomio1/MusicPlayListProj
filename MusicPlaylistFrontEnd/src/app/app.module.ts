@@ -9,6 +9,7 @@ import { HomeComponent } from './home/home.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewsComponent } from './reviews/reviews.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
