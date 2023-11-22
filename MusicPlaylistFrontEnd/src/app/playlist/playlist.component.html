@@ -36,8 +36,6 @@
 
 <br><br>
 
-
-
 <div>
   <label for="playlistDropdownDelete">Select Playlist to Delete:</label>
   <select id="playlistDropdownDelete" [(ngModel)]="selectedDeletePlaylistId" (change)="onDeletePlaylistSelected()">
@@ -48,7 +46,6 @@
 <button (click)="deletePlaylist()">Delete Playlist</button>
 
 <br><br>
-
 
 <div>
   <label for="searchSong">Search Song:</label>
@@ -61,9 +58,12 @@
   <select id="searchResultsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
     <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
   </select>
+
+  <!-- Display the image of the selected song -->
+  <div *ngIf="selectedSongId">
+    <img [src]="getSelectedSongImage()" alt="Selected Song Image" style="max-width: 200px; max-height: 200px;">
+  </div>
 </div>
-
-
 
 <!-- Debug statement for search results length -->
 <div>Debug: Search Results Length - {{ searchResults.length }}</div>
