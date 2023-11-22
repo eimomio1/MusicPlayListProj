@@ -27,14 +27,6 @@ export class ReviewsComponent implements OnInit{
   {
     this.route.queryParams.subscribe((params) => {
       this.userId = params['id'];
-      this.reviewService.getReviews(this.userId).subscribe(
-        (data: any[]) => {
-          this.reviews = data;
-        },
-        (error) => {
-          console.error('Error fetching reviews:', error);
-        }
-      );
     });
   }
 
@@ -116,8 +108,9 @@ export class ReviewsComponent implements OnInit{
       const url = `/${this.entityType}/${this.entityId}/reviews?userId=${this.userId}`;
 
       this.reviewService.getReviews(url).subscribe(
-        response => {
-          console.log('Review deleted successfully:', response);
+        (response: any[]) => {
+          this.reviews = response; // Update the reviews array with the data received from the server
+          console.log('Reviews retrieved successfully:', this.reviews);
           // Handle success, e.g., show a success message to the user
         },
         error => {

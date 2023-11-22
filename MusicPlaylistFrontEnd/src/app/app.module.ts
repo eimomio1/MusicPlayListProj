@@ -9,17 +9,18 @@ import { HomeComponent } from './home/home.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewsComponent } from './reviews/reviews.component';
-import { HttpClientModule } from '@angular/common/http';
-
+import { ArtistsComponent } from './artists/artists.component';
 @NgModule({
   declarations: [
     AppComponent,
     LoginsComponent,
     HomeComponent,
     PlaylistComponent,
-    ReviewsComponent
+    ReviewsComponent,
+    ArtistsComponent
   ],
   imports: [
+    
     BrowserModule,
     FormsModule, // Add this line
     AppRoutingModule, NgbModule

@@ -1,0 +1,36 @@
+<p>artists works!</p>
+
+<div>
+  <label for="searchSong">Search Song:</label>
+  <input type="text" id="searchSong" [(ngModel)]="searchQuery" (input)="searchArtists()" placeholder="Enter artist's name">
+</div>
+
+<!-- Button to get albums -->
+<button (click)="getAlbums()">Get Albums</button>
+
+<!-- Dropdown for search results -->
+<div *ngIf="searchResults.length > 0">
+  <label for="searchResultsDropdown">Search Results:</label>
+  <select id="searchResultsDropdown" [(ngModel)]="selectedArtistId" (change)="onArtistSelected()">
+    <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
+  </select>
+</div>
+
+<!-- Dropdown for album results -->
+<div *ngIf="albumResults.length > 0">
+  <label for="albumResultsDropdown">Album Results:</label>
+  <select id="albumResultsDropdown" [(ngModel)]="selectedAlbumId" (change)="onAlbumSelected()">
+    <option *ngFor="let album of albumResults" [value]="album.id">{{ album.name }}</option>
+  </select>
+  
+  <!-- Button to get songs from the selected album -->
+  <button (click)="getSongsFromAlbum()">Get Songs From Album</button>
+
+  <!-- Dropdown for song results -->
+  <div *ngIf="songResults.length > 0">
+    <label for="songResultsDropdown">Song Results:</label>
+    <select id="songResultsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
+      <option *ngFor="let song of songResults" [value]="song.id">{{ song.name }}</option>
+    </select>
+  </div>
+</div>

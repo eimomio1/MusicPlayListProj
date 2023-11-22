@@ -19,7 +19,7 @@ export class ReviewService {
   }
  
   getReviews(url: string): Observable<any[]> {
-    return this.http.get<any[]>(url);
+    return this.http.get<any[]>(this.baseUrl + url);
   }
 
   deleteReview(url: string): Observable<any> {
