@@ -317,4 +317,5 @@ export class PlaylistComponent implements OnInit {
     // Return a default image URL or undefined if no image is found
     return 'path/to/default/image.jpg'; // Update with your default image path
   }
+  
 }

@@ -36,42 +36,61 @@
 
 <br><br>
 
-
-
-<div class="container row">
-  <h1>Upload Image</h1>
-  <div class="col-md-6">
-      <input type="file" (change)="onFileChanged($event)">
+<div class = "Search Songs" style="padding: 40px;">
+  <h1>Search Songs</h1>
+  <div>
+    <label for="searchSong">Search Song:</label>
+    <input type="text" id="searchSong" [(ngModel)]="searchQuery" (input)="searchSongs()" placeholder="Enter song name">
   </div>
-  <div class="col-md-6">
-      <input type="button" (click)="onUpload()" value="upload">
+  
+  <!-- Dropdown for search results -->
+  <div *ngIf="searchResults.length > 0">
+    <label for="searchResultsDropdown">Search Results:</label>
+    <select id="searchResultsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
+      <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
+    </select>
   </div>
-</div>
-<hr />
-<div class="container row">
-  <div class="col-md-12">
-      <div *ngIf=message>{{message}}</div>
-  </div>
-</div>
-
-<div class="container row">
-  <div class="col-md-6">
-      <input type="text" class="form-control" id="name" placeholder="image name" [(ngModel)]="imageName"
-          name="name" />
-  </div>
-  <div class="col-md-6">
-      <input type="button" (click)="getImage()" value="Get Image">
-
-  </div>
+    <!-- Display the image of the selected song -->
+    <div *ngIf="selectedSongId">
+      <img [src]="getSelectedSongImage()" alt="Selected Song Image" style="max-width: 200px; max-height: 200px;">
+    </div>
+    <button class="clickable" style =>Play Sound</button>
 </div>
 
-<div class="container row">
-  <div class="col-md-12">
-      <div *ngIf=retrievedImage>
-          <img [src]="retrievedImage">
-      </div>
+<div class ="Image Upload" style = "padding: 40px;">
+  <div class="container row">
+    <h1>Upload Image</h1>
+    <div class="col-md-6">
+        <input type="file" (change)="onFileChanged($event)">
+    </div>
+    <div class="col-md-6">
+        <input type="button" (click)="onUpload()" value="upload">
+    </div>
   </div>
+  <hr />
+  <div class="container row">
+    <div class="col-md-12">
+        <div *ngIf=message>{{message}}</div>
+    </div>
+  </div>
+  
+  <div class="container row">
+    <div class="col-md-6">
+        <input type="text" class="form-control" id="name" placeholder="image name" [(ngModel)]="imageName"
+            name="name" />
+    </div>
+    <div class="col-md-6">
+        <input type="button" (click)="getImage()" value="Get Image">
+  
+    </div>
+  </div>
+  
+  <div class="container row">
+    <div class="col-md-12">
+        <div *ngIf=retrievedImage>
+            <img [src]="retrievedImage">
+        </div>
+    </div>
+  </div>
+  
 </div>
-
-
-
