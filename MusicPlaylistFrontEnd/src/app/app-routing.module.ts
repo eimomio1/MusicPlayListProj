@@ -6,6 +6,7 @@ import { LoginsComponent } from './logins/logins.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { ArtistsComponent } from './artists/artists.component'; // Import the ArtistsComponent
+import { SongComponent } from './song/song.component';
 const routes: Routes = [
   // Define the route for the "home" component
   {
@@ -29,6 +30,11 @@ const routes: Routes = [
   {
     path: 'artists',
     component: ArtistsComponent,  // Add a route for ArtistsComponent
+    pathMatch: 'full',
+  },
+  {
+    path: 'song',
+    component: SongComponent,  // Add a route for ArtistsComponent
     pathMatch: 'full',
   },
   // Add other routes if needed

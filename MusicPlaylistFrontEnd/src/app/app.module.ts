@@ -10,6 +10,7 @@ import { PlaylistComponent } from './playlist/playlist.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { ArtistsComponent } from './artists/artists.component';
+import { SongComponent } from './song/song.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,7 +18,8 @@ import { ArtistsComponent } from './artists/artists.component';
     HomeComponent,
     PlaylistComponent,
     ReviewsComponent,
-    ArtistsComponent
+    ArtistsComponent,
+    SongComponent
   ],
   imports: [
     
