@@ -12,6 +12,8 @@ import { ReviewsComponent } from './reviews/reviews.component';
 import { ArtistsComponent } from './artists/artists.component';
 import { PlayerComponent } from './player/player.component';
 import { SongComponent } from './song/song.component';
+import { AuthenticationComponent } from './authentication/authentication.component';
+import { AuthService } from './authentication/auth.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,8 +22,9 @@ import { SongComponent } from './song/song.component';
     PlaylistComponent,
     ReviewsComponent,
     ArtistsComponent,
-    PlayerComponent
-    SongComponent
+    PlayerComponent,
+    SongComponent,
+    AuthenticationComponent
   ],
   imports: [
     
@@ -29,7 +32,7 @@ import { SongComponent } from './song/song.component';
     FormsModule, // Add this line
     AppRoutingModule, NgbModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
