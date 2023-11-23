@@ -1,0 +1,41 @@
+<p>song works!</p>
+<div class = "Search Songs" style="padding: 40px;">
+    <h1>Search Songs</h1>
+    <div>
+      <label for="searchSong">Search Song:</label>
+      <input type="text" id="searchSong" [(ngModel)]="searchQuery" (input)="searchSongs()" placeholder="Enter song name">
+    </div>
+    
+    <!-- Dropdown for search results -->
+    <div *ngIf="searchResults.length > 0">
+      <label for="searchResultsDropdown">Search Results:</label>
+      <select id="searchResultsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
+        <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
+      </select>
+    </div>
+    <div *ngIf="selectedSongId">
+        <img [src]="getSelectedSongImage()" alt="Selected Song Image" style="max-width: 200px; max-height: 200px;">
+      </div>
+    
+
+  
+  <br><br>
+  
+  <div class = "SongPlaylist" style = "padding: 40px;">
+    <h1>Add Or Delete Song From Playlist</h1>
+    <div>
+      <label for="playlistDropdown">Select Playlist:</label>
+      <select id="playlistDropdown" [(ngModel)]="selectedPlaylistId" (change)="onPlaylistSelected()">
+        <option *ngFor="let playlist of playlists" [value]="playlist.spotifyId">{{ playlist.playlistName }}</option>
+      </select>
+    </div>
+    <div *ngIf="playlistSongs.length > 0">
+      <label for="playlistSongsDropdown">Select Song:</label>
+      <select id="playlistSongsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
+        <option *ngFor="let song of playlistSongs" [value]="song.id">{{ song.name }}</option>
+        
+      </select>
+    </div>
+    <button (click)="addSongsToPlaylist()">Add Song To Playlist</button>
+    <button (click)="deleteSongsFromPlaylist()">Delete Song To Playlist</button>  
+  </div>

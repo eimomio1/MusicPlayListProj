@@ -8,8 +8,8 @@
 <!-- Button to get albums -->
 <button (click)="getAlbums()">Get Albums</button>
 
-<!-- Dropdown for search results -->
-<div *ngIf="searchResults.length > 0">
+<!-- Dropdown for search results with scrollbar -->
+<div *ngIf="searchResults.length > 0" class="scrollable-dropdown">
   <label for="searchResultsDropdown">Search Results:</label>
   <select id="searchResultsDropdown" [(ngModel)]="selectedArtistId" (change)="onArtistSelected()">
     <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
