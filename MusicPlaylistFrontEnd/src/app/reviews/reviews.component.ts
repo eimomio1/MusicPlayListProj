@@ -122,4 +122,8 @@ export class ReviewsComponent implements OnInit{
       // Handle invalid input or missing userId, e.g., show a validation message
     }
   }
+
+  setRating(value: number): void {
+    this.reviewRating = value;
+  }
 }

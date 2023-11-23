@@ -55,8 +55,8 @@ public class SearchController {
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 
 		SearchItemRequest searchItemsRequest = spotifyApi.searchItem(q, type)
-				.limit(10)
-				.offset(5)
+				.limit(20)
+				.offset(0)
 				.market(CountryCode.US)
 				.build();
 		
