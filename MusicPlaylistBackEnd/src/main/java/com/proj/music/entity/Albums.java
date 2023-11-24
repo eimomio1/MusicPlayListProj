@@ -41,8 +41,8 @@ public class Albums {
 	@Column(name = "uri")
 	private String uri;
 	
-	@Column(name = "images")
-	private Image[] images;
+//	@Column(name = "images")
+//	private Image[] images;
 
 	@ManyToMany(mappedBy = "albums")
 	private List<Artists> artists; // An album can be associated with multiple artists.
@@ -156,18 +156,18 @@ public class Albums {
 		this.users = users;
 	}
 	
-	public Image[] getImages() {
-		return images;
-	}
-
-	public void setImages(Image[] images) {
-		this.images = images;
-	}
+//	public Image[] getImages() {
+//		return images;
+//	}
+//
+//	public void setImages(Image[] images) {
+//		this.images = images;
+//	}
 
 	@Override
 	public String toString() {
 	    return "Albums [id=" + id + ", spotifyId=" + spotifyId + ", name=" + name + ", genres="
-	            + Arrays.toString(genres) + ", Images="+ Arrays.toString(images) + ", releaseDate=" + releaseDate + ", uri=" + uri + "]";
+	            + Arrays.toString(genres) + ", releaseDate=" + releaseDate + ", uri=" + uri + "]";
 	}
 
 }

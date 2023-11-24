@@ -126,7 +126,7 @@ public class AlbumServiceImpl implements AlbumService {
 	    newAlbum.setName(album.getName());
 	    newAlbum.setSpotifyId(album.getId());
 	    newAlbum.setUri(album.getUri());
-	    newAlbum.setImages(album.getImages());
+//	    newAlbum.setImages(album.getImages());
 	    newAlbum.setGenres(album.getGenres());
 	    newAlbum.setReleaseDate(album.getReleaseDate());
 	    newAlbum.getUsers().add(user);

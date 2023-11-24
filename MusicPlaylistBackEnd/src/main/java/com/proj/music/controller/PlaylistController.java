@@ -74,7 +74,7 @@ public class PlaylistController {
 	private SpotifyApi spotifyApi;
 
 	@PostMapping("/create-playlist/users/{userId}/playlists")
-	public ResponseEntity<String> createPlaylist(@RequestBody String nameOfPlaylist, @PathVariable String userId) {
+	public ResponseEntity<String> createPlaylist(@RequestBody Playlist myPlaylist, @PathVariable String userId) {
 		System.out.println("Received request to create playlist");
 
 		// Retrieve the Users object from the repository
@@ -92,7 +92,7 @@ public class PlaylistController {
 			spotifyApi.setRefreshToken(users.getRefreshToken());
 
 			// Create a playlist on Spotify
-			final CreatePlaylistRequest.Builder playlistBuilder = spotifyApi.createPlaylist(userId, nameOfPlaylist);
+			final CreatePlaylistRequest.Builder playlistBuilder = spotifyApi.createPlaylist(userId, myPlaylist.getName()).description(myPlaylist.getDescription());
 
 			final CreatePlaylistRequest playlistRequest = playlistBuilder.build();
 			Playlist newPlaylist = null;

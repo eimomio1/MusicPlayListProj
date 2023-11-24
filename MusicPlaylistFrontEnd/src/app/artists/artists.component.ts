@@ -3,6 +3,8 @@ import { ArtistsService } from './artists.service';
 import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { urlencoded } from 'express';
+import { AuthService } from '../authentication/auth.service';
 
 @Component({
   selector: 'app-artists',
@@ -19,15 +21,22 @@ export class ArtistsComponent implements OnInit {
   songResults: any[] = [];
   selectedSongId: string = ''; // Add this line
   private searchSubject = new Subject<string>();
+  accessToken: any;
+  albumIds: string = '';
+  albums: any;
 
-  constructor(private artistsService: ArtistsService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private artistsService: ArtistsService, private route: ActivatedRoute, private router: Router, private authService: AuthService) {
+    this.authService.accessToken$.subscribe((token) => {
+      this.accessToken = token;
+    });
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.userId = params['id'];
       this.selectedArtistId = params['artistId'];
       this.selectedAlbumId = params['albumId'];
-
+      
       // Fetch albums based on selectedArtistId if needed
      
     });
@@ -49,6 +58,29 @@ export class ArtistsComponent implements OnInit {
       }
     );
   }
+
+  saveAlbums(albumIds: string[]): void {
+    if (this.userId && albumIds) {
+        this.artistsService.saveAlbums(this.userId, albumIds).subscribe(
+            (response: any) => {
+                console.log('Albums saved successfully:', response);
+
+                // Update your local list of albums
+                albumIds.forEach(albumId => {
+                    const index = this.albumResults.findIndex((album: { id: string; /* other properties */ }) => album.id === albumId);
+                    if (index !== -1) {
+                        this.albums.push(this.albumResults[index]);
+                    }
+                });
+            },
+            (error) => {
+                console.error('Failed to save albums:', error);
+            }
+        );
+    } else {
+        // Handle invalid input or missing userId, e.g., show a validation message
+    }
+  } 
 
   // Function to handle the search input
   searchArtists(): void {

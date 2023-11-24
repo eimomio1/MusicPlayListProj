@@ -3,6 +3,7 @@ import { PlaylistService } from './playlist.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { AuthService } from '../authentication/auth.service';
 
 interface ApiResponse {
   albums: any;
@@ -30,7 +31,11 @@ interface ImageResponse {
   styleUrls: ['./playlist.component.css']
 })
 export class PlaylistComponent implements OnInit {
+yourButtonClickFunction(arg0: any) {
+throw new Error('Method not implemented.');
+}
   nameOfPlaylist: string = '';
+  description: string = '';
   userId: string = '';
   playlistId: string = ''; 
   updatedPlaylistName: string = ''; // new property
@@ -52,20 +57,25 @@ export class PlaylistComponent implements OnInit {
   retrievedImage: any;
 
   private searchSubject = new Subject<string>();
+  accessToken: string | null | undefined;
 
   constructor(
     private playlistService: PlaylistService,
     private route: ActivatedRoute,
-    private router: Router // Inject the Router service
+    private router: Router, // Inject the Router service
+    private authService: AuthService
   ) {
 
     this.selectedFile = new File([], 'defaultFileName'); 
-    
+    this.authService.accessToken$.subscribe((token) => {
+      this.accessToken = token;
+    });
   }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.userId = params['id'];
+      this.accessToken = params['accessToken'];
       this.loadPlaylists();
     });
 
@@ -138,9 +148,14 @@ export class PlaylistComponent implements OnInit {
   }
 
   createPlaylist(): void {
-    if (this.nameOfPlaylist && this.userId) {
+    if (this.userId && this.nameOfPlaylist && this.description) {
+      const playlistAdded = {
+        name: this.nameOfPlaylist,
+        description: this.description
+      }
+      const url = `/api/create-playlist/users/${this.userId}/playlists`;
       // Send the playlist name as a string
-      this.playlistService.createPlaylist(this.userId, this.nameOfPlaylist).subscribe(
+      this.playlistService.createPlaylist(url, playlistAdded).subscribe(
         response => {
           console.log('Playlist created successfully:', response);
         },
@@ -357,8 +372,6 @@ export class PlaylistComponent implements OnInit {
   }
 
 
- 
-
 }
 
-}
+

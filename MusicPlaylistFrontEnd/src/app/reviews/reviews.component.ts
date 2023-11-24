@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReviewService } from './reviews.service';
+import { AuthService } from '../authentication/auth.service';
 
 @Component({
   selector: 'app-reviews',
@@ -16,18 +17,23 @@ export class ReviewsComponent implements OnInit{
   reviewName: string = '';
   reviewRating: number = 0.0;
   reviews: any[] = [];
+accessToken: any;
 
   constructor(
     private reviewService: ReviewService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private router: Router,
+    private authService: AuthService
+  ) {
+    this.authService.accessToken$.subscribe((token) => {
+      this.accessToken = token;
+    });
+  }
 
   ngOnInit(): void 
   {
     this.route.queryParams.subscribe((params) => {
       this.userId = params['id'];
-      this.userId = params['userId'];
       this.entityId = params['entityId'];
       this.entityType = params['entityType'];
     });
