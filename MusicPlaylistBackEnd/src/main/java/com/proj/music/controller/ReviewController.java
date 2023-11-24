@@ -1,7 +1,9 @@
 package com.proj.music.controller;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ import com.proj.music.service.SpotifyAuthService;
 import com.proj.music.service.UserService;
 
 import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 
 @RestController
 @RequestMapping("/api")
@@ -41,10 +45,10 @@ public class ReviewController {
 	@Autowired
 	private UserService userService;
 
-	@PostMapping("/{entityType}/{entityId}/review")
+	@PostMapping("/review")
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public String postReview(@RequestBody Reviews review, @RequestParam String userId, @PathVariable String entityType,
-			@PathVariable String entityId) {
+	public String postReview(@RequestBody Reviews review, @RequestParam String userId, @RequestParam String entityType,
+			@RequestParam String entityId) throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
 		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
@@ -56,13 +60,14 @@ public class ReviewController {
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		entityType = entityType.toLowerCase();
-		return reviewService.addReview(review, entityId, entityType, userId);
+		Track getNewTrack = spotifyApi.getTrack(entityId).build().execute();
+		return reviewService.addReview(review, entityId, entityType, userId, getNewTrack);
 	}
 
-	@PutMapping("/{entityType}/{entityId}/review/{reviewId}")
+	@PutMapping("/review/{reviewId}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public String updateReview(@RequestBody Reviews review, @PathVariable long reviewId, @PathVariable String entityId,
-			@PathVariable String entityType, @RequestParam String userId) {
+	public String updateReview(@RequestBody Reviews review, @PathVariable long reviewId, @RequestParam String entityId,
+			@RequestParam String entityType, @RequestParam String userId) {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
 		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
@@ -77,9 +82,9 @@ public class ReviewController {
 		return reviewService.updateReviewById(reviewId, entityId, entityType, review);
 	}
 
-	@DeleteMapping("/{entityType}/{entityId}/review/{reviewId}")
+	@DeleteMapping("/review/{reviewId}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public String deleteReview(@RequestParam String userId, @PathVariable String entityId,
+	public String deleteReview(@RequestParam String userId, @RequestParam String entityId,
 			@PathVariable String entityType, @PathVariable long reviewId) {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
@@ -95,7 +100,7 @@ public class ReviewController {
 		return reviewService.deleteReviewById(reviewId, entityType, entityId);
 	}
 
-	@GetMapping("/{entityType}/{entityId}/review/{reviewId}")
+	@GetMapping("/review/{reviewId}")
 	public ResponseEntity<ReviewDTO> getReviewByReviewIdForUser(@RequestParam String userId,
 			@PathVariable String entityType, @PathVariable String entityId, @PathVariable long reviewId) {
 		// first its gets the user
@@ -114,9 +119,9 @@ public class ReviewController {
 		return ResponseEntity.ok().body(newReview);
 	}
 
-	@GetMapping("/{entityType}/{entityId}/reviews")
-	public ResponseEntity<List<ReviewDTO>> getReviews(@RequestParam String userId, @PathVariable String entityType,
-			@PathVariable String entityId) {
+	@GetMapping("/reviews")
+	public ResponseEntity<List<ReviewDTO>> getReviews(@RequestParam String userId, @RequestParam String entityType,
+			@RequestParam String entityId) {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
 		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {

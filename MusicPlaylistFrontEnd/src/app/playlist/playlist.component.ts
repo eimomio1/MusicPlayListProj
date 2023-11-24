@@ -191,9 +191,17 @@ export class PlaylistComponent implements OnInit {
   private loadPlaylists(): void {
     this.playlistService.getPlaylists(this.userId).subscribe(
       playlists => {
-        // Extract only the names of the playlists
-        this.playlists = playlists.map(playlist => ({ playlistName: playlist.name, spotifyId: playlist.id }));
+        // Update the playlists array with additional information
+        this.playlists = playlists.map(playlist => {
+          console.log('Playlist:', playlist);
+          return {
+            playlistName: playlist.name,
+            playlistImage: playlist.images?.[0]?.url || null, // Use playlistImage instead of playlistDescription
+            spotifyId: playlist.id,
+          };
+        });
         
+  
         // Extract playlistId from the URL
         this.route.queryParams.subscribe(params => {
           this.selectedPlaylistId = params['playlistId'] || ''; // Default to an empty string
@@ -221,6 +229,7 @@ export class PlaylistComponent implements OnInit {
       this.playlistService.deletePlaylist(this.userId, this.selectedDeletePlaylistId).subscribe(
         response => {
           console.log('Playlist deleted successfully:', response);
+          this.loadPlaylists();
         },
         error => {
           console.error('Failed to delete playlist:', error);
@@ -317,4 +326,36 @@ export class PlaylistComponent implements OnInit {
     // Return a default image URL or undefined if no image is found
     return 'path/to/default/image.jpg'; // Update with your default image path
   }
+  
+
+
+  onSelectPlaylist(playlistId: string): void {
+    // Update the URL with the selected playlistId
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { playlistId: playlistId },
+      queryParamsHandling: 'merge'
+    });
+
+    // Set the playlistId property
+    this.playlistId = playlistId;
+    this.loadPlaylistSongs(playlistId);
+  }
+  
+  selectPlaylist(playlistId: string): void {
+    // Update the URL with the selected playlistId
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { playlistId: playlistId },
+      queryParamsHandling: 'merge'
+    });
+
+    // Set the playlistId property
+    this.playlistId = playlistId;
+    this.loadPlaylistSongs(playlistId); // New Update
+  }
+
+
+ 
+
 }

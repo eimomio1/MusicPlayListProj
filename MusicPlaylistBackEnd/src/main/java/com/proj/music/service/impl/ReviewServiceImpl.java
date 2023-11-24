@@ -22,6 +22,7 @@ import com.proj.music.repository.UserRepository;
 import com.proj.music.service.ReviewService;
 
 import jakarta.transaction.Transactional;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -160,7 +161,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	@Transactional
-	public String addReview(Reviews review, String entityId, String entityType, String userId) {
+	public String addReview(Reviews review, String entityId, String entityType, String userId, Track track) {
 		Optional<Users> optionalUser = Optional.of(userRepository.findByRefId(userId));
 
 		if (optionalUser.isPresent()) {
@@ -169,7 +170,8 @@ public class ReviewServiceImpl implements ReviewService {
 			newReview.setName(review.getName());
 			newReview.setRating(review.getRating());
 			newReview.setComment(review.getComment());
-
+			Songs newSongs = createSongFromSpotifyData(track, optionalUser.get());
+			songRepository.save(newSongs);
 			switch (entityType) {
 			case "songs":
 				Optional<Songs> optionalSong = songRepository.findSongBySpotifyId(entityId);
@@ -208,5 +210,15 @@ public class ReviewServiceImpl implements ReviewService {
 
 		return "User not found";
 	}
-
+	
+	public Songs createSongFromSpotifyData(Track track, Users user) {
+	    Songs newSongs = new Songs();
+	    newSongs.setName(track.getName());
+	    newSongs.setSpotifyId(track.getId());
+	    newSongs.setUris(track.getUri());
+	    newSongs.setDuration(track.getDurationMs());
+	    newSongs.setPreviewUrl(track.getPreviewUrl());
+	    newSongs.getUsers().add(user);
+	    return newSongs;
+	}
 }

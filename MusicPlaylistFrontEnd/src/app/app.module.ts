@@ -11,6 +11,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { ArtistsComponent } from './artists/artists.component';
 import { SongComponent } from './song/song.component';
+import { AuthenticationComponent } from './authentication/authentication.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +20,8 @@ import { SongComponent } from './song/song.component';
     PlaylistComponent,
     ReviewsComponent,
     ArtistsComponent,
-    SongComponent
+    SongComponent,
+    AuthenticationComponent
   ],
   imports: [
     

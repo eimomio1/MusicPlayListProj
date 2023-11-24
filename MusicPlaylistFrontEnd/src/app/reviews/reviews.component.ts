@@ -27,6 +27,9 @@ export class ReviewsComponent implements OnInit{
   {
     this.route.queryParams.subscribe((params) => {
       this.userId = params['id'];
+      this.userId = params['userId'];
+      this.entityId = params['entityId'];
+      this.entityType = params['entityType'];
     });
   }
 
@@ -38,7 +41,7 @@ export class ReviewsComponent implements OnInit{
         rating: this.reviewRating
       };
       // Include the selected entity type in the URL
-      const url = `/${this.entityType}/${this.entityId}/review?userId=${this.userId}`;
+      const url = `/review?userId=${this.userId}&entityType=${this.entityType}&entityId=${this.entityId}`;
 
       this.reviewService.postReview(url, createReviews).subscribe(
         response => {
@@ -63,7 +66,7 @@ export class ReviewsComponent implements OnInit{
         rating: this.reviewRating
       };
       // Include the selected entity type in the URL
-      const url = `/${this.entityType}/${this.entityId}/review/${this.reviewId}?userId=${this.userId}`;
+      const url = `/review/${this.reviewId}?userId=${this.userId}&entityType=${this.entityType}&entityId=${this.entityId}`;
 
       this.reviewService.updateReview(url, updateReviews).subscribe(
         response => {
@@ -84,7 +87,7 @@ export class ReviewsComponent implements OnInit{
     if (this.userId && this.entityType && this.entityId && this.reviewId) {
 
       // Include the selected entity type in the URL
-      const url = `/${this.entityType}/${this.entityId}/review/${this.reviewId}?userId=${this.userId}`;
+      const url = `/review/${this.reviewId}?userId=${this.userId}&entityType=${this.entityType}&entityId=${this.entityId}`;
 
       this.reviewService.deleteReview(url).subscribe(
         response => {
@@ -105,7 +108,7 @@ export class ReviewsComponent implements OnInit{
     if (this.userId && this.entityType && this.entityId) {
 
       // Include the selected entity type in the URL
-      const url = `/${this.entityType}/${this.entityId}/reviews?userId=${this.userId}`;
+      const url = `/reviews?userId=${this.userId}&entityType=${this.entityType}&entityId=${this.entityId}`;
 
       this.reviewService.getReviews(url).subscribe(
         (response: any[]) => {

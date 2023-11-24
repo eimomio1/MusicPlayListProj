@@ -144,6 +144,9 @@ public class Songs {
 	}
 
 	public List<Reviews> getReviews() {
+		if (reviews == null) {
+			reviews = new ArrayList<>();
+		}
 		return reviews;
 	}
 

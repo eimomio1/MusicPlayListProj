@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { SongService } from './song.service';
+import { AuthService } from '../authentication/auth.service';
 
 interface ApiResponse {
   albums: any;
@@ -45,18 +46,21 @@ export class SongComponent {
   selectedPlaylist: any = {}; // New property to store the selected playlist details (New Update)
   playlistSongs: any[] = []; // New property to store playlist songs(New Update)
 
+  accessToken: string | null | undefined;
+
   private searchSubject = new Subject<string>();
 
-
+  
 
   constructor(
     private songService: SongService,
     private route: ActivatedRoute,
-    private router: Router // Inject the Router service
+    private router: Router, // Inject the Router service
+    private authService: AuthService,
   ) {
-
-
-    
+    this.authService.accessToken$.subscribe((token) => {
+      this.accessToken = token;
+    });
   }
 
   ngOnInit(): void {
@@ -87,16 +91,21 @@ export class SongComponent {
     );
   }
 
-
-
-  
-
-  
-
-  
-
-  
-
+  navigateToReviews() {
+    // Assuming you have the required information for entityType, entityId, and songId
+    const entityType = 'Songs';
+    const songId = this.selectedSongId; // Replace with the actual way you get the song id
+    const id = this.userId;
+    // Navigate to the review page with parameters
+    this.router.navigate(['/reviews'], {
+      queryParams: {
+        entityId: songId,
+        entityType: entityType,
+        userId: id,
+        accessToken: this.accessToken,
+      },
+    });
+  }
   // Update the URL when a playlist is selected
   onPlaylistSelected(): void {
     // Update the URL with the selected playlistId
