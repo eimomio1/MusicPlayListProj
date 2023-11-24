@@ -1,4 +1,5 @@
 <div style ="padding: 40px;">
+
     <h1>Create A Review</h1>
     <form (ngSubmit)="createReview()">
         <div class="form-group">
@@ -70,28 +71,30 @@
 </div>
 <div style ="padding: 40px;">
     <h1>Delete A Review</h1>
+
 <form (ngSubmit)="deleteReview()">
-      <div class="form-group3">
-        <label for="reviewInput1">Review Id:</label>
-        <input type="text" class="form-control" id="reviewInput1" [(ngModel)]="reviewId" [ngModelOptions]="{standalone: true}" placeholder="Enter review id">
-      </div>
-      <div class="form-group3">
-        <label for="reviewInput2">Entity Id:</label>
-        <input type="text" class="form-control" id="reviewInput2" [(ngModel)]="entityId" [ngModelOptions]="{standalone: true}" placeholder="Enter Id">
-      </div>
-       <div class="form-group3">
-        <label for="reviewInput3">Music Review Options:</label>
-        <select class="form-control" id="reviewInput3" [(ngModel)]="entityType" [ngModelOptions]="{standalone: true}">
-          <option value="Songs">Songs</option>
-          <option value="Playlist">Playlist</option>
-          <option value="Albums">Albums</option>
-        </select>
-       </div>
-       <button type="submit" class="btn btn-primary">Delete</button>
+    <div class="form-group3">
+      <label for="reviewInput1">Review Id:</label>
+      <input type="text" class="form-control" id="reviewInput1" [(ngModel)]="reviewId" [ngModelOptions]="{standalone: true}" placeholder="Enter review id">
+    </div>
+    <div class="form-group3">
+      <label for="reviewInput2">Entity Id:</label>
+      <input type="text" class="form-control" id="reviewInput2" [(ngModel)]="entityId" [ngModelOptions]="{standalone: true}" placeholder="Enter Id">
+    </div>
+     <div class="form-group3">
+      <label for="reviewInput3">Music Review Options:</label>
+      <select class="form-control" id="reviewInput3" [(ngModel)]="entityType" [ngModelOptions]="{standalone: true}">
+        <option value="Songs">Songs</option>
+        <option value="Playlist">Playlist</option>
+        <option value="Albums">Albums</option>
+      </select>
+     </div>
+     <button type="submit" class="btn btn-primary">Delete</button>
 </form>
 
 <!-- Allow the user to input entityId and entityName -->
 <div style = "padding: 40px;">
+
     <h1>Get Reviews</h1>
     <div>
         <label for="entityType">Select Entity Type:</label>
@@ -131,10 +134,13 @@
                         </div>
                         <a href="#!" class="link-muted"><i class="fas fa-reply me-1"></i> Reply</a>
                       </div>
+
                     </div>
                   </div>
                 </div>
               </div>
+
         </div>
       </section>
+
 </div>

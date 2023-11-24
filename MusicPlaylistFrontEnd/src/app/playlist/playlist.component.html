@@ -33,29 +33,38 @@
   <button (click)="deletePlaylist()">Delete Playlist</button>
 </div>
 
+<br> <br>
+
+<div class="playlist-header" style="text-align: center;">
+  <h2>Your Playlists</h2>
+</div>
+
+<div class="playlist-list music-table" style="padding: 40px; overflow-y: scroll; max-height: 300px;">
+ 
+  <table id="playlistTable" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th class="th-sm">Name</th>
+        <th class="th-sm">Playlist Cover</th> <!-- Update the table header -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let playlist of playlists" (click)="onSelectPlaylist(playlist.spotifyId)">
+        <td>{{ playlist.playlistName }}</td>
+        <td>
+          <img *ngIf="playlist.playlistImage" [src]="playlist.playlistImage" alt="Playlist Image" style="max-width: 50px; max-height: 50px;">
+        </td>
+      </tr>
+    </tbody>
+    
+  </table>
+
+</div>
 
 <br><br>
 
-<div class = "Search Songs" style="padding: 40px;">
-  <h1>Search Songs</h1>
-  <div>
-    <label for="searchSong">Search Song:</label>
-    <input type="text" id="searchSong" [(ngModel)]="searchQuery" (input)="searchSongs()" placeholder="Enter song name">
-  </div>
-  
-  <!-- Dropdown for search results -->
-  <div *ngIf="searchResults.length > 0">
-    <label for="searchResultsDropdown">Search Results:</label>
-    <select id="searchResultsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
-      <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
-    </select>
-  </div>
-    <!-- Display the image of the selected song -->
-    <div *ngIf="selectedSongId">
-      <img [src]="getSelectedSongImage()" alt="Selected Song Image" style="max-width: 200px; max-height: 200px;">
-    </div>
-    <button class="clickable" style =>Play Sound</button>
-</div>
+
+
 
 <div class ="Image Upload" style = "padding: 40px;">
   <div class="container row">
@@ -93,4 +102,13 @@
     </div>
   </div>
   
+
+
+
+
+
+  
 </div>
+
+
+

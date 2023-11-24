@@ -13,6 +13,7 @@ import { ArtistsComponent } from './artists/artists.component';
 import { PlayerComponent } from './player/player.component';
 import { SongComponent } from './song/song.component';
 import { AuthenticationComponent } from './authentication/authentication.component';
+
 import { AuthService } from './authentication/auth.service';
 @NgModule({
   declarations: [
@@ -22,7 +23,6 @@ import { AuthService } from './authentication/auth.service';
     PlaylistComponent,
     ReviewsComponent,
     ArtistsComponent,
-    PlayerComponent,
     SongComponent,
     AuthenticationComponent
   ],
