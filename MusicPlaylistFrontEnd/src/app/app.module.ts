@@ -10,8 +10,11 @@ import { PlaylistComponent } from './playlist/playlist.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { ArtistsComponent } from './artists/artists.component';
+import { PlayerComponent } from './player/player.component';
 import { SongComponent } from './song/song.component';
 import { AuthenticationComponent } from './authentication/authentication.component';
+
+import { AuthService } from './authentication/auth.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,7 +32,7 @@ import { AuthenticationComponent } from './authentication/authentication.compone
     FormsModule, // Add this line
     AppRoutingModule, NgbModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

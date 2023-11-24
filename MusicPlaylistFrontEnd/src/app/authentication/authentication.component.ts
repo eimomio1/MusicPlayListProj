@@ -16,4 +16,6 @@ export class AuthenticationComponent {
     // Store the access token in the service
     this.authService.setAccessToken(accessToken);
   }
+
 }
+

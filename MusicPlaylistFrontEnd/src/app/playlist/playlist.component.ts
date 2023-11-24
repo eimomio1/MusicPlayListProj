@@ -329,6 +329,7 @@ export class PlaylistComponent implements OnInit {
   
 
 
+
   onSelectPlaylist(playlistId: string): void {
     // Update the URL with the selected playlistId
     this.router.navigate([], {
@@ -357,5 +358,7 @@ export class PlaylistComponent implements OnInit {
 
 
  
+
+}
 
 }
