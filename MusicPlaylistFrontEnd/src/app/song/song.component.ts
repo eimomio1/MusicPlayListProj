@@ -66,6 +66,7 @@ export class SongComponent {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.userId = params['id'];
+      this.accessToken = params['accessToken'];
       this.loadPlaylists();
     });
 

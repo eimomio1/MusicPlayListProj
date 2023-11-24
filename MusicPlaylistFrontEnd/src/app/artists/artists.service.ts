@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -25,4 +25,17 @@ export class ArtistsService {
     return this.http.get<any[]>(url);
   }
   
+  saveAlbums(userId: string, albumIds: string[]): Observable<any> {
+    const url = `${this.baseUrl}/api/user/albums`;
+    const params = new HttpParams()
+        .set('userId', userId)
+        .set('albumIds', albumIds.join(','));
+
+    if (userId && albumIds) {
+        return this.http.put(url, {}, { params, responseType: 'text' });
+    } else {
+        // Handle invalid input or missing userId, e.g., show a validation message
+        return throwError('Invalid input or missing userId');
+    }
+  }
 }
