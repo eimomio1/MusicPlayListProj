@@ -3,3 +3,13 @@
   max-height: 150px; /* Set the maximum height for the dropdown */
   overflow-y: auto; /* Add a scrollbar when content exceeds the height */
 }
+.artist-image, .album-image {
+  border-radius: 50%;
+  max-width: 200px;
+  max-height: 200px;
+}
+.square-album-image {
+  width: 200px; /* Adjust the width as needed */
+  height: 200px; /* Adjust the height as needed */
+  object-fit: cover; /* Maintain the aspect ratio and cover the container */
+}
