@@ -22,40 +22,47 @@
     </button>
   </div>
 </div>
-<div style="padding: 40px">
-  <h1>Search For Artist Albums</h1>
-  <label for="searchSong">Search Artist:</label>
-  <input type="text" id="searchSong" [(ngModel)]="searchQuery" (input)="searchArtists()" placeholder="Enter artist's name">
-  <div *ngIf="searchResults.length > 0" class="scrollable-dropdown">
-    <label for="searchResultsDropdown">Search Results:</label>
-    <select id="searchResultsDropdown" [(ngModel)]="selectedArtistId" (change)="onArtistSelected()">
-      <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
-    </select>
+<div class="centered-container">
+  <div style="padding: 40px; text-align: center;">
+    <h1>Search For Artist Albums</h1>
+    <label for="searchSong">Search Artist:</label>
+    <input type="text" id="searchSong" [(ngModel)]="searchQuery" (input)="searchArtists()" placeholder="Enter artist's name">
+
+    <!-- Display artist image when an artist is selected -->
+    <div *ngIf="searchQuery && selectedArtistId" style="margin-top: 10px;">
+      <h2>{{ getArtistName(selectedArtistId) }}</h2>
+      <img [src]="getArtistImage(selectedArtistId)" alt="Artist Image" class="artist-image">
+    </div>
+
+    <div *ngIf="searchResults.length > 0" class="scrollable-dropdown" style="margin-top: 10px;">
+      <label for="searchResultsDropdown">Search Results:</label>
+      <select id="searchResultsDropdown" [(ngModel)]="selectedArtistId" (change)="onArtistSelected()">
+        <option *ngFor="let result of searchResults" [value]="result.id">{{ result.name }}</option>
+      </select>
+    </div>
   </div>
-</div>
 
-<div style="padding: 40px">
-  <!-- Button to get albums -->
-  <button (click)="getAlbums()">Get Albums</button>
-</div>
+  <div style="padding: 40px; text-align: center;">
+    <!-- Button to get albums -->
+    <button (click)="getAlbums()">Get Albums</button>
+  </div>
 
-<!-- Dropdown for album results -->
-<div *ngIf="albumResults.length > 0">
-  <label for="albumResultsDropdown">Album Results:</label>
-  <select id="albumResultsDropdown" [(ngModel)]="selectedAlbumId" (change)="onAlbumSelected()">
-    <option *ngFor="let album of albumResults" [value]="album.id">{{ album.name }}</option>
-  </select>
-
-  <!-- Button to add albums -->
-  <button (click)="saveAlbums(selectedAlbumId ? [selectedAlbumId] : [])">Add Albums</button>
-
-  <!-- Dropdown for song results -->
-  <!-- <div *ngIf="songResults.length > 0">
-    <label for="songResultsDropdown">Song Results:</label>
-    <select id="songResultsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
-      <option *ngFor="let song of songResults" [value]="song.id">{{ song.name }}</option>
+  <!-- Dropdown for album results -->
+  <div *ngIf="albumResults.length > 0" style="text-align: center; margin-top: 10px;">
+    <label for="albumResultsDropdown">Album Results:</label>
+    <select id="albumResultsDropdown" [(ngModel)]="selectedAlbumId" (change)="onAlbumSelected()">
+      <option *ngFor="let album of albumResults" [value]="album.id">{{ album.name }}</option>
     </select>
-  </div> -->
+    
+    <!-- Display album image when an album is selected -->
+    <div *ngIf="selectedAlbumId" style="margin-top: 10px;">
+      <h2>{{ getAlbumName(selectedAlbumId) }}</h2>
+      <img [src]="getAlbumImage(selectedAlbumId)" alt="Album Image" class="square-album-image">
+    </div>
+
+    <!-- Button to add albums -->
+    <button (click)="saveAlbums(selectedAlbumId ? [selectedAlbumId] : [])" style="margin-top: 10px;">Add Albums</button>
+  </div>
 </div>
 
 <!-- ... The rest of your HTML ... -->

@@ -163,4 +163,38 @@ export class ArtistsComponent implements OnInit {
       });
     }
   }
+
+  
+  // Function to get the image URL for the selected artist
+  getArtistImage(artistId: string): string {
+    // Adjust the logic to get the image URL for the artist
+    // You may need to modify your service to provide the image URL
+    // For example, assuming the service provides the image URL in the 'images' property
+    const selectedArtist = this.searchResults.find(artist => artist.id === artistId);
+    return selectedArtist ? selectedArtist.images[0].url : ''; // Assuming the first image in the array is the URL
+  }
+
+  // Function to get the image URL for the selected album
+  getAlbumImage(albumId: string): string {
+    // Adjust the logic to get the image URL for the album
+    // You may need to modify your service to provide the image URL
+    // For example, assuming the service provides the image URL in the 'images' property
+    const selectedAlbum = this.albumResults.find(album => album.id === albumId);
+    return selectedAlbum ? selectedAlbum.images[0].url : ''; // Assuming the first image in the array is the URL
+  }
+
+
+
+  // Function to get the name of the selected artist
+getArtistName(artistId: string): string {
+  const selectedArtist = this.searchResults.find(artist => artist.id === artistId);
+  return selectedArtist ? selectedArtist.name : '';
+}
+
+// Function to get the name of the selected album
+getAlbumName(albumId: string): string {
+  const selectedAlbum = this.albumResults.find(album => album.id === albumId);
+  return selectedAlbum ? selectedAlbum.name : '';
+}
+
 }
