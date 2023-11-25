@@ -1,121 +1,75 @@
-<header data-bs-theme="dark">
-  <div class="collapse text-bg-dark" id="navbarHeader">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-8 col-md-7 py-4">
-          <h4>About</h4>
-          <p class="text-body-secondary">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
-        </div>
-        <div class="col-sm-4 offset-md-1 py-4">
-          <h4>Contact</h4>
-          <ul class="list-unstyled">
-            <li><a href="#" class="text-white">Follow on Twitter</a></li>
-            <li><a href="#" class="text-white">Like on Facebook</a></li>
-            <li><a href="#" class="text-white">Email me</a></li>
-          </ul>
+<div style ="padding: 40px;">
+  <h1>Create A Review</h1>
+  <form (ngSubmit)="createReview()">
+      <div class="form-group">
+        <label for="reviewInput1">Title:</label>
+        <input type="text" class="form-control" id="reviewInput1" [(ngModel)]="reviewName" name="reviewName" placeholder="Enter review title">
+      </div>
+      <div class="form-group">
+        <label for="reviewInput2">Entity Id:</label>
+        <input type="text" class="form-control" id="reviewInput2" [(ngModel)]="entityId" [ngModelOptions]="{standalone: true}" placeholder="Enter Id">
+      </div>
+      <div class="form-group">
+        <label for="reviewInput3">Rating:</label>
+        <div class="star-rating">
+          <i class="fa fa-star" (click)="setRating(1)" [class.selected]="reviewRating >= 1"></i>
+          <i class="fa fa-star" (click)="setRating(2)" [class.selected]="reviewRating >= 2"></i>
+          <i class="fa fa-star" (click)="setRating(3)" [class.selected]="reviewRating >= 3"></i>
+          <i class="fa fa-star" (click)="setRating(4)" [class.selected]="reviewRating >= 4"></i>
+          <i class="fa fa-star" (click)="setRating(5)" [class.selected]="reviewRating >= 5"></i>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="navbar navbar-dark bg-dark shadow-sm">
-    <div class="container">
-      <a [routerLink]="['/playlist']" [queryParams]="{ id: userId, accessToken: accessToken }"role="button" class="navbar-brand d-flex align-items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        <strong>Playlist</strong>
-      </a>
-      <a [routerLink]="['/reviews']" [queryParams]="{ id: userId, accessToken: accessToken }"role="button" class="navbar-brand d-flex align-items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        <strong>Reviews</strong>
-      </a>
-      <a [routerLink]="['/artists']" [queryParams]="{ id: userId, accessToken: accessToken }"role="button" class="navbar-brand d-flex align-items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        <strong>Artists</strong>
-      </a>
-      <a [routerLink]="['/song']" [queryParams]="{ id: userId, accessToken: accessToken }"role="button" class="navbar-brand d-flex align-items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        <strong>Song</strong>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<div style ="padding: 40px;">
-
-    <h1>Create A Review</h1>
-    <form (ngSubmit)="createReview()">
-        <div class="form-group">
-          <label for="reviewInput1">Title:</label>
-          <input type="text" class="form-control" id="reviewInput1" [(ngModel)]="reviewName" name="reviewName" placeholder="Enter review title">
-        </div>
-        <div class="form-group">
-          <label for="reviewInput2">Entity Id:</label>
-          <input type="text" class="form-control" id="reviewInput2" [(ngModel)]="entityId" [ngModelOptions]="{standalone: true}" placeholder="Enter Id">
-        </div>
-        <div class="form-group">
-          <label for="reviewInput3">Rating:</label>
-          <div class="star-rating">
-            <i class="fa fa-star" (click)="setRating(1)" [class.selected]="reviewRating >= 1"></i>
-            <i class="fa fa-star" (click)="setRating(2)" [class.selected]="reviewRating >= 2"></i>
-            <i class="fa fa-star" (click)="setRating(3)" [class.selected]="reviewRating >= 3"></i>
-            <i class="fa fa-star" (click)="setRating(4)" [class.selected]="reviewRating >= 4"></i>
-            <i class="fa fa-star" (click)="setRating(5)" [class.selected]="reviewRating >= 5"></i>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="reviewInput4">Music Review Options:</label>
-          <select class="form-control" id="reviewInput4" [(ngModel)]="entityType" [ngModelOptions]="{standalone: true}">
-            <option value="Songs">Songs</option>
-            <option value="Playlist">Playlist</option>
-            <option value="Albums">Albums</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="reviewInput5">Comment</label>
-          <textarea class="form-control" id="reviewInput5" [(ngModel)]="reviewComment" name="reviewComment" rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+      <div class="form-group">
+        <label for="reviewInput4">Music Review Options:</label>
+        <select class="form-control" id="reviewInput4" [(ngModel)]="entityType" [ngModelOptions]="{standalone: true}">
+          <option value="Songs">Songs</option>
+          <option value="Playlist">Playlist</option>
+          <option value="Albums">Albums</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="reviewInput5">Comment</label>
+        <textarea class="form-control" id="reviewInput5" [(ngModel)]="reviewComment" name="reviewComment" rows="3"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
 </div>
 <div style="padding: 40px">
-    <h1>Update A Review</h1>
-    <form (ngSubmit)="updateReview()">
-        <div class="form-group2">
-          <label for="updateInput1">Title:</label>
-          <input type="text" class="form-control" id="updateInput1" [(ngModel)]="reviewName" name="reviewName" placeholder="Enter review title">
-        </div>
-        <div class="form-group2">
-          <label for="updateInput2">Review Id:</label>
-          <input type="text" class="form-control" id="updateInput2" [(ngModel)]="reviewId" [ngModelOptions]="{standalone: true}" placeholder="Enter review id">
-        </div>
-        <div class="form-group2">
-          <label for="updateInput3">Entity Id:</label>
-          <input type="text" class="form-control" id="updateInput3" [(ngModel)]="entityId" [ngModelOptions]="{standalone: true}" placeholder="enter id">
-        </div>
-        <div class="form-group2">
-          <label for="updateInput4">Rating:</label>
-          <input type="number" class="form-control" id="updateInput4" [(ngModel)]="reviewRating" name="reviewRating" placeholder="Enter review rating">
-        </div>
-        <div class="form-group2">
-          <label for="updateInput5">Music Review Options:</label>
-          <select class="form-control" id="updateInput5" [(ngModel)]="entityType" [ngModelOptions]="{standalone: true}">
-            <option value="Songs">Songs</option>
-            <option value="Playlist">Playlist</option>
-            <option value="Albums">Albums</option>
-          </select>
-        </div>
-        <div class="form-group2">
-          <label for="updateInput6">Comment</label>
-          <textarea class="form-control" id="updateInput6" [(ngModel)]="reviewComment" name="reviewComment" rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Update</button>
-    </form>
+  <h1>Update A Review</h1>
+  <form (ngSubmit)="updateReview()">
+      <div class="form-group2">
+        <label for="updateInput1">Title:</label>
+        <input type="text" class="form-control" id="updateInput1" [(ngModel)]="reviewName" name="reviewName" placeholder="Enter review title">
+      </div>
+      <div class="form-group2">
+        <label for="updateInput2">Review Id:</label>
+        <input type="text" class="form-control" id="updateInput2" [(ngModel)]="reviewId" [ngModelOptions]="{standalone: true}" placeholder="Enter review id">
+      </div>
+      <div class="form-group2">
+        <label for="updateInput3">Entity Id:</label>
+        <input type="text" class="form-control" id="updateInput3" [(ngModel)]="entityId" [ngModelOptions]="{standalone: true}" placeholder="enter id">
+      </div>
+      <div class="form-group2">
+        <label for="updateInput4">Rating:</label>
+        <input type="number" class="form-control" id="updateInput4" [(ngModel)]="reviewRating" name="reviewRating" placeholder="Enter review rating">
+      </div>
+      <div class="form-group2">
+        <label for="updateInput5">Music Review Options:</label>
+        <select class="form-control" id="updateInput5" [(ngModel)]="entityType" [ngModelOptions]="{standalone: true}">
+          <option value="Songs">Songs</option>
+          <option value="Playlist">Playlist</option>
+          <option value="Albums">Albums</option>
+        </select>
+      </div>
+      <div class="form-group2">
+        <label for="updateInput6">Comment</label>
+        <textarea class="form-control" id="updateInput6" [(ngModel)]="reviewComment" name="reviewComment" rows="3"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Update</button>
+  </form>
 </div>
 <div style ="padding: 40px;">
-    <h1>Delete A Review</h1>
-
+  <h1>Delete A Review</h1>
 <form (ngSubmit)="deleteReview()">
     <div class="form-group3">
       <label for="reviewInput1">Review Id:</label>
@@ -138,53 +92,49 @@
 
 <!-- Allow the user to input entityId and entityName -->
 <div style = "padding: 40px;">
-
-    <h1>Get Reviews</h1>
-    <div>
-        <label for="entityType">Select Entity Type:</label>
-        <select id="entityType" [(ngModel)]="entityType">
-          <option value="albums">Albums</option>
-          <option value="playlist">Playlist</option>
-          <option value="songs">Songs</option>
-        </select>
-      </div>
-      
-      <div *ngIf="entityType">
-        <div>
-          <label for="entityId">Enter Entity ID:</label>
-          <input type="text" id="entityId" [(ngModel)]="entityId" />
-        </div>
+  <h1>Get Reviews</h1>
+  <div>
+      <label for="entityType">Select Entity Type:</label>
+      <select id="entityType" [(ngModel)]="entityType">
+        <option value="albums">Albums</option>
+        <option value="playlist">Playlist</option>
+        <option value="songs">Songs</option>
+      </select>
+    </div>
+    
+    <div *ngIf="entityType">
+      <div>
+        <label for="entityId">Enter Entity ID:</label>
+        <input type="text" id="entityId" [(ngModel)]="entityId" />
       </div>
     </div>
-      <!-- Button to trigger the getReviews method -->
-      <button (click)="getReviews()">Get Reviews</button>
-      
-      <!-- Display reviews if available -->
-      <section *ngIf="reviews.length > 0">
-        <div *ngFor="let review of reviews">
-            <div class="d-flex flex-start mb-4">
-                <img class="rounded-circle shadow-1-strong me-3" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(32).webp" alt="avatar" width="65" height="65" />
-                <div class="card w-100">
-                  <div class="card-body p-4">
-                    <div class="">
-                      <h5>{{ review.name }}</h5>
-                      <p class="small">{{ review.timestamp }}</p>
-                      <p>{{ review.comment }}</p>
-          
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center">
-                          <div class="star-rating">
-                            <i class="fa fa-star" style="color:gold" (click)="setRating(1)" [class.selected]="reviewRating >= 1">{{review.rating}}</i>
-                          </div>
-                        </div>
+  </div>
+    <!-- Button to trigger the getReviews method -->
+    <button (click)="getReviews()">Get Reviews</button>
+    
+    <!-- Display reviews if available -->
+    <section *ngIf="reviews.length > 0">
+      <div *ngFor="let review of reviews">
+          <div class="d-flex flex-start mb-4">
+              <img class="rounded-circle shadow-1-strong me-3" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(32).webp" alt="avatar" width="65" height="65" />
+              <div class="card w-100">
+                <div class="card-body p-4">
+                  <div class="">
+                    <h5>{{ review.name }}</h5>
+                    <p class="small">{{ review.timestamp }}</p>
+                    <p>{{ review.comment }}</p>
+        
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="d-flex align-items-center">
+                        <a href="#!" class="link-muted me-2"><i class="fas fa-thumbs-up me-1"></i>{{ review.likes }}</a>
+                        <a href="#!" class="link-muted"><i class="fas fa-thumbs-down me-1"></i>{{ review.dislikes }}</a>
                       </div>
-
+                      <a href="#!" class="link-muted"><i class="fas fa-reply me-1"></i> Reply</a>
                     </div>
                   </div>
                 </div>
               </div>
-
-        </div>
-      </section>
-
+            </div>
+      </div>
+    </section>
 </div>

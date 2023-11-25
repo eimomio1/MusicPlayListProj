@@ -65,7 +65,6 @@ throw new Error('Method not implemented.');
     private router: Router, // Inject the Router service
     private authService: AuthService
   ) {
-
     this.selectedFile = new File([], 'defaultFileName'); 
     this.authService.accessToken$.subscribe((token) => {
       this.accessToken = token;
@@ -215,7 +214,6 @@ throw new Error('Method not implemented.');
             spotifyId: playlist.id,
           };
         });
-        
   
         // Extract playlistId from the URL
         this.route.queryParams.subscribe(params => {
@@ -341,9 +339,6 @@ throw new Error('Method not implemented.');
     // Return a default image URL or undefined if no image is found
     return 'path/to/default/image.jpg'; // Update with your default image path
   }
-  
-
-
 
   onSelectPlaylist(playlistId: string): void {
     // Update the URL with the selected playlistId

@@ -27,6 +27,7 @@ import com.proj.music.service.UserService;
 
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
 @RestController
@@ -60,8 +61,19 @@ public class ReviewController {
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		entityType = entityType.toLowerCase();
-		Track getNewTrack = spotifyApi.getTrack(entityId).build().execute();
-		return reviewService.addReview(review, entityId, entityType, userId, getNewTrack);
+		if(entityType.equals("songs"))
+		{
+			Track getNewTrack = spotifyApi.getTrack(entityId).build().execute();
+			reviewService.addReview(review, entityId, entityType, userId, getNewTrack);
+		}
+		else if(entityType.equals("albums"))
+		{
+			String[] parts = entityId.split(":");
+			String albumId = parts[parts.length - 1];
+			Album getNewAlbum = spotifyApi.getAlbum(albumId).build().execute();
+			reviewService.addReview(review, entityId, entityType, userId, getNewAlbum);
+		}
+		return "Review has been added";
 	}
 
 	@PutMapping("/review/{reviewId}")

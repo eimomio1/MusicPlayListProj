@@ -22,6 +22,7 @@ import com.proj.music.repository.UserRepository;
 import com.proj.music.service.ReviewService;
 
 import jakarta.transaction.Transactional;
+import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
 @Service
@@ -161,7 +162,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	@Transactional
-	public String addReview(Reviews review, String entityId, String entityType, String userId, Track track) {
+	public String addReview(Reviews review, String entityId, String entityType, String userId, Object object) {
 		Optional<Users> optionalUser = Optional.of(userRepository.findByRefId(userId));
 
 		if (optionalUser.isPresent()) {
@@ -170,8 +171,16 @@ public class ReviewServiceImpl implements ReviewService {
 			newReview.setName(review.getName());
 			newReview.setRating(review.getRating());
 			newReview.setComment(review.getComment());
-			Songs newSongs = createSongFromSpotifyData(track, optionalUser.get());
-			songRepository.save(newSongs);
+			if(entityType.equals("songs"))
+			{
+				Songs newSongs = createSongFromSpotifyData(object, optionalUser.get());
+				songRepository.save(newSongs);
+			}
+			else if(entityType.equals("albums"))
+			{
+				Albums newAlbums = createAlbumFromSpotifyData(object, optionalUser.get());
+				albumRepository.save(newAlbums);
+			}
 			switch (entityType) {
 			case "songs":
 				Optional<Songs> optionalSong = songRepository.findSongBySpotifyId(entityId);
@@ -192,17 +201,7 @@ public class ReviewServiceImpl implements ReviewService {
 					return "Review for album has been added";
 				}
 				break;
-
-			case "playlist":
-				Optional<Playlists> optionalPlaylist = playlistRepository.findPlaylistBySpotifyId(entityId);
-				if (optionalPlaylist.isPresent()) {
-					newReview.setPlaylist(optionalPlaylist.get());
-					optionalPlaylist.get().getReviews().add(newReview);
-					reviewRepository.save(newReview);
-					return "Review for playlist has been added";
-				}
-				break;
-
+				
 			default:
 				throw new ResourceNotFoundException("Object not found");
 			}
@@ -211,7 +210,8 @@ public class ReviewServiceImpl implements ReviewService {
 		return "User not found";
 	}
 	
-	public Songs createSongFromSpotifyData(Track track, Users user) {
+	public Songs createSongFromSpotifyData(Object track1, Users user) {
+		Track track = (Track) track1;
 	    Songs newSongs = new Songs();
 	    newSongs.setName(track.getName());
 	    newSongs.setSpotifyId(track.getId());
@@ -220,6 +220,18 @@ public class ReviewServiceImpl implements ReviewService {
 	    newSongs.setPreviewUrl(track.getPreviewUrl());
 	    newSongs.getUsers().add(user);
 	    return newSongs;
+	}
+	
+	public Albums createAlbumFromSpotifyData(Object album1, Users user) {
+		Album album = (Album) album1;
+	    Albums newAlbums = new Albums();
+	    newAlbums.setName(album.getName());
+	    newAlbums.setSpotifyId(album.getId());
+	    newAlbums.setReleaseDate(album.getReleaseDate());
+	    newAlbums.setUri(album.getUri());
+	    newAlbums.setGenres(album.getGenres());
+	    newAlbums.getUsers().add(user);
+	    return newAlbums;
 	}
 
 }

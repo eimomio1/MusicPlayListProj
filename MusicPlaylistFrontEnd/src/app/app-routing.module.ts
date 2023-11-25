@@ -8,6 +8,7 @@ import { ReviewsComponent } from './reviews/reviews.component';
 import { ArtistsComponent } from './artists/artists.component'; // Import the ArtistsComponent
 import { PlayerComponent } from './player/player.component';
 import { SongComponent } from './song/song.component';
+import { AlbumsComponent } from './albums/albums.component';
 
 const routes: Routes = [
   // Define the route for the "home" component
@@ -42,6 +43,11 @@ const routes: Routes = [
   {
     path: 'song',
     component: SongComponent,  // Add a route for ArtistsComponent
+    pathMatch: 'full',
+  },
+  {
+    path: 'albums',
+    component: AlbumsComponent,  // Add a route for ArtistsComponent
     pathMatch: 'full',
   },
   // Add other routes if needed
