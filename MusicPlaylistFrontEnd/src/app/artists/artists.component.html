@@ -72,6 +72,7 @@
 
     <!-- Button to add albums -->
     <button *ngIf="selectedAlbumId && getAlbumImage(selectedAlbumId)" class="btn" (click)="saveAlbums(selectedAlbumId ? [selectedAlbumId] : [])" style="margin-top: 10px;">Add Albums</button>
+    <button class="btn " (click)="navigateToReviews()">Create A Review</button>
   </div>
 </div>
 

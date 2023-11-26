@@ -27,7 +27,7 @@ export class ReviewsComponent implements OnInit{
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.userId = params['id'];
+      this.userId = params['userId'];
       this.accessToken = params['accessToken'];
       this.entityType = params['entityType'];
       this.entityId = params['entityId'];
