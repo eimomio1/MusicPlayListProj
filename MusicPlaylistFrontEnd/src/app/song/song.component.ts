@@ -251,6 +251,10 @@ export class SongComponent implements OnInit{
 
 
 
-
+// Add this method to your component class
+getSelectedSongName(): string | undefined {
+  const selectedSong = this.searchResults.find(song => song.id === this.selectedSongId);
+  return selectedSong ? selectedSong.name : '';
+}
 
 }

@@ -32,7 +32,7 @@ interface ImageResponse {
 })
 export class PlaylistComponent implements OnInit {
 yourButtonClickFunction(arg0: any) {
-throw new Error('Method not implemented.');
+
 }
   nameOfPlaylist: string = '';
   description: string = '';
@@ -156,6 +156,7 @@ throw new Error('Method not implemented.');
       // Send the playlist name as a string
       this.playlistService.createPlaylist(url, playlistAdded).subscribe(
         response => {
+          this.loadPlaylists();
           console.log('Playlist created successfully:', response);
         },
         error => {
@@ -176,6 +177,7 @@ throw new Error('Method not implemented.');
 
       this.playlistService.updatePlaylist(this.userId, this.playlistId, updatedPlaylist).subscribe(
         response => {
+          this.loadPlaylists();
           console.log('Playlist updated successfully:', response);
         },
         error => {

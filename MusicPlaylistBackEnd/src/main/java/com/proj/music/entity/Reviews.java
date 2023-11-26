@@ -2,6 +2,9 @@ package com.proj.music.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,38 +18,46 @@ import jakarta.persistence.Table;
 @Table(name = "reviews")
 public class Reviews {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "review_id")
-	private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("review_id")
+    @Column(name = "review_id")
+    private long id;
 
-	@Column(name = "name")
-	private String name;
+    @Column(name = "name")
+    @JsonProperty("name")
+    private String name;
 
-	@Column(name = "comment")
-	private String comment;
+    @Column(name = "comment")
+    @JsonProperty("comment")
+    private String comment;
 
 	@Column(name = "date_posted", nullable = false, updatable = false)
 	private LocalDateTime datePosted;
 
-	@ManyToOne
-	@JoinColumn(name = "song_id")
-	private Songs songs;
+    @ManyToOne
+    @JoinColumn(name = "song_id")
+    @JsonIgnore
+    private Songs songs;
 
-	@ManyToOne
-	@JoinColumn(name = "album_id")
-	private Albums albums;
+    @ManyToOne
+    @JoinColumn(name = "album_id")
+    @JsonIgnore
+    private Albums albums;
 
-	@ManyToOne
-	@JoinColumn(name = "playlist_id")
-	private Playlists playlist;
+    @ManyToOne
+    @JoinColumn(name = "playlist_id")
+    @JsonIgnore
+    private Playlists playlist;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private Users user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private Users user;
 
-	@Column(name = "rating")
-	private double rating;
+    @Column(name = "rating")
+    @JsonProperty("rating")
+    private double rating;
 
 	public Reviews() {
 		super();
@@ -65,14 +76,6 @@ public class Reviews {
 		this.playlist = playlist;
 		this.user = user;
 		this.rating = rating;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -138,11 +141,20 @@ public class Reviews {
 	public void setRating(double rating) {
 		this.rating = rating;
 	}
+	
+	public long getReviewId() {
+	    return id;
+	}
+
+	public void setReviewId(long reviewId) {
+	    this.id = reviewId;
+	}
 
 	@Override
 	public String toString() {
 		return "Reviews [id=" + id + ", name=" + name + ", comment=" + comment + ", datePosted=" + datePosted
 				+ ", user=" + user.getId() + ", rating=" + rating + "]";
 	}
+
 
 }
