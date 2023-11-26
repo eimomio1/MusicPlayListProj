@@ -15,6 +15,7 @@ import { SongComponent } from './song/song.component';
 import { AuthenticationComponent } from './authentication/authentication.component';
 
 import { AuthService } from './authentication/auth.service';
+import { AlbumsComponent } from './albums/albums.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,7 +25,8 @@ import { AuthService } from './authentication/auth.service';
     ReviewsComponent,
     ArtistsComponent,
     SongComponent,
-    AuthenticationComponent
+    AuthenticationComponent,
+    AlbumsComponent
   ],
   imports: [
     

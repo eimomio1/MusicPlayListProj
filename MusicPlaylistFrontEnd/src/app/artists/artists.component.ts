@@ -82,6 +82,21 @@ export class ArtistsComponent implements OnInit {
     }
   } 
 
+  navigateToReviews() {
+    // Assuming you have the required information for entityType, entityId, and songId
+    const entityType = 'Albums';
+    const albumId = this.selectedAlbumId; // Replace with the actual way you get the song id
+    const id = this.userId;
+    this.router.navigate(['/reviews'], {
+      queryParams: {
+        userId: id,
+        accessToken: this.accessToken,
+        entityId: albumId,
+        entityType: entityType,
+      },
+    });
+  }
+
   // Function to handle the search input
   searchArtists(): void {
     this.searchSubject.next(this.searchQuery);

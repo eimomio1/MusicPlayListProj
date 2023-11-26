@@ -27,6 +27,7 @@ import com.proj.music.service.UserService;
 
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
 @RestController
@@ -47,8 +48,7 @@ public class ReviewController {
 
 	@PostMapping("/review")
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public String postReview(@RequestBody Reviews review, @RequestParam String userId, @RequestParam String entityType,
-			@RequestParam String entityId) throws ParseException, SpotifyWebApiException, IOException {
+	public ResponseEntity<Reviews> postReview(@RequestBody Reviews review, @RequestParam String userId, @RequestParam String entityType, @RequestParam String entityId) throws ParseException, SpotifyWebApiException, IOException {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
 		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
@@ -60,13 +60,24 @@ public class ReviewController {
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		entityType = entityType.toLowerCase();
-		Track getNewTrack = spotifyApi.getTrack(entityId).build().execute();
-		return reviewService.addReview(review, entityId, entityType, userId, getNewTrack);
+		Reviews createdReview = null;
+		if(entityType.equals("songs"))
+		{
+			Track getNewTrack = spotifyApi.getTrack(entityId).build().execute();
+			createdReview = reviewService.addReview(review, entityId, entityType, userId, getNewTrack);
+		}
+		else if(entityType.equals("albums"))
+		{
+			String[] parts = entityId.split(":");
+			String albumId = parts[parts.length - 1];
+			Album getNewAlbum = spotifyApi.getAlbum(albumId).build().execute();
+			createdReview = reviewService.addReview(review, entityId, entityType, userId, getNewAlbum);
+		}
+		return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
 	}
 
-	@PutMapping("/review/{reviewId}")
-	@ResponseStatus(value = HttpStatus.OK)
-	public String updateReview(@RequestBody Reviews review, @PathVariable long reviewId, @RequestParam String entityId,
+	@PutMapping("/review")
+	public ResponseEntity<String> updateReview(@RequestBody Reviews review, @RequestParam long reviewId, @RequestParam String entityId,
 			@RequestParam String entityType, @RequestParam String userId) {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
@@ -79,13 +90,13 @@ public class ReviewController {
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		entityType = entityType.toLowerCase();
-		return reviewService.updateReviewById(reviewId, entityId, entityType, review);
+		reviewService.updateReviewById(reviewId, entityId, entityType, review);
+		return ResponseEntity.ok("Review updated successfully. Review ID: " + reviewId);
 	}
 
-	@DeleteMapping("/review/{reviewId}")
-	@ResponseStatus(value = HttpStatus.OK)
-	public String deleteReview(@RequestParam String userId, @RequestParam String entityId,
-			@PathVariable String entityType, @PathVariable long reviewId) {
+	@DeleteMapping("/review")
+	public ResponseEntity<String> deleteReview(@RequestParam String userId, @RequestParam String entityId,
+			@RequestParam String entityType, @RequestParam long reviewId) {
 		// first its gets the user
 		Users userDetails = userService.findRefById(userId);
 		if (spotifyService.isTokenExpired(userDetails.getExpiresAt())) {
@@ -97,7 +108,8 @@ public class ReviewController {
 		// Then it refreshes the token for the user to the spotify api request
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 		entityType = entityType.toLowerCase();
-		return reviewService.deleteReviewById(reviewId, entityType, entityId);
+		reviewService.deleteReviewById(reviewId, entityType, entityId);
+		return ResponseEntity.ok("Review deleted successfully. Review ID: " + reviewId);
 	}
 
 	@GetMapping("/review/{reviewId}")

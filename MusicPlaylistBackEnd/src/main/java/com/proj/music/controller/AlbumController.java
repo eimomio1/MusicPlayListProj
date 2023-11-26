@@ -122,7 +122,7 @@ public class AlbumController {
 		spotifyApi.setRefreshToken(userDetails.getRefreshToken());
 
 		GetCurrentUsersSavedAlbumsRequest getUserSaveAlbumRequest = spotifyApi.getCurrentUsersSavedAlbums().limit(10)
-				.market(CountryCode.US).offset(1).build();
+				.market(CountryCode.US).offset(0).build();
 		try {
 			Paging<SavedAlbum> savedAlbum = getUserSaveAlbumRequest.execute();
 			return savedAlbum.getItems();

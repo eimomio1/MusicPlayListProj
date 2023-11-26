@@ -130,6 +130,9 @@ public class Albums {
 	}
 
 	public List<Songs> getSongs() {
+		if (users == null) {
+			songs = new ArrayList<>();
+		}
 		return songs;
 	}
 
@@ -138,6 +141,9 @@ public class Albums {
 	}
 
 	public List<Reviews> getReviews() {
+		if (reviews == null) {
+			reviews = new ArrayList<>();
+		}
 		return reviews;
 	}
 

@@ -11,7 +11,7 @@ export class ReviewService {
   constructor(private http: HttpClient) {}
 
   postReview(url: string, reviewData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}${url}`, reviewData, { responseType: 'text' });
+    return this.http.post(`${this.baseUrl}${url}`, reviewData);
   }
   
   updateReview(url: string, reviewData: any): Observable<any> {
