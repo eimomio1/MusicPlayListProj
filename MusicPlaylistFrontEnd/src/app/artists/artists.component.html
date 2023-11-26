@@ -44,7 +44,7 @@
 
   <div style="padding: 40px; text-align: center;">
     <!-- Button to get albums -->
-    <button (click)="getAlbums()">Get Albums</button>
+    <button class="btn" (click)="getAlbums()">Get Albums</button>
   </div>
 
   <!-- Dropdown for album results -->
@@ -55,13 +55,15 @@
     </select>
     
     <!-- Display album image when an album is selected -->
-    <div *ngIf="selectedAlbumId" style="margin-top: 10px;">
+    <div *ngIf="selectedAlbumId && getAlbumImage(selectedAlbumId)" style="margin-top: 10px;">
       <h2>{{ getAlbumName(selectedAlbumId) }}</h2>
+     
       <img [src]="getAlbumImage(selectedAlbumId)" alt="Album Image" class="square-album-image">
+    
     </div>
 
     <!-- Button to add albums -->
-    <button (click)="saveAlbums(selectedAlbumId ? [selectedAlbumId] : [])" style="margin-top: 10px;">Add Albums</button>
+    <button *ngIf="selectedAlbumId && getAlbumImage(selectedAlbumId)" class="btn" (click)="saveAlbums(selectedAlbumId ? [selectedAlbumId] : [])" style="margin-top: 10px;">Add Albums</button>
   </div>
 </div>
 
