@@ -88,12 +88,7 @@
             <option *ngFor="let playlist of playlists" [value]="playlist.spotifyId">{{ playlist.playlistName }}</option>
           </select>
         </div>
-        <div *ngIf="playlistSongs.length > 0">
-          <label for="playlistSongsDropdown">Select Song:</label>
-          <select id="playlistSongsDropdown" [(ngModel)]="selectedSongId" (change)="onSongSelected()">
-            <option *ngFor="let song of playlistSongs" [value]="song.id">{{ song.name }}</option>
-          </select>
-        </div>
+        
         <button class="btn" (click)="addSongsToPlaylist()">Add Song To Playlist</button>
         <button class="btn " (click)="deleteSongsFromPlaylist()">Delete Song To Playlist</button>  
         <button class="btn " (click)="navigateToReviews()">Create A Review</button>
