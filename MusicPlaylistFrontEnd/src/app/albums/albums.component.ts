@@ -89,15 +89,13 @@ export class AlbumsComponent implements OnInit {
           (albumSongsResponse: any) => {
             console.log('Album Songs Response:', albumSongsResponse);
     
-            const albumItems = albumSongsResponse.tracks?.items;
+            const albumItems = Array.isArray(albumSongsResponse) ? albumSongsResponse : [albumSongsResponse];
     
             if (albumItems && albumItems.length > 0) {
               this.albumSongs = albumItems.map((item: any) => ({
-                id: item.track.id,
-                name: item.track.name,
-                image: item.track.album.images?.[0]?.url || null, // Add this line to include the song image
+                name: item.name,
+                image: item.album?.images?.[0]?.url || item.images?.[0]?.url || null,
               }));
-    
               console.log('Album Songs:', this.albumSongs);
             } else {
               console.warn('No songs found in the album.');
@@ -109,6 +107,10 @@ export class AlbumsComponent implements OnInit {
         );
       }
     }
+    
+    
+    
+
     
     
     
@@ -129,7 +131,7 @@ export class AlbumsComponent implements OnInit {
       // Load album songs
       this.loadAlbumSongs(this.selectedAlbumId);
     }
-    
+
     onAlbumSelected(): void {
       // Update the URL with the selected playlistId
       this.router.navigate([], {
