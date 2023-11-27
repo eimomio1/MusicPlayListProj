@@ -55,25 +55,24 @@
     <button class="btn" (click)="getAlbums()">Get Albums</button>
   </div>
 
-  <!-- Dropdown for album results -->
-  <div *ngIf="albumResults.length > 0" style="text-align: center; margin-top: 10px;">
-    <label for="albumResultsDropdown">Album Results:</label>
-    <select id="albumResultsDropdown" [(ngModel)]="selectedAlbumId" (change)="onAlbumSelected()">
-      <option *ngFor="let album of albumResults" [value]="album.id">{{ album.name }}</option>
-    </select>
-    
-    <!-- Display album image when an album is selected -->
-    <div *ngIf="selectedAlbumId && getAlbumImage(selectedAlbumId)" style="margin-top: 10px;">
-      <h2>{{ getAlbumName(selectedAlbumId) }}</h2>
-     
-      <img [src]="getAlbumImage(selectedAlbumId)" alt="Album Image" class="square-album-image">
-    
-    </div>
+<!-- Dropdown for album results -->
+<div *ngIf="albumResults.length > 0" style="text-align: center; margin-top: 10px;">
+  <label for="albumResultsDropdown">Album Results:</label>
+  <select id="albumResultsDropdown" [(ngModel)]="selectedAlbumId" (change)="onAlbumSelected()">
+    <option *ngFor="let album of albumResults" [value]="album.id">{{ album.name }}</option>
+  </select>
 
-    <!-- Button to add albums -->
-    <button *ngIf="selectedAlbumId && getAlbumImage(selectedAlbumId)" class="btn" (click)="saveAlbums(selectedAlbumId ? [selectedAlbumId] : [])" style="margin-top: 10px;">Add Albums</button>
-    <button class="btn " (click)="navigateToReviews()">Create A Review</button>
+  <!-- Display album image when an album is selected -->
+  <div *ngIf="selectedAlbumId && getAlbumImage(selectedAlbumId)" style="margin-top: 10px;">
+    <h2>{{ getAlbumName(selectedAlbumId) }}</h2>
+    <img [src]="getAlbumImage(selectedAlbumId)" alt="Album Image" class="square-album-image">
   </div>
+
+  <!-- Button to add albums -->
+  <button *ngIf="selectedAlbumId && getAlbumImage(selectedAlbumId)" class="btn" (click)="saveAlbums(selectedAlbumId ? [selectedAlbumId] : [])" style="margin-top: 10px;">Add Albums</button>
+
+  <!-- Show the "Create A Review" button when an album is selected -->
+  <button *ngIf="selectedAlbumId" class="btn" (click)="navigateToReviews()" style="margin-top: 10px;">Create A Review</button>
 </div>
 
 <!-- ... The rest of your HTML ... -->
