@@ -61,17 +61,18 @@ export class AlbumsComponent implements OnInit {
     private loadAlbums(): void {
       this.albumsService.getAlbums(this.userId).subscribe(
         albums => {
-          // Update the playlists array with additional information
-          this.albums = albums.map(albums => {
-            console.log('Albums:', albums);
+          // Update the albums array with additional information
+          this.albums = albums.map(album => {
+            console.log('Album:', album);
             return {
-              albumName: albums.name,
-              albumImage: albums.images?.[0]?.url || null, // Use playlistImage instead of playlistDescription
-              spotifyId: albums.id,
+              name: album.album.name,  // Use album.name instead of albumName
+              image: album.album.images?.[0]?.url || null,  // Use album.images instead of albumImage
+              spotifyId: album.album.id,
+              description: album.album.label || '',  // You can modify this according to your data
             };
-          });    
+          });
     
-          // Extract playlistId from the URL
+          // Extract albumId from the URL
           this.route.queryParams.subscribe(params => {
             this.selectedAlbumId = params['albumId'] || ''; // Default to an empty string
           });
@@ -80,23 +81,26 @@ export class AlbumsComponent implements OnInit {
           console.error('Failed to load albums:', error);
         }
       );
-    }  
-
+    }
+    
     private loadAlbumSongs(albumId: string): void {
       if (this.userId && albumId) {
         this.albumsService.getAlbumSongs(this.userId, albumId).subscribe(
           (albumSongsResponse: any) => {
-            const albumItems = albumSongsResponse.tracks.items;
-
+            console.log('Album Songs Response:', albumSongsResponse);
+    
+            const albumItems = albumSongsResponse.tracks?.items;
+    
             if (albumItems && albumItems.length > 0) {
               this.albumSongs = albumItems.map((item: any) => ({
                 id: item.track.id,
                 name: item.track.name,
+                image: item.track.album.images?.[0]?.url || null, // Add this line to include the song image
               }));
-
+    
               console.log('Album Songs:', this.albumSongs);
             } else {
-              console.warn('No songs found in the albums.');
+              console.warn('No songs found in the album.');
             }
           },
           (error) => {
@@ -105,20 +109,27 @@ export class AlbumsComponent implements OnInit {
         );
       }
     }
+    
+    
+    
 
     onSelectAlbum(albumId: string): void {
+      console.log('Selected AlbumId:', albumId);
+    
+      // Set the albumId property
+      this.selectedAlbumId = albumId;
+      
       // Update the URL with the selected albumId
       this.router.navigate([], {
         relativeTo: this.route,
-        queryParams: { albumId: albumId },
+        queryParams: { albumId: this.selectedAlbumId },
         queryParamsHandling: 'merge'
       });
-  
-      // Set the albumId property
-      this.albumId = albumId;
-      this.loadAlbumSongs(albumId);
-    }  
-
+    
+      // Load album songs
+      this.loadAlbumSongs(this.selectedAlbumId);
+    }
+    
     onAlbumSelected(): void {
       // Update the URL with the selected playlistId
       this.router.navigate([], {

@@ -48,11 +48,10 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Make each row clickable and call onSelectAlbum method -->
       <tr *ngFor="let album of albums" (click)="onSelectAlbum(album.spotifyId)" style="cursor: pointer;">
-        <td>{{ album.albumName }}</td>
+        <td>{{ album.name }}</td>
         <td>
-          <img *ngIf="album.albumImage" [src]="album.albumImage" alt="Album Image" style="max-width: 50px; max-height: 50px; border-radius: 5px;">
+          <img *ngIf="album.image" [src]="album.image" alt="Album Image" style="max-width: 50px; max-height: 50px; border-radius: 5px;">
         </td>
         <td>{{ album.description }}</td>
         <td>
@@ -62,7 +61,6 @@
     </tbody>
   </table>
 </div>
-
 
 <!-- albumsTable table -->
 <div class="albums-list music-table" style="padding: 40px; overflow-y: scroll; max-height: 300px; margin-top: 20px;">
@@ -75,7 +73,7 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Display songs of the selected playlist -->
+      <!-- Display songs of the selected album -->
       <tr *ngFor="let song of albumSongs">
         <td>{{ song.name }}</td>
         <td>
