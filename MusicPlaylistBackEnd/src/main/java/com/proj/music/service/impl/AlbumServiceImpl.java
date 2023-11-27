@@ -1,6 +1,7 @@
 package com.proj.music.service.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,10 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.proj.music.entity.Albums;
 import com.proj.music.entity.Artists;
+import com.proj.music.entity.Songs;
 import com.proj.music.entity.Users;
 import com.proj.music.exceptions.ResourceNotFoundException;
 import com.proj.music.repository.AlbumRepository;
 import com.proj.music.repository.ArtistRepository;
+import com.proj.music.repository.SongRepository;
 import com.proj.music.repository.UserRepository;
 import com.proj.music.service.AlbumService;
 
@@ -22,6 +25,8 @@ import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
+import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
@@ -34,6 +39,9 @@ public class AlbumServiceImpl implements AlbumService {
 	
 	@Autowired
 	private ArtistRepository artistRepository;
+	
+	@Autowired
+	private SongRepository songRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -92,12 +100,20 @@ public class AlbumServiceImpl implements AlbumService {
 
 	    if (optionalUser.isPresent()) {
 	        Albums newAlbum = createAlbumFromSpotifyData(album, optionalUser.get());
-	        List<Artists> newArtists = new ArrayList<>();
+	        List<Artists> newArtists = new ArrayList<Artists>();
+	        List<Songs> newSongs = new ArrayList<Songs>();
 
 	        if (album.getArtists() != null) {
 	            for (ArtistSimplified artistSimplified : album.getArtists()) {
 	                Artists artist = createArtistFromSpotifyData(artistSimplified);
 	                newArtists.add(artist);
+	            }
+	        }
+	        
+	        if (album.getTracks() != null) {
+	            for (TrackSimplified trackSimplified : album.getTracks().getItems()) {
+	                Songs song = createSongsFromSpotifyData(trackSimplified);
+	                newSongs.add(song);
 	            }
 	        }
 
@@ -110,6 +126,12 @@ public class AlbumServiceImpl implements AlbumService {
 	            newAlbum.getArtists().add(artist);
 	            artistRepository.save(artist);
 	        });
+	        
+	        for (Songs song : newSongs) {
+	            song.setAlbums(newAlbum);
+	            newAlbum.getSongs().add(song);
+	            songRepository.save(song);
+	        }
 
 	        optionalUser.get().getAlbums().add(newAlbum);
 
@@ -140,6 +162,16 @@ public class AlbumServiceImpl implements AlbumService {
 	    artist.setHref(artistSimplified.getHref());
 	    artist.setUri(artistSimplified.getUri());
 	    return artist;
+	}
+	
+	private Songs createSongsFromSpotifyData(TrackSimplified trackSimplified) {
+	    Songs track = new Songs();
+	    track.setName(trackSimplified.getName());
+	    track.setSpotifyId(trackSimplified.getId());
+	    track.setUris(trackSimplified.getUri());
+	    track.setPreviewUrl(trackSimplified.getPreviewUrl());
+	    track.setDuration(trackSimplified.getDurationMs());
+	    return track;
 	}
 
 	@Override

@@ -58,6 +58,7 @@ public class Albums {
 	
 	public Albums() {
 		super();
+		this.songs = new ArrayList<>(); // Initialize the songs list
 	}
 
 	public Albums(int id, String name, String releaseDate, List<Artists> artists, List<Songs> songs) {
