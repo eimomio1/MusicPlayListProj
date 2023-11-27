@@ -24,11 +24,13 @@ export class ArtistsComponent implements OnInit {
   accessToken: any;
   albumIds: string = '';
   albums: any;
-
+  albumsAvailable: boolean = false;
   constructor(private artistsService: ArtistsService, private route: ActivatedRoute, private router: Router, private authService: AuthService) {
     this.authService.accessToken$.subscribe((token) => {
       this.accessToken = token;
     });
+
+    this.albums = [];
   }
 
   ngOnInit(): void {
@@ -105,24 +107,34 @@ export class ArtistsComponent implements OnInit {
   }
 
   // Function to handle the fetching of albums
-  getAlbums(): void {
-    if (this.selectedArtistId) {
-      this.artistsService.getAlbumsByArtistId(this.selectedArtistId, this.userId).subscribe(
-        (response: any) => {
-          if (response && response.length > 0) {
-            this.albumResults = response;
-          } else {
-            console.warn('No albums found for the selected artist.');
-          }
-        },
-        error => {
-          console.error('Failed to get albums:', error);
+  
+// Function to handle the fetching of albums
+getAlbums(): void {
+  if (this.selectedArtistId) {
+    this.artistsService.getAlbumsByArtistId(this.selectedArtistId, this.userId).subscribe(
+      (response: any) => {
+        if (response && response.length > 0) {
+          this.albumResults = response;
+          // Set the flag to true when albums are available
+          this.albumsAvailable = true;
+        } else {
+          console.warn('No albums found for the selected artist.');
+          // Set the flag to false when no albums are found
+          this.albumsAvailable = false;
         }
-      );
-    } else {
-      console.warn('No artist selected. Please select an artist first.');
-    }
+      },
+      error => {
+        console.error('Failed to get albums:', error);
+        // Set the flag to false in case of an error
+        this.albumsAvailable = false;
+      }
+    );
+  } else {
+    console.warn('No artist selected. Please select an artist first.');
+    // Set the flag to false if no artist is selected
+    this.albumsAvailable = false;
   }
+}
 
   // Function to handle the selection of an artist
   onArtistSelected(): void {
