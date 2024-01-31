@@ -100,14 +100,6 @@ public class Songs {
 		this.duration = duration;
 	}
 
-	public Albums getAlbum() {
-		return albums;
-	}
-
-	public void setAlbum(Albums album) {
-		this.albums = album;
-	}
-
 //	public String[] getGenres() {
 //		return genres;
 //	}

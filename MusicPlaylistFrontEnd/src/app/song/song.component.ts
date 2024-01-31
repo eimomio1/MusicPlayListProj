@@ -27,7 +27,7 @@ interface ApiResponse {
   templateUrl: './song.component.html',
   styleUrls: ['./song.component.css']
 })
-export class SongComponent {
+export class SongComponent implements OnInit{
 
   nameOfPlaylist: string = '';
   userId: string = '';
@@ -56,16 +56,13 @@ export class SongComponent {
     private songService: SongService,
     private route: ActivatedRoute,
     private router: Router, // Inject the Router service
-    private authService: AuthService,
   ) {
-    this.authService.accessToken$.subscribe((token) => {
-      this.accessToken = token;
-    });
   }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.userId = params['id'];
+      this.accessToken = params['accessToken'];
       this.loadPlaylists();
     });
 
@@ -99,10 +96,10 @@ export class SongComponent {
     // Navigate to the review page with parameters
     this.router.navigate(['/reviews'], {
       queryParams: {
-        entityId: songId,
-        entityType: entityType,
         userId: id,
         accessToken: this.accessToken,
+        entityId: songId,
+        entityType: entityType,
       },
     });
   }
@@ -254,6 +251,10 @@ export class SongComponent {
 
 
 
-
+// Add this method to your component class
+getSelectedSongName(): string | undefined {
+  const selectedSong = this.searchResults.find(song => song.id === this.selectedSongId);
+  return selectedSong ? selectedSong.name : '';
+}
 
 }

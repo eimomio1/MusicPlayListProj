@@ -14,7 +14,7 @@ public interface ReviewService {
 
 	ReviewDTO getReviewById(long reviewid, String entityType, String entityId);
 
-	String addReview(Reviews review, String entityId, String entityType, String userId, Track track);
+	Reviews addReview(Reviews review, String entityId, String entityType, String userId, Object object);
 	
 //	List<Reviews> getReviewsBySongId(String spotifyId);
 	

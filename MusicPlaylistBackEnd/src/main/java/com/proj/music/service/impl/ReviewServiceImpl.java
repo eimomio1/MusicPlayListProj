@@ -22,6 +22,7 @@ import com.proj.music.repository.UserRepository;
 import com.proj.music.service.ReviewService;
 
 import jakarta.transaction.Transactional;
+import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
 @Service
@@ -151,7 +152,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private ReviewDTO convertToDTO(Reviews review) {
 		ReviewDTO dto = new ReviewDTO();
 		// Set DTO properties based on the review entity
-		dto.setId(review.getId());
+		dto.setId(review.getReviewId());
 		dto.setName(review.getName());
 		dto.setComment(review.getComment());
 		dto.setDatePosted(review.getDatePosted());
@@ -161,64 +162,77 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	@Transactional
-	public String addReview(Reviews review, String entityId, String entityType, String userId, Track track) {
+	public Reviews addReview(Reviews review, String entityId, String entityType, String userId, Object object) {
 		Optional<Users> optionalUser = Optional.of(userRepository.findByRefId(userId));
-
+		Optional<Songs> newSongs = null;
+		Optional<Albums> newAlbums = null;
 		if (optionalUser.isPresent()) {
 			Reviews newReview = new Reviews();
 			newReview.setUser(optionalUser.get());
 			newReview.setName(review.getName());
 			newReview.setRating(review.getRating());
 			newReview.setComment(review.getComment());
-			Songs newSongs = createSongFromSpotifyData(track, optionalUser.get());
-			songRepository.save(newSongs);
+			if(entityType.equals("songs"))
+			{
+				newSongs = createSongFromSpotifyData(object, optionalUser.get());
+				songRepository.save(newSongs.get());
+			}
+			else if(entityType.equals("albums"))
+			{
+				newAlbums = createAlbumFromSpotifyData(object, optionalUser.get());
+				albumRepository.save(newAlbums.get());
+			}
 			switch (entityType) {
 			case "songs":
-				Optional<Songs> optionalSong = songRepository.findSongBySpotifyId(entityId);
-				if (optionalSong.isPresent()) {
-					newReview.setSongs(optionalSong.get());
-					optionalSong.get().getReviews().add(newReview);
+
+				if (newSongs.isPresent()) {
+					newReview.setSongs(newSongs.get());
+					newSongs.get().getReviews().add(newReview);
 					reviewRepository.save(newReview);
-					return "Review for song has been added";
+					return newReview;
 				}
 				break;
 
 			case "albums":
-				Optional<Albums> optionalAlbum = albumRepository.findAlbumBySpotifyId(entityId);
-				if (optionalAlbum.isPresent()) {
-					newReview.setAlbums(optionalAlbum.get());
-					optionalAlbum.get().getReviews().add(newReview);
+				if (newAlbums.isPresent()) {
+					newReview.setAlbums(newAlbums.get());
+					newAlbums.get().getReviews().add(newReview);
 					reviewRepository.save(newReview);
-					return "Review for album has been added";
+					return newReview;
 				}
 				break;
-
-			case "playlist":
-				Optional<Playlists> optionalPlaylist = playlistRepository.findPlaylistBySpotifyId(entityId);
-				if (optionalPlaylist.isPresent()) {
-					newReview.setPlaylist(optionalPlaylist.get());
-					optionalPlaylist.get().getReviews().add(newReview);
-					reviewRepository.save(newReview);
-					return "Review for playlist has been added";
-				}
-				break;
-
+				
 			default:
 				throw new ResourceNotFoundException("Object not found");
 			}
 		}
 
-		return "User not found";
+		return new Reviews();
 	}
 	
-	public Songs createSongFromSpotifyData(Track track, Users user) {
-	    Songs newSongs = new Songs();
-	    newSongs.setName(track.getName());
-	    newSongs.setSpotifyId(track.getId());
-	    newSongs.setUris(track.getUri());
-	    newSongs.setDuration(track.getDurationMs());
-	    newSongs.setPreviewUrl(track.getPreviewUrl());
-	    newSongs.getUsers().add(user);
+	public Optional<Songs> createSongFromSpotifyData(Object track1, Users user) {
+		Track track = (Track) track1;
+	    Optional<Songs> newSongs = Optional.of(new Songs());
+	    newSongs.get().setName(track.getName());
+	    newSongs.get().setSpotifyId(track.getId());
+	    newSongs.get().setUris(track.getUri());
+	    newSongs.get().setDuration(track.getDurationMs());
+	    newSongs.get().setPreviewUrl(track.getPreviewUrl());
+	    newSongs.get().getUsers().add(user);
 	    return newSongs;
 	}
+	
+	public Optional<Albums> createAlbumFromSpotifyData(Object album1, Users user) {
+		Album album = (Album) album1;
+	    Optional<Albums> newAlbums = Optional.of(new Albums());
+	    newAlbums.get().setName(album.getName());
+	    newAlbums.get().setSpotifyId(album.getId());
+	    newAlbums.get().setReleaseDate(album.getReleaseDate());
+	    newAlbums.get().setUri(album.getUri());
+	    newAlbums.get().setGenres(album.getGenres());
+	    newAlbums.get().getUsers().add(user);
+	    return newAlbums;
+	}
+
 }
+

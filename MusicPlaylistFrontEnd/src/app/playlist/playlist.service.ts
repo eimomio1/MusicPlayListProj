@@ -10,10 +10,9 @@ export class PlaylistService {
 
   constructor(private http: HttpClient) {}
 
-  createPlaylist(username: string, playlistData: string): Observable<any> {
-    const url = `${this.baseUrl}/api/create-playlist/users/${username}/playlists`;
+  createPlaylist(url: string, playlistData: any): Observable<any> {
 
-    return this.http.post(url, playlistData, { responseType: 'text' });
+    return this.http.post(`${this.baseUrl}${url}`, playlistData, { responseType: 'text' });
   }
   
   updatePlaylist(userId: string, playlistId: string, playlistData: any): Observable<any> {
@@ -28,8 +27,7 @@ export class PlaylistService {
   }
   
   deletePlaylist(userId: string, playlistId: string): Observable<any> {
-    const url = `${this.baseUrl}/api/delete-playlist/users/${playlistId}?userId=${userId}`;
-  
+    const url = `${this.baseUrl}/api/delete-playlist/users/${playlistId}?userId=${userId}`; 
     return this.http.delete(url, { responseType: 'text' });
   }
   
@@ -43,19 +41,12 @@ searchSongs(userId: string, query: string): Observable<any[]> {
  // New method to add songs to a playlist
 addSongsToPlaylist(playlistId: string, userId: string, songId: string): Observable<any> {
   const url = `${this.baseUrl}/api/playlists/${playlistId}/songs?userId=${userId}&songUri=spotify:track:${songId}`;
-
-  // Assuming you need to send a POST request to add songs
-  
   return this.http.post(url, { responseType: 'text' });
 }
 deleteSongsFromPlaylistO(playlistId: string, userId: string, songId: string): Observable<any> {
-  const url = `${this.baseUrl}/api/playlists/${playlistId}/songs?userId=${userId}&songUri=spotify:track:${songId}`;
-
- 
-  
+  const url = `${this.baseUrl}/api/playlists/${playlistId}/songs?userId=${userId}&songUri=spotify:track:${songId}`; 
   return this.http.delete(url, { responseType: 'text' });
 }
-
 
 // New method to get songs for a playlist
 getPlaylistSongs(userId: string, playlistId: string): Observable<any[]> {

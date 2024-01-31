@@ -3,6 +3,7 @@ import { PlaylistService } from './playlist.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { AuthService } from '../authentication/auth.service';
 
 interface ApiResponse {
   albums: any;
@@ -30,7 +31,11 @@ interface ImageResponse {
   styleUrls: ['./playlist.component.css']
 })
 export class PlaylistComponent implements OnInit {
+yourButtonClickFunction(arg0: any) {
+
+}
   nameOfPlaylist: string = '';
+  description: string = '';
   userId: string = '';
   playlistId: string = ''; 
   updatedPlaylistName: string = ''; // new property
@@ -52,20 +57,24 @@ export class PlaylistComponent implements OnInit {
   retrievedImage: any;
 
   private searchSubject = new Subject<string>();
+  accessToken: string | null | undefined;
 
   constructor(
     private playlistService: PlaylistService,
     private route: ActivatedRoute,
-    private router: Router // Inject the Router service
+    private router: Router, // Inject the Router service
+    private authService: AuthService
   ) {
-
     this.selectedFile = new File([], 'defaultFileName'); 
-    
+    this.authService.accessToken$.subscribe((token) => {
+      this.accessToken = token;
+    });
   }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.userId = params['id'];
+      this.accessToken = params['accessToken'];
       this.loadPlaylists();
     });
 
@@ -138,10 +147,16 @@ export class PlaylistComponent implements OnInit {
   }
 
   createPlaylist(): void {
-    if (this.nameOfPlaylist && this.userId) {
+    if (this.userId && this.nameOfPlaylist && this.description) {
+      const playlistAdded = {
+        name: this.nameOfPlaylist,
+        description: this.description
+      }
+      const url = `/api/create-playlist/users/${this.userId}/playlists`;
       // Send the playlist name as a string
-      this.playlistService.createPlaylist(this.userId, this.nameOfPlaylist).subscribe(
+      this.playlistService.createPlaylist(url, playlistAdded).subscribe(
         response => {
+          this.loadPlaylists();
           console.log('Playlist created successfully:', response);
         },
         error => {
@@ -162,6 +177,7 @@ export class PlaylistComponent implements OnInit {
 
       this.playlistService.updatePlaylist(this.userId, this.playlistId, updatedPlaylist).subscribe(
         response => {
+          this.loadPlaylists();
           console.log('Playlist updated successfully:', response);
         },
         error => {
@@ -191,9 +207,16 @@ export class PlaylistComponent implements OnInit {
   private loadPlaylists(): void {
     this.playlistService.getPlaylists(this.userId).subscribe(
       playlists => {
-        // Extract only the names of the playlists
-        this.playlists = playlists.map(playlist => ({ playlistName: playlist.name, spotifyId: playlist.id }));
-        
+        // Update the playlists array with additional information
+        this.playlists = playlists.map(playlist => {
+          console.log('Playlist:', playlist);
+          return {
+            playlistName: playlist.name,
+            playlistImage: playlist.images?.[0]?.url || null, // Use playlistImage instead of playlistDescription
+            spotifyId: playlist.id,
+          };
+        });
+  
         // Extract playlistId from the URL
         this.route.queryParams.subscribe(params => {
           this.selectedPlaylistId = params['playlistId'] || ''; // Default to an empty string
@@ -221,6 +244,7 @@ export class PlaylistComponent implements OnInit {
       this.playlistService.deletePlaylist(this.userId, this.selectedDeletePlaylistId).subscribe(
         response => {
           console.log('Playlist deleted successfully:', response);
+          this.loadPlaylists();
         },
         error => {
           console.error('Failed to delete playlist:', error);
@@ -317,5 +341,34 @@ export class PlaylistComponent implements OnInit {
     // Return a default image URL or undefined if no image is found
     return 'path/to/default/image.jpg'; // Update with your default image path
   }
+
+  onSelectPlaylist(playlistId: string): void {
+    // Update the URL with the selected playlistId
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { playlistId: playlistId },
+      queryParamsHandling: 'merge'
+    });
+
+    // Set the playlistId property
+    this.playlistId = playlistId;
+    this.loadPlaylistSongs(playlistId);
+  }
   
+  selectPlaylist(playlistId: string): void {
+    // Update the URL with the selected playlistId
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { playlistId: playlistId },
+      queryParamsHandling: 'merge'
+    });
+
+    // Set the playlistId property
+    this.playlistId = playlistId;
+    this.loadPlaylistSongs(playlistId); // New Update
+  }
+
+
 }
+
+
