@@ -7,4 +7,4 @@ The motivation behind the Schedule Sketcher online scheduling application stems 
 Backend: PostgreSQL, Java  Frontend JavaFX Deployment Tool: Dockers
 
 Login
-![imagedfsf](https://github.com/eimomio1/MusicPlaylistProj/musicplaylistpics/Picture1
+![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/Picture1.png)
