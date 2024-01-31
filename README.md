@@ -1,26 +1,31 @@
 # Online Scheduling Application
-Motivation to building online scheduler:
-The motivation behind the Schedule Sketcher online scheduling application stems from a commitment to addressing prevalent challenges in organizational scheduling. In the quest for improved efficiency, the application seeks to streamline scheduling processes, reduce conflicts, and save valuable time for users. Recognizing the technology gap in existing solutions, Schedule Sketcher aims to fill this void by providing a modern, user-friendly interface. 
 
+## Motivation
 
-# Technology List
-Backend: PostgreSQL, Java  Frontend JavaFX Deployment Tool: Dockers
+The motivation behind the Schedule Sketcher online scheduling application stems from a commitment to addressing prevalent challenges in organizational scheduling. In the quest for improved efficiency, the application seeks to streamline scheduling processes, reduce conflicts, and save valuable time for users. Recognizing the technology gap in existing solutions, Schedule Sketcher aims to fill this void by providing a modern, user-friendly interface.
 
-Login:
-![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/Picture1.png)
+## Technology List
 
-Schedule Appt (User Side):
-![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/scheduleappt.png)
+**Backend:** PostgreSQL, Java  
+**Frontend:** JavaFX  
+**Deployment Tool:** Docker
 
-Book Appt (User Side):
-![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/bookappt.png)
+## Screenshots
 
-Delete Appt:
-![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/deleteappt.png)
+### Login
+![Login](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/Picture1.png)
 
-(Admin) View All Created Appts:
-![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/adminviewbookedappt.png)
+### Schedule Appointment (User Side)
+![Schedule Appointment](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/scheduleappt.png)
 
-(Admin) View All Scheduled Appts:
-![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/adminviewscheduledappts.png)
+### Book Appointment (User Side)
+![Book Appointment](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/bookappt.png)
 
+### Delete Appointment
+![Delete Appointment](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/deleteappt.png)
+
+### (Admin) View All Created Appointments
+![Admin View Created Appointments](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/adminviewbookedappt.png)
+
+### (Admin) View All Scheduled Appointments
+![Admin View Scheduled Appointments](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/adminviewscheduledappts.png)
