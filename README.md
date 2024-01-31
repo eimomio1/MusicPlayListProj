@@ -6,5 +6,21 @@ The motivation behind the Schedule Sketcher online scheduling application stems 
 # Technology List
 Backend: PostgreSQL, Java  Frontend JavaFX Deployment Tool: Dockers
 
-Login
+Login:
 ![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/Picture1.png)
+
+Schedule Appt (User Side):
+![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/scheduleappt.png)
+
+Book Appt (User Side):
+![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/bookappt.png)
+
+Delete Appt:
+![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/deleteappt.png)
+
+(Admin) View All Created Appts:
+![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/adminviewbookedappt.png)
+
+(Admin) View All Scheduled Appts:
+![image](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/adminviewscheduledappts.png)
+
