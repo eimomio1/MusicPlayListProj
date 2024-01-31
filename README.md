@@ -29,3 +29,15 @@ The motivation behind the Schedule Sketcher online scheduling application stems 
 
 ### (Admin) View All Scheduled Appointments
 ![Admin View Scheduled Appointments](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/adminviewscheduledappts.png)
+
+### Registration Form
+![Registration](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/registrationform.png)
+
+### Password Verification for Registration
+![Password](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/pwverification.png)
+
+### Scheduling Appt to Receive Automated Email (JavaMail API)
+![Scheduling](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/javamailapi.png)
+
+### Automated Email Sent to Recipient (JavaMail API)
+![Automated](https://github.com/eimomio1/MusicPlaylistProj/blob/main/musicplaylistpics/javamailapi2.png)
